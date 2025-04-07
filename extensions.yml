@@ -1,29 +1,29 @@
 extensions:
-  - name: "POAP Issuer Creation"
-    type: "generic"
-    contractAddress: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  - name: 'POAP Issuer Creation'
+    type: 'generic'
+    contractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
     startBlockHeight: 5
-    abiPath: "./stateful/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json"
-    eventSignature: "IssuerCreated(uint256,address)"
-    scheduledPrefix: "issuerCreate"
-  - name: "POAP Event Creation"
-    type: "generic"
-    contractAddress: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    abiPath: './Stateful-POAP-Indexer/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json'
+    eventSignature: 'IssuerCreated(uint256,address)'
+    scheduledPrefix: 'issuerCreate'
+  - name: 'POAP Event Creation'
+    type: 'generic'
+    contractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
     startBlockHeight: 5
-    abiPath: "./stateful/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json"
-    eventSignature: "EventCreated(uint256,uint256,uint256,uint256,address,bytes32)"
-    scheduledPrefix: "eventCreate"
-  - name: "POAP Mint"
-    type: "generic"
-    contractAddress: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    abiPath: './Stateful-POAP-Indexer/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json'
+    eventSignature: 'EventCreated(uint256,uint256,uint256,uint256,address)'
+    scheduledPrefix: 'eventCreate'
+  - name: 'POAP Mint'
+    type: 'generic'
+    contractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
     startBlockHeight: 5
-    abiPath: "./stateful/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json"
-    eventSignature: "TokenMinted(uint256,uint256,uint256,string)"
-    scheduledPrefix: "poapMint"
-  - name: "POAP Update"
-    type: "generic"
-    contractAddress: "0x85dD78eD37e0a73F6d5cbC15581a22F940Bf74e7"
-    startBlockHeight: 31782134
-    abiPath: "./stateful/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json"
-    eventSignature: "TokenUpdated(uint256,uint256,uint256,string)"
-    scheduledPrefix: "poapUpdate"
+    abiPath: './Stateful-POAP-Indexer/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json'
+    eventSignature: 'TokenMinted(uint256,uint256,uint256,string)'
+    scheduledPrefix: 'poapMint'
+  - name: 'POAP Update'
+    type: 'generic'
+    contractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+    startBlockHeight: 5
+    abiPath: './Stateful-POAP-Indexer/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json'
+    eventSignature: 'TokenUpdated(uint256,uint256,uint256,string)'
+    scheduledPrefix: 'poapUpdate'

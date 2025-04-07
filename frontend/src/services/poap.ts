@@ -1,7 +1,7 @@
 import { BrowserProvider, JsonRpcProvider } from 'ethers';
 import type { JsonRpcSigner } from 'ethers';
 import { Contract } from 'ethers';
-import Poap__Abi from '../../../contracts/evm/abi/contracts/evm/solidity/poap-types/Poap.sol/Poap.json';
+import Poap__Abi from '../../../contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json' with { type: "json" };
 import {
   CHAIN_URI,
   CHAIN_CURRENCY_DECIMALS,
@@ -78,6 +78,7 @@ export const mintPoap = async (issuerId: number, eventId: number, account: strin
 };
 
 const getPoapContract = async (account: string) => {
+  console.log("🚀 ~ getPoapContract ~ account:", account)
   if (!POAP) {
     throw new Error(
       'POAP not set. Please fill in your .env file based on your contract deployment.'

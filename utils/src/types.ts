@@ -1,4 +1,4 @@
-import type { IGetUserPoapsResult } from '@game/db';
+import type { ICreateEventPoapResult, ICreateEventResult, ICreateIssuerResult, ICreateOwnerResult, ICreatePoapResult, IGetLastEventResult, IGetOwnerPoapsResult } from '@game/db';
 
 export interface InvalidInput {
   input: 'invalidString';
@@ -9,6 +9,23 @@ export interface InvalidInput {
 export const poaps = ['poap', 'soulbound', 'consensual'] as const;
 export type PoapType = (typeof poaps)[number];
 
-export interface OwnedPoapsResponse {
-  poaps: IGetUserPoapsResult[];
+export interface OwnerPoapsResponse {
+  poaps: IGetOwnerPoapsResult[];
+}
+export interface CreateEventResponse {
+  event: ICreateEventResult;
+}
+
+export interface LastEventResponse {
+  event: IGetLastEventResult;
+}
+
+export interface CreateOwnerResponse {
+  event: ICreateOwnerResult;
+}
+export interface CreateIssuerResponse {
+  event: ICreateIssuerResult;
+}
+export interface CreateEventPoapRelationResponse {
+  event: ICreateEventPoapResult;
 }

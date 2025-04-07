@@ -2,19 +2,28 @@
   @name createIssuer
 */
 INSERT INTO issuers(
-  "issuerId",
-  address)
+  "issuerUuid",
+  "issuerIdInContract",
+  "address",
+  "name",
+  "email",
+  "organization"
+) 
 VALUES (
-  :issuerId!,
-  :address!
+  :issuerUuid!,
+  DEFAULT, -- Automatically assigned SERIAL value
+  :address!,
+  :name!,
+  :email!,
+  :organization!
 );
 
 /* 
   @name createEvent
 */
 INSERT INTO events(
-  "eventId",
-  "issuerId",
+  "eventUuid",
+  "issuerUuid",
   "title",
   "description",
   "city",
@@ -22,56 +31,50 @@ INSERT INTO events(
   "startDate",
   "endDate",
   "expiryDate",
-  "eventMaxSupply",
-  "eventMintExpiration",
-  "eventOrganizer",
-  "eventMetadata",
-  "eventUrl", 
-  "virtualEvent", 
-  "image", 
-  "secretCode", 
-  "eventTemplateId", 
-  "email", 
-  "requestedCodes", 
-  "privateEvent", 
-  "purpose", 
-  "platform", 
-  "eventType", 
-  "amountOfAttendees", 
-  "account", 
-  "poapType", 
-  "poapsToBeMinted", 
+  "year",
+  "eventUrl",
+  "virtualEvent",
+  "image",
+  "secretCode",
+  "eventTemplateId",
+  "email",
+  "requestedCodes",
+  "privateEvent",
+  "purpose",
+  "platform",
+  "eventType",
+  "amountOfAttendees",
+  "account",
+  "poapType",
+  "poapsToBeMinted",
   "mintedPoaps"
 ) 
 VALUES (
-  :eventId!,
-  :issuerId!,
-  'testing event',
-  'testinv event description',
-  'buenos aires',
-  'argentina',
+  :eventUuid!,
+  :issuerUuid!,
+  :title!,
+  :description!,
+  :city!,
+  :country!,
   now(),
-  now(),
-  NULL,
-  :eventMaxSupply!,
-  :eventMintExpiration!,
-  :eventOrganizer!,
-  :eventMetadata!,
-  'eventUrl',
-  NULL,
+  now() + INTERVAL '30 days',
+  :expiryDate!,
+  EXTRACT(YEAR FROM now()),
+  :eventUrl,
+  FALSE,
+  'default-image-url.jpg',
   NULL,
   NULL,
+  :email!,
+  :requestedCodes!,
+  FALSE,
   NULL,
   NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
+  'Unknown',
   NULL,
   NULL,
   'poap',
-  100,
+  :poapsToBeMinted!,
   0
 );
 
@@ -79,13 +82,55 @@ VALUES (
   @name createPoap
 */
 INSERT INTO poaps(
-  address,
-  "eventId",
-  instance,
-  "poapType")
+  "poapUuid",
+  "instance",
+  "ownerUuid",
+  "createdAt",
+  "updatedAt"
+) 
 VALUES (
-  :address!,
-  :eventId!,
+  :poapUuid!,
   :instance!,
-  :type!
+  :ownerUuid!,
+  now(),
+  now()
 );
+
+
+/* 
+  @name createOwner
+*/
+INSERT INTO owners(
+  "ownerUuid",
+  "email",
+  "address",
+  "createdAt",
+  "updatedAt"
+) 
+VALUES (
+  :ownerUuid!,
+  :email,
+  :address!,
+  now(),
+  now()
+);
+
+
+/* 
+  @name createEventPoap
+*/
+INSERT INTO eventPoaps(
+  "relationUuid",
+  "poapUuid",
+  "eventUuid",
+  "createdAt",
+  "updatedAt"
+) 
+VALUES (
+  :relationUuid!,
+  :poapUuid!,
+  :eventUuid!,
+  now(),
+  now()
+);
+

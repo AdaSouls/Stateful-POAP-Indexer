@@ -1,53 +1,60 @@
-import type { PoapType, InvalidInput } from '@game/utils';
-import type { WalletAddress } from '@paima/sdk/utils';
+import type { PoapType, InvalidInput } from "@game/utils";
+import type { WalletAddress } from "@paima/sdk/utils";
 
 export interface ScheduledDataInput {
-  input: 'scheduledData';
+  input: "scheduledData";
 }
 
 export interface IssuerCreateInput {
-  input: 'issuerCreate';
+  input: "issuerCreate";
   payload: {
-    issuerId: number;
-    issuerAddress: WalletAddress;
-  }
+    issuerUuid: string;
+    address: WalletAddress;
+    email: string;
+    name: string;
+    organization: string;
+  };
 }
 
 export interface EventCreateInput {
-  input: 'eventCreate';
+  input: "eventCreate";
   payload: {
-    issuerId: number,
-    eventId: number,
-    eventMaxSupply: number,
-    eventMintExpiration: number,
-    eventOrganizer: WalletAddress,
-    eventMetadata: string,
-  }
+    email: string;
+    eventUuid: string;
+    issuerUuid: string;
+    requestedCodes: number;
+  };
 }
 
-export interface PoapMintInput extends ScheduledDataInput {
-  effect: 'poapMint';
-  address: WalletAddress;
-  eventId: number;
-  instance: number;
-  type: PoapType;
+export interface PoapMintInput {
+  input: "poapMint";
+  payload: {
+    poapUuid: string;
+    ownerUuid: string;
+    instance: number;
+  };
 }
 
 export interface PoapUpdateInput {
-  input: 'poapUpdate';
-  effect: 'poapUpdate';
-  address: WalletAddress;
-  eventId: number;
-  tokenId: string;
-  type: PoapType;
+  input: "poapUpdate";
+  payload: {
+    poapUuid: string;
+    ownerUuid: string;
+    instance: number;
+  };
 }
 
-export function isPoapMint(input: ScheduledDataInput): input is PoapMintInput {
-  return (input as PoapMintInput).effect === 'poapMint';
-}
+// export function isPoapMint(input: ScheduledDataInput): input is PoapMintInput {
+//   return (input as PoapMintInput).effect === 'poapMint';
+// }
 
-export function isPoapUpdate(input: PoapUpdateInput): input is PoapUpdateInput {
-  return (input as PoapUpdateInput).effect === 'poapUpdate';
-}
+// export function isPoapUpdate(input: PoapUpdateInput): input is PoapUpdateInput {
+//   return (input as PoapUpdateInput).effect === "poapUpdate";
+// }
 
-export type ParsedSubmittedInput = IssuerCreateInput | EventCreateInput | PoapMintInput | PoapUpdateInput | InvalidInput;
+export type ParsedSubmittedInput =
+  | IssuerCreateInput
+  | EventCreateInput
+  | PoapMintInput
+  | PoapUpdateInput
+  | InvalidInput;

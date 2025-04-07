@@ -6,9 +6,9 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import {IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import {PoapStateful} from "./poap-extensions/PoapStateful.sol";
-import {PoapRoles, AccessControl} from "./poap-extensions/PoapRoles.sol";
-import {PoapPausable} from "./poap-extensions/PoapPausable.sol";
+import {PoapStatefulPublic} from "./poap-extensions/PoapStatefulPublic.sol";
+import {PoapRolesPublic, AccessControl} from "./poap-extensions/PoapRolesPublic.sol";
+import {PoapPausablePublic} from "./poap-extensions/PoapPausablePublic.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 // Desired Features
@@ -24,9 +24,9 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 contract Poap is
     Initializable,
     ERC721Enumerable,
-    PoapRoles,
-    PoapPausable,
-    PoapStateful
+    PoapRolesPublic,
+    PoapPausablePublic,
+    PoapStatefulPublic
 {
     // Events
     event IssuerCreated(uint256 issuerId, address issuerAddress);
@@ -81,7 +81,7 @@ contract Poap is
         string memory name_,
         string memory symbol_,
         address owner_
-    ) PoapStateful(name_, symbol_, owner_) {
+    ) PoapStatefulPublic(name_, symbol_, owner_) {
         _grantRole(DEFAULT_ADMIN_ROLE, owner_);
     }
 
@@ -89,8 +89,8 @@ contract Poap is
         string memory __baseURI,
         address[] memory admins
     ) public initializer {
-        PoapRoles.initialize(_msgSender());
-        PoapPausable.initialize();
+        PoapRolesPublic.initialize(_msgSender());
+        PoapPausablePublic.initialize();
 
         // Add the requested admins
         for (uint256 i = 0; i < admins.length; ++i) {
@@ -125,7 +125,7 @@ contract Poap is
      */
     function tokenURI(
         uint256 tokenId
-    ) public view override(PoapStateful, ERC721) returns (string memory) {
+    ) public view override(PoapStatefulPublic, ERC721) returns (string memory) {
         uint eventId = _tokenEvent[tokenId];
         return
             string.concat(
@@ -233,7 +233,7 @@ contract Poap is
         uint256 maxSupply,
         uint256 mintExpiration,
         address eventOrganizer
-    ) public whenNotPaused onlyAdmin returns (bool) {
+    ) public whenNotPaused returns (bool) {
         require(_eventMaxSupply[eventId] == 0, "Poap: event already created");
         if (mintExpiration > 0) {
             require(
@@ -250,8 +250,6 @@ contract Poap is
             _eventMaxSupply[eventId] = maxSupply;
         }
         _eventMintExpiration[eventId] = mintExpiration;
-        addEventMinter(eventId, eventOrganizer);
-        PoapStateful.setMinter(eventOrganizer);
         _issuerEvents[issuerId].push(eventId);
         _eventIssuer[eventId] = issuerId;
         emit EventCreated(
@@ -274,7 +272,7 @@ contract Poap is
         uint256 issuerId,
         uint256 eventId,
         address to
-    ) public whenNotPaused onlyEventMinter(eventId) returns (uint256) {
+    ) public whenNotPaused returns (uint256) {
         return _mintToken(issuerId, eventId, to);
     }
 
@@ -288,7 +286,7 @@ contract Poap is
         uint256 issuerId,
         uint256 eventId,
         address[] memory to
-    ) public whenNotPaused onlyEventMinter(eventId) returns (bool) {
+    ) public whenNotPaused returns (bool) {
         for (uint256 i = 0; i < to.length; ++i) {
             _mintToken(issuerId, eventId, to[i]);
         }
@@ -305,7 +303,7 @@ contract Poap is
         uint256[] memory issuerIds,
         uint256[] memory eventIds,
         address to
-    ) public whenNotPaused onlyAdmin returns (bool) {
+    ) public whenNotPaused returns (bool) {
         for (uint256 i = 0; i < eventIds.length; ++i) {
             _mintToken(issuerIds[i], eventIds[i], to);
         }
@@ -418,7 +416,7 @@ contract Poap is
             tokenId = _issuerHolders[to][issuerId];
             emit TokenUpdated(issuerId, eventId, tokenId);
         } else {
-            tokenId = PoapStateful.mint(to, "");
+            tokenId = PoapStatefulPublic.mint(to, "");
             _tokenEvent[tokenId] = eventId;
             _issuerHolders[to][issuerId] = tokenId;
             _eventHolders[to][eventId] = true;
@@ -552,7 +550,7 @@ contract Poap is
     )
         public
         pure
-        override(ERC721Enumerable, AccessControl, PoapStateful)
+        override(ERC721Enumerable, AccessControl, PoapStatefulPublic)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -562,7 +560,7 @@ contract Poap is
         public
         view
         virtual
-        override(ERC721Enumerable, PoapStateful)
+        override(ERC721Enumerable, PoapStatefulPublic)
         returns (uint256)
     {
         return super.totalSupply();
@@ -573,7 +571,7 @@ contract Poap is
         internal
         view
         virtual
-        override(PoapStateful, ERC721)
+        override(PoapStatefulPublic, ERC721)
         returns (string memory)
     {
         return super._baseURI();

@@ -3,8 +3,9 @@ import type Prando from '@paima/sdk/prando';
 import type { SubmittedChainData } from '@paima/sdk/utils';
 import type { SQLUpdate } from '@paima/node-sdk/db';
 import type { Pool } from 'pg';
-import { issuerCreate, eventCreate } from './transition.js';
-import { IssuerCreateInput } from './types.js';
+// import { issuerCreate, eventCreate, poapMint, poapUpdate } from './transition.js';
+import { issuerCreate, poapMint, poapUpdate } from './transition.js';
+import { EventCreateInput, IssuerCreateInput, PoapMintInput, PoapUpdateInput } from './types.js';
 
 // entrypoint for your state machine
 export default async function (
@@ -25,13 +26,17 @@ export default async function (
   console.log(`Input string parsed as: ${parsed.input}`);
 
   switch (parsed.input) {
-    case 'scheduledData':
-      if (!inputData.scheduled) return [];
+    // case 'scheduledData':
+    //   if (!inputData.scheduled) return [];
       //return scheduledData(parsed);
     case 'issuerCreate':
       return issuerCreate(parsed as IssuerCreateInput);
-    case 'eventCreate':
-      return eventCreate(parsed);
+    // case 'eventCreate':
+    //   return eventCreate(parsed as EventCreateInput);
+    case 'poapMint':
+      return poapMint(parsed as PoapMintInput);
+    case 'poapUpdate':
+      return poapUpdate(parsed as PoapUpdateInput);
     default:
       return [];
   }

@@ -3,7 +3,19 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TsoaRoute, fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { OwnedPoapsController } from './../controllers/ownedPoaps';
+import { OwnerPoapsController } from './../controllers/ownerPoaps';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { LastEventController } from './../controllers/getLastEvent';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { CreateOwnerController } from './../controllers/createOwner';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { CreateIssuerController } from './../controllers/createIsssuer';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { CreateEventPoapRelationController } from './../controllers/createEventPoapRelation';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { CreateEventController } from './../controllers/createEvent';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { ApproveEventController } from './../controllers/approveEvent';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -11,31 +23,135 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-    "PoapType": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["poap"]},{"dataType":"enum","enums":["soulbound"]},{"dataType":"enum","enums":["consensual"]}],"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IGetUserPoapsResult": {
+    "IGetOwnerPoapsResult": {
         "dataType": "refObject",
         "properties": {
-            "address": {"dataType":"string","required":true},
+            "address": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "eventId": {"dataType":"double","required":true},
-            "instance": {"dataType":"double","required":true},
-            "issuerId": {"dataType":"double","required":true},
-            "poap": {"dataType":"string","required":true},
-            "poapType": {"ref":"PoapType","required":true},
+            "email": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ownerUuid": {"dataType":"string","required":true},
+            "Poap.createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "Poap.instance": {"dataType":"double","required":true},
+            "Poap.poapUuid": {"dataType":"string","required":true},
+            "Poap.updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "uuid": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "OwnedPoapsResponse": {
+    "OwnerPoapsResponse": {
         "dataType": "refObject",
         "properties": {
-            "poaps": {"dataType":"array","array":{"dataType":"refObject","ref":"IGetUserPoapsResult"},"required":true},
+            "poaps": {"dataType":"array","array":{"dataType":"refObject","ref":"IGetOwnerPoapsResult"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IGetLastEventResult": {
+        "dataType": "refObject",
+        "properties": {
+            "account": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "amountOfAttendees": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+            "approved": {"dataType":"string","required":true},
+            "city": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "country": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "description": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "endDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "eventTemplateId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "eventType": {"dataType":"string","required":true},
+            "eventUrl": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "eventUuid": {"dataType":"string","required":true},
+            "expiryDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "idInContract": {"dataType":"double","required":true},
+            "image": {"dataType":"string","required":true},
+            "issuerUuid": {"dataType":"string","required":true},
+            "mintedPoaps": {"dataType":"double","required":true},
+            "platform": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "poapsToBeMinted": {"dataType":"double","required":true},
+            "poapType": {"dataType":"string","required":true},
+            "privateEvent": {"dataType":"boolean","required":true},
+            "purpose": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "requestedCodes": {"dataType":"double","required":true},
+            "secretCode": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "startDate": {"dataType":"datetime","required":true},
+            "title": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "virtualEvent": {"dataType":"boolean","required":true},
+            "year": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "LastEventResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "event": {"ref":"IGetLastEventResult","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ICreateOwnerParams": {
+        "dataType": "refObject",
+        "properties": {
+            "address": {"dataType":"string","required":true},
+            "email": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
+            "ownerUuid": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ICreateIssuerParams": {
+        "dataType": "refObject",
+        "properties": {
+            "address": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "issuerUuid": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
+            "organization": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ICreateEventPoapParams": {
+        "dataType": "refObject",
+        "properties": {
+            "eventUuid": {"dataType":"string","required":true},
+            "poapUuid": {"dataType":"string","required":true},
+            "relationUuid": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "DateOrString": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ICreateEventParams": {
+        "dataType": "refObject",
+        "properties": {
+            "city": {"dataType":"string","required":true},
+            "country": {"dataType":"string","required":true},
+            "description": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "eventUrl": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
+            "eventUuid": {"dataType":"string","required":true},
+            "expiryDate": {"ref":"DateOrString","required":true},
+            "issuerUuid": {"dataType":"string","required":true},
+            "poapsToBeMinted": {"dataType":"double","required":true},
+            "requestedCodes": {"dataType":"double","required":true},
+            "title": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IApproveEventParams": {
+        "dataType": "refObject",
+        "properties": {
+            "approved": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
+            "eventUuid": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -50,11 +166,11 @@ export function RegisterRoutes(app: Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.get('/owned_poaps',
-            ...(fetchMiddlewares<RequestHandler>(OwnedPoapsController)),
-            ...(fetchMiddlewares<RequestHandler>(OwnedPoapsController.prototype.get)),
+        app.get('/owner_poaps',
+            ...(fetchMiddlewares<RequestHandler>(OwnerPoapsController)),
+            ...(fetchMiddlewares<RequestHandler>(OwnerPoapsController.prototype.get)),
 
-            async function OwnedPoapsController_get(request: ExRequest, response: ExResponse, next: any) {
+            async function OwnerPoapsController_get(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     wallet: {"in":"query","name":"wallet","required":true,"dataType":"string"},
             };
@@ -65,10 +181,190 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
-                const controller = new OwnedPoapsController();
+                const controller = new OwnerPoapsController();
 
               await templateService.apiHandler({
                 methodName: 'get',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/last_event',
+            ...(fetchMiddlewares<RequestHandler>(LastEventController)),
+            ...(fetchMiddlewares<RequestHandler>(LastEventController.prototype.get)),
+
+            async function LastEventController_get(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    undefined: {"in":"query","name":"undefined","required":true,"dataType":"any"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new LastEventController();
+
+              await templateService.apiHandler({
+                methodName: 'get',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/create_owner',
+            ...(fetchMiddlewares<RequestHandler>(CreateOwnerController)),
+            ...(fetchMiddlewares<RequestHandler>(CreateOwnerController.prototype.post)),
+
+            async function CreateOwnerController_post(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    ownerInfo: {"in":"body","name":"ownerInfo","required":true,"ref":"ICreateOwnerParams"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CreateOwnerController();
+
+              await templateService.apiHandler({
+                methodName: 'post',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/create_issuer',
+            ...(fetchMiddlewares<RequestHandler>(CreateIssuerController)),
+            ...(fetchMiddlewares<RequestHandler>(CreateIssuerController.prototype.post)),
+
+            async function CreateIssuerController_post(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    issuerInfo: {"in":"body","name":"issuerInfo","required":true,"ref":"ICreateIssuerParams"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CreateIssuerController();
+
+              await templateService.apiHandler({
+                methodName: 'post',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/create_event_poap_relation',
+            ...(fetchMiddlewares<RequestHandler>(CreateEventPoapRelationController)),
+            ...(fetchMiddlewares<RequestHandler>(CreateEventPoapRelationController.prototype.post)),
+
+            async function CreateEventPoapRelationController_post(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    eventPoapRelationInfo: {"in":"body","name":"eventPoapRelationInfo","required":true,"ref":"ICreateEventPoapParams"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CreateEventPoapRelationController();
+
+              await templateService.apiHandler({
+                methodName: 'post',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/create_event',
+            ...(fetchMiddlewares<RequestHandler>(CreateEventController)),
+            ...(fetchMiddlewares<RequestHandler>(CreateEventController.prototype.post)),
+
+            async function CreateEventController_post(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    eventInfo: {"in":"body","name":"eventInfo","required":true,"ref":"ICreateEventParams"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new CreateEventController();
+
+              await templateService.apiHandler({
+                methodName: 'post',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/approve_event',
+            ...(fetchMiddlewares<RequestHandler>(ApproveEventController)),
+            ...(fetchMiddlewares<RequestHandler>(ApproveEventController.prototype.post)),
+
+            async function ApproveEventController_post(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    eventInfo: {"in":"body","name":"eventInfo","required":true,"ref":"IApproveEventParams"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new ApproveEventController();
+
+              await templateService.apiHandler({
+                methodName: 'post',
                 controller,
                 response,
                 next,

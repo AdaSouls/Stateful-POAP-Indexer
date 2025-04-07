@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import './App.css';
 import mw from 'mw';
-import type { IGetUserPoapsResult } from '@game/db';
+import type { IGetOwnerPoapsResult } from '@game/db';
 import { WalletMode } from '@paima/sdk/providers.js';
 import { createEvent, mintPoap } from './services/poap.js';
 import { POAP } from "./services/constants.js";
 
 function App() {
-  const [poaps, setPoaps] = useState<IGetUserPoapsResult[]>([]);
+  const [poaps, setPoaps] = useState<IGetOwnerPoapsResult[]>([]);
   const [wallet, setWallet] = useState('');
   const [issuerId, setIssuerId] = useState(0);
   const [eventId, setEventId] = useState(0);
@@ -31,7 +31,8 @@ function App() {
   }
 
   const fetchPoaps = async (userWallet: string) => {
-    const response = await mw.getOwnedPoaps(userWallet);
+    console.log("🚀 ~ fetchPoaps ~ userWallet:", userWallet)
+    const response = await mw.getOwnerPoaps(userWallet);
     console.log(response);
     if (!response.success) {
       console.log('Failed to fetch your POAPs');
@@ -69,7 +70,7 @@ function App() {
     }
   }
 
-  const hasPoaps = poaps.length > 0;
+  const hasPoaps = poaps?.length > 0
 
   return (
     <div className="container">
@@ -90,9 +91,9 @@ function App() {
             {hasPoaps ? (
               <div className="poaps">
                 {poaps.map(poap => (
-                  <div key={poap.instance} className={`poap poap-${poap.poapType}`}>
+                  <div key={poap['Poap.instance']} className={`poap poap-poap`}>
                     <p>
-                      Type: {poap.poapType} Address: {poap.address} Token ID: {poap.instance}
+                      Type: Poap Address: {poap.address} Token ID: {poap['Poap.instance']}
                     </p>
                     {/* <button onClick={() => poapAppendEventData(poap)}>Lvl Up</button> */}
                   </div>

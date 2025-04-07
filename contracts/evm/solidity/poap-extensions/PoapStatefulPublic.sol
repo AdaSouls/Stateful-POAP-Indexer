@@ -9,7 +9,7 @@ import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 /// @dev A standard ERC721 that accepts calldata in the mint function for any initialization data needed in a Paima dApp.
 /// Upon deployment only the contract owner (specified in constructor parameter) is able to mint tokens. Additional
 /// minters (e.g. NativeNftSale contract) need to be added by using the `setMinter` function.
-contract PoapStateful is ERC165, ERC721, Ownable {
+contract PoapStatefulPublic is ERC165, ERC721, Ownable {
     /// @dev The token ID that will be minted when calling the `mint` function.
     uint256 public currentTokenId;
     /// @dev Base URI that is used in the `tokenURI` function to form the start of the token URI.
@@ -92,7 +92,7 @@ contract PoapStateful is ERC165, ERC721, Ownable {
     function mint(
         address _to,
         string memory initialData
-    ) public canMint returns (uint256) {
+    ) public returns (uint256) {
         //require(maxSupply > _totalSupply, "PoapStateful: max supply reached");
         require(_to != address(0), "PoapStateful: zero receiver address");
 
