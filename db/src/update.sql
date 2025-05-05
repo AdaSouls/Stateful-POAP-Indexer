@@ -9,11 +9,11 @@ WHERE
   "address" = :address!;
 
 /*
-  @name approveEvent
+  @name updateEvent
 */
 UPDATE events
 SET
   "approved" = :approved,
   "updatedAt" = now()
 WHERE
-  "eventUuid" = :eventUuid!;
+  "eventIdInContract" = :eventIdInContract!;

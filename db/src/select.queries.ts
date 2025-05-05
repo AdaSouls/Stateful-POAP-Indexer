@@ -82,12 +82,12 @@ export interface IGetAllEventsResult {
   description: string;
   email: string;
   endDate: Date | null;
+  eventIdInContract: number;
   eventTemplateId: string | null;
   eventType: string;
   eventUrl: string | null;
   eventUuid: string;
   expiryDate: Date | null;
-  idInContract: number;
   image: string;
   issuerUuid: string;
   mintedPoaps: number;
@@ -137,12 +137,12 @@ export interface IGetLastEventResult {
   description: string;
   email: string;
   endDate: Date | null;
+  eventIdInContract: number;
   eventTemplateId: string | null;
   eventType: string;
   eventUrl: string | null;
   eventUuid: string;
   expiryDate: Date | null;
-  idInContract: number;
   image: string;
   issuerUuid: string;
   mintedPoaps: number;
@@ -342,5 +342,75 @@ const getOwnerPoapsIR: any = {"usedParamSet":{"address":true},"params":[{"name":
  * ```
  */
 export const getOwnerPoaps = new PreparedQuery<IGetOwnerPoapsParams,IGetOwnerPoapsResult>(getOwnerPoapsIR);
+
+
+/** 'GetIssuerByAddress' parameters type */
+export interface IGetIssuerByAddressParams {
+  address: string;
+}
+
+/** 'GetIssuerByAddress' return type */
+export interface IGetIssuerByAddressResult {
+  address: string;
+  createdAt: Date | null;
+  email: string;
+  issuerIdInContract: number;
+  issuerUuid: string;
+  name: string;
+  organization: string;
+  updatedAt: Date | null;
+}
+
+/** 'GetIssuerByAddress' query type */
+export interface IGetIssuerByAddressQuery {
+  params: IGetIssuerByAddressParams;
+  result: IGetIssuerByAddressResult;
+}
+
+const getIssuerByAddressIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":40,"b":48}]}],"statement":"SELECT * FROM issuers\nWHERE \"address\" = :address!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM issuers
+ * WHERE "address" = :address!
+ * ```
+ */
+export const getIssuerByAddress = new PreparedQuery<IGetIssuerByAddressParams,IGetIssuerByAddressResult>(getIssuerByAddressIR);
+
+
+/** 'GetIssuerByUuid' parameters type */
+export interface IGetIssuerByUuidParams {
+  issuerUuid: string;
+}
+
+/** 'GetIssuerByUuid' return type */
+export interface IGetIssuerByUuidResult {
+  address: string;
+  createdAt: Date | null;
+  email: string;
+  issuerIdInContract: number;
+  issuerUuid: string;
+  name: string;
+  organization: string;
+  updatedAt: Date | null;
+}
+
+/** 'GetIssuerByUuid' query type */
+export interface IGetIssuerByUuidQuery {
+  params: IGetIssuerByUuidParams;
+  result: IGetIssuerByUuidResult;
+}
+
+const getIssuerByUuidIR: any = {"usedParamSet":{"issuerUuid":true},"params":[{"name":"issuerUuid","required":true,"transform":{"type":"scalar"},"locs":[{"a":43,"b":54}]}],"statement":"SELECT * FROM issuers\nWHERE \"issuerUuid\" = :issuerUuid!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM issuers
+ * WHERE "issuerUuid" = :issuerUuid!
+ * ```
+ */
+export const getIssuerByUuid = new PreparedQuery<IGetIssuerByUuidParams,IGetIssuerByUuidResult>(getIssuerByUuidIR);
 
 

@@ -1,29 +1,25 @@
 /* 
-  @name createIssuer
-*/
-INSERT INTO issuers(
-  "issuerUuid",
-  "issuerIdInContract",
-  "address",
-  "name",
-  "email",
-  "organization"
-) 
+ @name createIssuer
+ */
+INSERT INTO "issuers" (
+    "address",
+    "name",
+    "email",
+    "organization"
+  )
 VALUES (
-  :issuerUuid!,
-  DEFAULT, -- Automatically assigned SERIAL value
-  :address!,
-  :name!,
-  :email!,
-  :organization!
-);
-
+    :address !,
+    :name !,
+    :email !,
+    :organization !
+  )
+RETURNING *;
 /* 
-  @name createEvent
-*/
-INSERT INTO events(
+ @name createEvent
+ */
+INSERT INTO "events" (
   "eventUuid",
-  "issuerUuid",
+  "eventIdInContract",
   "title",
   "description",
   "city",
@@ -47,90 +43,94 @@ INSERT INTO events(
   "account",
   "poapType",
   "poapsToBeMinted",
-  "mintedPoaps"
-) 
+  "mintedPoaps",
+  "approved",
+  "createdAt",
+  "updatedAt",
+  "issuerUuid"
+)
 VALUES (
-  :eventUuid!,
-  :issuerUuid!,
-  :title!,
-  :description!,
-  :city!,
-  :country!,
-  now(),
-  now() + INTERVAL '30 days',
-  :expiryDate!,
-  EXTRACT(YEAR FROM now()),
+  DEFAULT,  -- eventUuid (uses uuid_generate_v4())
+  DEFAULT,  -- idInContract (SERIAL)
+  :title !,
+  :description !,
+  :city,
+  :country,
+  :startDate !,
+  :endDate !,
+  :expiryDate !,
+  :year !,
   :eventUrl,
-  FALSE,
-  'default-image-url.jpg',
-  NULL,
-  NULL,
-  :email!,
-  :requestedCodes!,
-  FALSE,
-  NULL,
-  NULL,
-  'Unknown',
-  NULL,
-  NULL,
-  'poap',
-  :poapsToBeMinted!,
-  0
-);
+  :virtualEvent !,
+  :image !,
+  :secretCode,
+  :eventTemplateId,
+  :email !,
+  :requestedCodes !,
+  :privateEvent !,
+  :purpose,
+  :platform,
+  :eventType !,
+  :amountOfAttendees,
+  :account,
+  :poapType !,
+  :poapsToBeMinted !,
+  0,
+  'Pending',  -- approved (default)
+  DEFAULT,  -- createdAt (now())
+  DEFAULT,  -- updatedAt (now())
+  :issuerUuid !-- existing issuerUuid
+)
+RETURNING *;
 
 /* 
-  @name createPoap
-*/
+ @name createPoap
+ */
 INSERT INTO poaps(
-  "poapUuid",
-  "instance",
-  "ownerUuid",
-  "createdAt",
-  "updatedAt"
-) 
+    "poapUuid",
+    "instance",
+    "ownerUuid",
+    "createdAt",
+    "updatedAt"
+  )
 VALUES (
-  :poapUuid!,
-  :instance!,
-  :ownerUuid!,
-  now(),
-  now()
-);
-
-
+    :poapUuid !,
+    :instance !,
+    :ownerUuid !,
+    now(),
+    now()
+  );
 /* 
-  @name createOwner
-*/
+ @name createOwner
+ */
 INSERT INTO owners(
-  "ownerUuid",
-  "email",
-  "address",
-  "createdAt",
-  "updatedAt"
-) 
+    "ownerUuid",
+    "email",
+    "address",
+    "createdAt",
+    "updatedAt"
+  )
 VALUES (
-  :ownerUuid!,
-  :email,
-  :address!,
-  now(),
-  now()
-);
-
-
+    :ownerUuid !,
+    :email,
+    :address !,
+    now(),
+    now()
+  );
 /* 
-  @name createEventPoap
-*/
+ @name createEventPoap
+ */
 INSERT INTO eventPoaps(
-  "relationUuid",
-  "poapUuid",
-  "eventUuid",
-  "createdAt",
-  "updatedAt"
-) 
+    "relationUuid",
+    "poapUuid",
+    "eventUuid",
+    "createdAt",
+    "updatedAt"
+  )
 VALUES (
-  :relationUuid!,
-  :poapUuid!,
-  :eventUuid!,
-  now(),
-  now()
-);
-
+    :relationUuid !,
+    :poapUuid !,
+    :eventUuid !,
+    now(),
+    now()
+  );

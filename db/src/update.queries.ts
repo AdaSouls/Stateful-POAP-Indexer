@@ -32,22 +32,22 @@ const updateOwnerIR: any = {"usedParamSet":{"email":true,"address":true},"params
 export const updateOwner = new PreparedQuery<IUpdateOwnerParams,IUpdateOwnerResult>(updateOwnerIR);
 
 
-/** 'ApproveEvent' parameters type */
-export interface IApproveEventParams {
+/** 'UpdateEvent' parameters type */
+export interface IUpdateEventParams {
   approved?: string | null | void;
-  eventUuid: string;
+  eventIdInContract: number;
 }
 
-/** 'ApproveEvent' return type */
-export type IApproveEventResult = void;
+/** 'UpdateEvent' return type */
+export type IUpdateEventResult = void;
 
-/** 'ApproveEvent' query type */
-export interface IApproveEventQuery {
-  params: IApproveEventParams;
-  result: IApproveEventResult;
+/** 'UpdateEvent' query type */
+export interface IUpdateEventQuery {
+  params: IUpdateEventParams;
+  result: IUpdateEventResult;
 }
 
-const approveEventIR: any = {"usedParamSet":{"approved":true,"eventUuid":true},"params":[{"name":"approved","required":false,"transform":{"type":"scalar"},"locs":[{"a":33,"b":41}]},{"name":"eventUuid","required":true,"transform":{"type":"scalar"},"locs":[{"a":88,"b":98}]}],"statement":"UPDATE events\nSET\n  \"approved\" = :approved,\n  \"updatedAt\" = now()\nWHERE\n  \"eventUuid\" = :eventUuid!"};
+const updateEventIR: any = {"usedParamSet":{"approved":true,"eventIdInContract":true},"params":[{"name":"approved","required":false,"transform":{"type":"scalar"},"locs":[{"a":33,"b":41}]},{"name":"eventIdInContract","required":true,"transform":{"type":"scalar"},"locs":[{"a":96,"b":114}]}],"statement":"UPDATE events\nSET\n  \"approved\" = :approved,\n  \"updatedAt\" = now()\nWHERE\n  \"eventIdInContract\" = :eventIdInContract!"};
 
 /**
  * Query generated from SQL:
@@ -57,9 +57,9 @@ const approveEventIR: any = {"usedParamSet":{"approved":true,"eventUuid":true},"
  *   "approved" = :approved,
  *   "updatedAt" = now()
  * WHERE
- *   "eventUuid" = :eventUuid!
+ *   "eventIdInContract" = :eventIdInContract!
  * ```
  */
-export const approveEvent = new PreparedQuery<IApproveEventParams,IApproveEventResult>(approveEventIR);
+export const updateEvent = new PreparedQuery<IUpdateEventParams,IUpdateEventResult>(updateEventIR);
 
 

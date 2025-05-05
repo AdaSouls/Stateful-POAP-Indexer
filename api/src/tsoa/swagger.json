@@ -7,6 +7,29 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"IUpdateEventParams": {
+				"description": "'UpdateEvent' parameters type",
+				"properties": {
+					"approved": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
+					},
+					"eventIdInContract": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"eventIdInContract"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"IGetOwnerPoapsResult": {
 				"description": "'GetOwnerPoaps' return type",
 				"properties": {
@@ -117,6 +140,10 @@
 						"format": "date-time",
 						"nullable": true
 					},
+					"eventIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
 					"eventTemplateId": {
 						"type": "string",
 						"nullable": true
@@ -135,10 +162,6 @@
 						"type": "string",
 						"format": "date-time",
 						"nullable": true
-					},
-					"idInContract": {
-						"type": "number",
-						"format": "double"
 					},
 					"image": {
 						"type": "string"
@@ -207,12 +230,12 @@
 					"description",
 					"email",
 					"endDate",
+					"eventIdInContract",
 					"eventTemplateId",
 					"eventType",
 					"eventUrl",
 					"eventUuid",
 					"expiryDate",
-					"idInContract",
 					"image",
 					"issuerUuid",
 					"mintedPoaps",
@@ -240,6 +263,310 @@
 				},
 				"required": [
 					"event"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetIssuerByUuidResult": {
+				"description": "'GetIssuerByUuid' return type",
+				"properties": {
+					"address": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string"
+					},
+					"issuerIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerUuid": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"organization": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"address",
+					"createdAt",
+					"email",
+					"issuerIdInContract",
+					"issuerUuid",
+					"name",
+					"organization",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetIssuerByAddressResult": {
+				"description": "'GetIssuerByAddress' return type",
+				"properties": {
+					"address": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string"
+					},
+					"issuerIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerUuid": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"organization": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"address",
+					"createdAt",
+					"email",
+					"issuerIdInContract",
+					"issuerUuid",
+					"name",
+					"organization",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetIssuerByAddressResponse": {
+				"properties": {
+					"issuer": {
+						"$ref": "#/components/schemas/IGetIssuerByAddressResult"
+					}
+				},
+				"required": [
+					"issuer"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetAllIssuersResult": {
+				"description": "'GetAllIssuers' return type",
+				"properties": {
+					"address": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string"
+					},
+					"issuerIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerUuid": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"organization": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"address",
+					"createdAt",
+					"email",
+					"issuerIdInContract",
+					"issuerUuid",
+					"name",
+					"organization",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetAllEventsResult": {
+				"description": "'GetAllEvents' return type",
+				"properties": {
+					"account": {
+						"type": "string",
+						"nullable": true
+					},
+					"amountOfAttendees": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"approved": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string",
+						"nullable": true
+					},
+					"country": {
+						"type": "string",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"description": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"endDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
+					"eventTemplateId": {
+						"type": "string",
+						"nullable": true
+					},
+					"eventType": {
+						"type": "string"
+					},
+					"eventUrl": {
+						"type": "string",
+						"nullable": true
+					},
+					"eventUuid": {
+						"type": "string"
+					},
+					"expiryDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"image": {
+						"type": "string"
+					},
+					"issuerUuid": {
+						"type": "string"
+					},
+					"mintedPoaps": {
+						"type": "number",
+						"format": "double"
+					},
+					"platform": {
+						"type": "string",
+						"nullable": true
+					},
+					"poapsToBeMinted": {
+						"type": "number",
+						"format": "double"
+					},
+					"poapType": {
+						"type": "string"
+					},
+					"privateEvent": {
+						"type": "boolean"
+					},
+					"purpose": {
+						"type": "string",
+						"nullable": true
+					},
+					"requestedCodes": {
+						"type": "number",
+						"format": "double"
+					},
+					"secretCode": {
+						"type": "string",
+						"nullable": true
+					},
+					"startDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"title": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"virtualEvent": {
+						"type": "boolean"
+					},
+					"year": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					}
+				},
+				"required": [
+					"account",
+					"amountOfAttendees",
+					"approved",
+					"city",
+					"country",
+					"createdAt",
+					"description",
+					"email",
+					"endDate",
+					"eventIdInContract",
+					"eventTemplateId",
+					"eventType",
+					"eventUrl",
+					"eventUuid",
+					"expiryDate",
+					"image",
+					"issuerUuid",
+					"mintedPoaps",
+					"platform",
+					"poapsToBeMinted",
+					"poapType",
+					"privateEvent",
+					"purpose",
+					"requestedCodes",
+					"secretCode",
+					"startDate",
+					"title",
+					"updatedAt",
+					"virtualEvent",
+					"year"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -279,9 +606,6 @@
 					"email": {
 						"type": "string"
 					},
-					"issuerUuid": {
-						"type": "string"
-					},
 					"name": {
 						"type": "string"
 					},
@@ -292,7 +616,6 @@
 				"required": [
 					"address",
 					"email",
-					"issuerUuid",
 					"name",
 					"organization"
 				],
@@ -320,6 +643,160 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ICreateEventResult": {
+				"description": "'CreateEvent' return type",
+				"properties": {
+					"account": {
+						"type": "string",
+						"nullable": true
+					},
+					"amountOfAttendees": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"approved": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string",
+						"nullable": true
+					},
+					"country": {
+						"type": "string",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"description": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"endDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
+					"eventTemplateId": {
+						"type": "string",
+						"nullable": true
+					},
+					"eventType": {
+						"type": "string"
+					},
+					"eventUrl": {
+						"type": "string",
+						"nullable": true
+					},
+					"eventUuid": {
+						"type": "string"
+					},
+					"expiryDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"image": {
+						"type": "string"
+					},
+					"issuerUuid": {
+						"type": "string"
+					},
+					"mintedPoaps": {
+						"type": "number",
+						"format": "double"
+					},
+					"platform": {
+						"type": "string",
+						"nullable": true
+					},
+					"poapsToBeMinted": {
+						"type": "number",
+						"format": "double"
+					},
+					"poapType": {
+						"type": "string"
+					},
+					"privateEvent": {
+						"type": "boolean"
+					},
+					"purpose": {
+						"type": "string",
+						"nullable": true
+					},
+					"requestedCodes": {
+						"type": "number",
+						"format": "double"
+					},
+					"secretCode": {
+						"type": "string",
+						"nullable": true
+					},
+					"startDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"title": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"virtualEvent": {
+						"type": "boolean"
+					},
+					"year": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					}
+				},
+				"required": [
+					"account",
+					"amountOfAttendees",
+					"approved",
+					"city",
+					"country",
+					"createdAt",
+					"description",
+					"email",
+					"endDate",
+					"eventIdInContract",
+					"eventTemplateId",
+					"eventType",
+					"eventUrl",
+					"eventUuid",
+					"expiryDate",
+					"image",
+					"issuerUuid",
+					"mintedPoaps",
+					"platform",
+					"poapsToBeMinted",
+					"poapType",
+					"privateEvent",
+					"purpose",
+					"requestedCodes",
+					"secretCode",
+					"startDate",
+					"title",
+					"updatedAt",
+					"virtualEvent",
+					"year"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"DateOrString": {
 				"anyOf": [
 					{
@@ -334,16 +811,62 @@
 			"ICreateEventParams": {
 				"description": "'CreateEvent' parameters type",
 				"properties": {
+					"account": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
+					},
+					"amountOfAttendees": {
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{}
+						],
+						"nullable": true
+					},
 					"city": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
 					},
 					"country": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
 					},
 					"description": {
 						"type": "string"
 					},
 					"email": {
+						"type": "string"
+					},
+					"endDate": {
+						"$ref": "#/components/schemas/DateOrString"
+					},
+					"eventTemplateId": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
+					},
+					"eventType": {
 						"type": "string"
 					},
 					"eventUrl": {
@@ -355,46 +878,16 @@
 						],
 						"nullable": true
 					},
-					"eventUuid": {
-						"type": "string"
-					},
 					"expiryDate": {
 						"$ref": "#/components/schemas/DateOrString"
+					},
+					"image": {
+						"type": "string"
 					},
 					"issuerUuid": {
 						"type": "string"
 					},
-					"poapsToBeMinted": {
-						"type": "number",
-						"format": "double"
-					},
-					"requestedCodes": {
-						"type": "number",
-						"format": "double"
-					},
-					"title": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"city",
-					"country",
-					"description",
-					"email",
-					"eventUuid",
-					"expiryDate",
-					"issuerUuid",
-					"poapsToBeMinted",
-					"requestedCodes",
-					"title"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"IApproveEventParams": {
-				"description": "'ApproveEvent' parameters type",
-				"properties": {
-					"approved": {
+					"platform": {
 						"anyOf": [
 							{
 								"type": "string"
@@ -403,12 +896,68 @@
 						],
 						"nullable": true
 					},
-					"eventUuid": {
+					"poapsToBeMinted": {
+						"type": "number",
+						"format": "double"
+					},
+					"poapType": {
 						"type": "string"
+					},
+					"privateEvent": {
+						"type": "boolean"
+					},
+					"purpose": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
+					},
+					"requestedCodes": {
+						"type": "number",
+						"format": "double"
+					},
+					"secretCode": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
+					},
+					"startDate": {
+						"$ref": "#/components/schemas/DateOrString"
+					},
+					"title": {
+						"type": "string"
+					},
+					"virtualEvent": {
+						"type": "boolean"
+					},
+					"year": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
-					"eventUuid"
+					"description",
+					"email",
+					"endDate",
+					"eventType",
+					"expiryDate",
+					"image",
+					"issuerUuid",
+					"poapsToBeMinted",
+					"poapType",
+					"privateEvent",
+					"requestedCodes",
+					"startDate",
+					"title",
+					"virtualEvent",
+					"year"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -426,6 +975,35 @@
 		"contact": {}
 	},
 	"paths": {
+		"/update_event": {
+			"post": {
+				"operationId": "Post",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IUpdateEventParams"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/owner_poaps": {
 			"get": {
 				"operationId": "Get",
@@ -470,16 +1048,123 @@
 					}
 				},
 				"security": [],
+				"parameters": []
+			}
+		},
+		"/get_issuer_by_uuid": {
+			"get": {
+				"operationId": "Get",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IGetIssuerByUuidResult"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
 				"parameters": [
 					{
 						"in": "query",
-						"name": "undefined",
+						"name": "issuerUuid",
 						"required": true,
 						"schema": {
 							"type": "string"
 						}
 					}
 				]
+			}
+		},
+		"/get_issuer_by_address": {
+			"get": {
+				"operationId": "Get",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetIssuerByAddressResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "address",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/get_all_issuers": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"issuers": {
+											"items": {
+												"$ref": "#/components/schemas/IGetAllIssuersResult"
+											},
+											"type": "array"
+										}
+									},
+									"required": [
+										"issuers"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/get_all_events": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"events": {
+											"items": {
+												"$ref": "#/components/schemas/IGetAllEventsResult"
+											},
+											"type": "array"
+										}
+									},
+									"required": [
+										"events"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/create_owner": {
@@ -513,7 +1198,7 @@
 		},
 		"/create_issuer": {
 			"post": {
-				"operationId": "Post",
+				"operationId": "CreateIssuer",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -578,7 +1263,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/ICreateEventResult"
 								}
 							}
 						}
@@ -592,35 +1277,6 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/ICreateEventParams"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/approve_event": {
-			"post": {
-				"operationId": "Post",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/IApproveEventParams"
 							}
 						}
 					}

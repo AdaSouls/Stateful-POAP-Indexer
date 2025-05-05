@@ -79,3 +79,16 @@ FROM "owners" AS "Owner"
 LEFT OUTER JOIN "poaps" AS "Poap" 
 ON "Owner"."ownerUuid" = "Poap"."ownerUuid"
 WHERE "Owner"."address" = :address!;
+
+/*
+  @name getIssuerByAddress
+*/
+SELECT * FROM issuers
+WHERE "address" = :address!;
+
+/*
+  @name getIssuerByUuid
+*/
+SELECT * FROM issuers
+WHERE "issuerUuid" = :issuerUuid!;
+

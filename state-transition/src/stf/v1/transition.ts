@@ -11,6 +11,8 @@ import {
   persistIssuerCreate,
   persistEventCreate,
   persistPoapCreate,
+  persistUpdateEvent,
+  // persistUpdateEvent,
 } from "./persist";
 import { isNftOwner } from "@paima/node-sdk/utils-backend";
 import type { WalletAddress } from "@paima/sdk/utils";
@@ -24,7 +26,6 @@ export const issuerCreate = async (
   input: IssuerCreateInput
 ): Promise<SQLUpdate[]> => {
   const issuerCreateQuery = persistIssuerCreate(
-    input.payload.issuerUuid,
     input.payload.address,
     input.payload.email,
     input.payload.name,
@@ -33,18 +34,18 @@ export const issuerCreate = async (
   return [issuerCreateQuery];
 };
 
-export const ownerCreate = async (
-  input: IssuerCreateInput
-): Promise<SQLUpdate[]> => {
-  const issuerCreateQuery = persistIssuerCreate(
-    input.payload.issuerUuid,
-    input.payload.address,
-    input.payload.email,
-    input.payload.name,
-    input.payload.organization
-  );
-  return [issuerCreateQuery];
-};
+// export const ownerCreate = async (
+//   input: IssuerCreateInput
+// ): Promise<SQLUpdate[]> => {
+//   const issuerCreateQuery = persistIssuerCreate(
+//     input.payload.issuerUuid,
+//     input.payload.address,
+//     input.payload.email,
+//     input.payload.name,
+//     input.payload.organization
+//   );
+//   return [issuerCreateQuery];
+// };
 
 // export const eventCreate = async (
 //   input: EventCreateInput,
@@ -75,6 +76,15 @@ export const ownerCreate = async (
 //   );
 //   return [eventCreateQuery];
 // };
+
+export const eventUpdate = async (input: EventCreateInput): Promise<SQLUpdate[]> => {
+  console.log("🚀 ~ eventUpdate ~ input:", input)
+  
+  const eventCreateQuery = persistUpdateEvent(
+    input.payload.eventId,
+  );
+  return [eventCreateQuery];
+};
 
 export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
   const poapCreateQuery = persistPoapCreate(

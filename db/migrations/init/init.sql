@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS "issuers" (
 
 -- Events table
 CREATE TABLE IF NOT EXISTS "events" (
-  "eventUuid" UUID NOT NULL UNIQUE PRIMARY KEY,
-  "idInContract" SERIAL NOT NULL,
+  "eventUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "eventIdInContract" SERIAL NOT NULL,
   "title" VARCHAR(255) NOT NULL,
   "description" VARCHAR(255) NOT NULL,
   "city" VARCHAR(255),

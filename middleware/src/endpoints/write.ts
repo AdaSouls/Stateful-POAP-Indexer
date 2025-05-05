@@ -1,11 +1,18 @@
-// import type { CreateEventResponse } from '../types';
-// import { builder } from '@paima/sdk/concise';
-// import type { Result } from '@paima/sdk/mw-core';
-// import { awaitBlock, postConciseData } from '@paima/sdk/mw-core';
-// import { MiddlewareErrorCode, buildEndpointErrorFxn } from '../errors';
-// import type { WalletAddress } from '@paima/sdk/utils';
-// import { getOwnerPoaps } from './queries';
-// import { getUserWallet } from '../helpers/utility-functions';
+import { builder } from "@paima/sdk/concise";
+import type { Result } from "@paima/sdk/mw-core";
+import { awaitBlock, postConciseData } from "@paima/sdk/mw-core";
+import { MiddlewareErrorCode, buildEndpointErrorFxn } from "../errors";
+import type { WalletAddress } from "@paima/sdk/utils";
+import { getOwnerPoaps } from "./queries";
+import { getUserWallet } from "../helpers/utility-functions";
+import { CreateEventResponse, CreateIssuerResponse } from "@game/utils";
+import {
+  backendQueryCreateEvent,
+  backendQueryCreateIssuer,
+  backendQueryUpdateEvent,
+} from "../helpers/query-constructors";
+import { ICreateEventParams } from "@game/db";
+// import { randomUUID } from "crypto";
 
 // async function createEvent(
 //   issuerId: number,
@@ -89,7 +96,88 @@
 //   }
 // }
 
+export async function createEvent(
+  eventInfo: ICreateEventParams
+): Promise<Result<CreateEventResponse>> {
+  console.log("🚀 ~ eventInfo:", eventInfo)
+  const query = backendQueryCreateEvent(eventInfo);
+  console.log("🚀 ~ query:", query);
+  const cleanedEndpoint = query.split("?")[0];
+
+  const response = await fetch(cleanedEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...eventInfo,
+    }),
+  });
+  const json = (await response.json()) as CreateEventResponse;
+  return {
+    success: true,
+    result: json,
+  };
+}
+
+export async function createIssuer(
+  address: string,
+  name: string,
+  email: string,
+  organization: string
+): Promise<Result<CreateIssuerResponse>> {
+  const query = backendQueryCreateIssuer(address, name, email, organization);
+  console.log("🚀 ~ query:", query);
+  const cleanedEndpoint = query.split("?")[0];
+
+  const response = await fetch(cleanedEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      address,
+      name,
+      email,
+      organization,
+    }),
+  });
+  const json = (await response.json()) as CreateIssuerResponse;
+  return {
+    success: true,
+    result: json,
+  };
+}
+
+// export async function updateEvent(
+//   eventIdInContract: number,
+//   approved: string
+// ): Promise<Result<IUpdateEventResult>> {
+//   const query = backendQueryUpdateEvent(eventIdInContract, approved);
+//   console.log("🚀 ~ query:", query);
+//   const cleanedEndpoint = query.split("?")[0];
+
+//   const response = await fetch(cleanedEndpoint, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       address,
+//       name,
+//       email,
+//       organization,
+//     }),
+//   });
+//   const json = (await response.json()) as CreateIssuerResponse;
+//   return {
+//     success: true,
+//     result: json,
+//   };
+// }
+
 export const writeEndpoints = {
-  //createEvent,
+  createEvent,
   //mintPoap,
+  createIssuer,
 };

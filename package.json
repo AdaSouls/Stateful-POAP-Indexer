@@ -12,6 +12,7 @@
     "database:down": "cd db/docker && docker compose down",
     "database:reset": "node change-db.js",
     "initialize": "npm ci && cp .env.example ../.env.localhost && cp extensions.yml ../extensions.yml",
+    "initialize2": "cp .env.example ../.env.localhost && cp extensions.yml ../extensions.yml",
     "initialize-testnet": "cp .env.testnet ../.env.testnet && cp extensions.yml ../extensions.yml",
     "initialize-amoy": "cp .env.amoy ../.env.amoy && cp extensions.yml ../extensions.yml",
     "lint": "eslint --ext ts,tsx --ignore-path .gitignore .",

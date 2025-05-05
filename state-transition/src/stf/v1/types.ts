@@ -19,10 +19,11 @@ export interface IssuerCreateInput {
 export interface EventCreateInput {
   input: "eventCreate";
   payload: {
-    email: string;
-    eventUuid: string;
-    issuerUuid: string;
-    requestedCodes: number;
+    issuerId: number;
+    eventId: number;
+    eventMaxSupply: number;
+    eventMintExpiration: number;
+    eventOrganizer: string;
   };
 }
 
