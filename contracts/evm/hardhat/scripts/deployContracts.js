@@ -27,6 +27,8 @@ async function main() {
 
   const newBlockHeight = await getBlockNumber();
 
+  console.log(newBlockHeight);
+
   // I have to update extensions.yml
   let doc = yaml.load(
     fs.readFileSync(
@@ -41,6 +43,13 @@ async function main() {
   doc.extensions[1].abiPath = `./${rootPath}/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json`;
   doc.extensions[2].abiPath = `./${rootPath}/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json`;
   doc.extensions[3].abiPath = `./${rootPath}/contracts/evm/abi/contracts/evm/solidity/Poap.sol/Poap.json`;
+
+  let doc = yaml.load(
+    fs.readFileSync(
+      path.resolve(__dirname, "../../../../extensions.yml"),
+      "utf-8"
+    )
+  );
 
   doc.extensions[0].contractAddress = newContractAddress;
   doc.extensions[1].contractAddress = newContractAddress;
