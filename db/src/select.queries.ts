@@ -123,6 +123,36 @@ const getAllEventsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *
 export const getAllEvents = new PreparedQuery<IGetAllEventsParams,IGetAllEventsResult>(getAllEventsIR);
 
 
+/** 'GetAllPoaps' parameters type */
+export type IGetAllPoapsParams = void;
+
+/** 'GetAllPoaps' return type */
+export interface IGetAllPoapsResult {
+  createdAt: Date | null;
+  instance: number;
+  ownerUuid: string | null;
+  poapUuid: string;
+  updatedAt: Date | null;
+}
+
+/** 'GetAllPoaps' query type */
+export interface IGetAllPoapsQuery {
+  params: IGetAllPoapsParams;
+  result: IGetAllPoapsResult;
+}
+
+const getAllPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *\nFROM poaps"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT *
+ * FROM poaps
+ * ```
+ */
+export const getAllPoaps = new PreparedQuery<IGetAllPoapsParams,IGetAllPoapsResult>(getAllPoapsIR);
+
+
 /** 'GetLastEvent' parameters type */
 export type IGetLastEventParams = void;
 
@@ -303,15 +333,41 @@ export interface IGetOwnerPoapsParams {
 
 /** 'GetOwnerPoaps' return type */
 export interface IGetOwnerPoapsResult {
-  address: string | null;
+  account: string | null;
+  amountOfAttendees: number | null;
+  approved: string;
+  city: string | null;
+  country: string | null;
   createdAt: Date | null;
-  email: string | null;
-  ownerUuid: string;
-  "Poap.createdAt": Date | null;
-  "Poap.instance": number;
-  "Poap.poapUuid": string;
-  "Poap.updatedAt": Date | null;
+  description: string;
+  email: string;
+  endDate: Date | null;
+  eventIdInContract: number;
+  eventTemplateId: string | null;
+  eventType: string;
+  eventUrl: string | null;
+  eventUuid: string;
+  expiryDate: Date | null;
+  image: string;
+  instance: number;
+  issuerUuid: string;
+  mintedPoaps: number;
+  platform: string | null;
+  poapcreatedat: Date | null;
+  poapsToBeMinted: number;
+  poapType: string;
+  poapUuid: string;
+  privateEvent: boolean;
+  purpose: string | null;
+  relationcreatedat: Date | null;
+  relationUuid: string;
+  requestedCodes: number;
+  secretCode: string | null;
+  startDate: Date;
+  title: string;
   updatedAt: Date | null;
+  virtualEvent: boolean;
+  year: number | null;
 }
 
 /** 'GetOwnerPoaps' query type */
@@ -320,25 +376,22 @@ export interface IGetOwnerPoapsQuery {
   result: IGetOwnerPoapsResult;
 }
 
-const getOwnerPoapsIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":418,"b":426}]}],"statement":"SELECT \n  \"Owner\".\"ownerUuid\", \n  \"Owner\".\"address\", \n  \"Owner\".\"email\", \n  \"Owner\".\"createdAt\", \n  \"Owner\".\"updatedAt\", \n  \"Poap\".\"poapUuid\" AS \"Poap.poapUuid\", \n  \"Poap\".\"instance\" AS \"Poap.instance\", \n  \"Poap\".\"createdAt\" AS \"Poap.createdAt\", \n  \"Poap\".\"updatedAt\" AS \"Poap.updatedAt\"\nFROM \"owners\" AS \"Owner\"\nLEFT OUTER JOIN \"poaps\" AS \"Poap\" \nON \"Owner\".\"ownerUuid\" = \"Poap\".\"ownerUuid\"\nWHERE \"Owner\".\"address\" = :address!"};
+const getOwnerPoapsIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":381,"b":390}]}],"statement":"SELECT poaps.\"poapUuid\",\n  poaps.instance,\n  poaps.\"createdAt\" AS poapCreatedAt,\n  eventpoaps.\"relationUuid\",\n  eventpoaps.\"createdAt\" AS relationCreatedAt,\n  events.*\nFROM owners\n  JOIN poaps ON owners.\"ownerUuid\" = poaps.\"ownerUuid\"\n  JOIN eventpoaps ON poaps.\"poapUuid\" = eventpoaps.\"poapUuid\"\n  JOIN events ON eventpoaps.\"eventUuid\" = events.\"eventUuid\"\nWHERE owners.address = :address !"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT 
- *   "Owner"."ownerUuid", 
- *   "Owner"."address", 
- *   "Owner"."email", 
- *   "Owner"."createdAt", 
- *   "Owner"."updatedAt", 
- *   "Poap"."poapUuid" AS "Poap.poapUuid", 
- *   "Poap"."instance" AS "Poap.instance", 
- *   "Poap"."createdAt" AS "Poap.createdAt", 
- *   "Poap"."updatedAt" AS "Poap.updatedAt"
- * FROM "owners" AS "Owner"
- * LEFT OUTER JOIN "poaps" AS "Poap" 
- * ON "Owner"."ownerUuid" = "Poap"."ownerUuid"
- * WHERE "Owner"."address" = :address!
+ * SELECT poaps."poapUuid",
+ *   poaps.instance,
+ *   poaps."createdAt" AS poapCreatedAt,
+ *   eventpoaps."relationUuid",
+ *   eventpoaps."createdAt" AS relationCreatedAt,
+ *   events.*
+ * FROM owners
+ *   JOIN poaps ON owners."ownerUuid" = poaps."ownerUuid"
+ *   JOIN eventpoaps ON poaps."poapUuid" = eventpoaps."poapUuid"
+ *   JOIN events ON eventpoaps."eventUuid" = events."eventUuid"
+ * WHERE owners.address = :address !
  * ```
  */
 export const getOwnerPoaps = new PreparedQuery<IGetOwnerPoapsParams,IGetOwnerPoapsResult>(getOwnerPoapsIR);

@@ -3,27 +3,27 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TsoaRoute, fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { UpdateEventController } from './../controllers/updateEvent';
+import { UpdateEventController } from '../controllers/events/updateEvent';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { OwnerPoapsController } from './../controllers/ownerPoaps';
+import { OwnerPoapsController } from '../controllers/owners/ownerPoaps';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { LastEventController } from './../controllers/getLastEvent';
+import { LastEventController } from '../controllers/events/getLastEvent';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { GetIssuerByUuidController } from './../controllers/getIssuerByUuid';
+import { GetIssuerByUuidController } from '../controllers/issuers/getIssuerByUuid';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { GetIssuerByAddressController } from './../controllers/getIssuerByAddress';
+import { GetIssuerByAddressController } from '../controllers/issuers/getIssuerByAddress';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AllIssuersController } from './../controllers/getAllIssuers';
+import { AllIssuersController } from '../controllers/issuers/getAllIssuers';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { AllEventsController } from './../controllers/getAllEvents';
+import { AllEventsController } from '../controllers/events/getAllEvents';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { CreateOwnerController } from './../controllers/createOwner';
+import { CreateOwnerController } from '../controllers/owners/createOwner';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { CreateIssuerController } from './../controllers/createIsssuer';
+import { CreateIssuerController } from '../controllers/issuers/createIsssuer';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { CreateEventPoapRelationController } from './../controllers/createEventPoapRelation';
+import { CreateEventPoapRelationController } from '../controllers/eventPoaps/createEventPoapRelation';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { CreateEventController } from './../controllers/createEvent';
+import { CreateEventController } from '../controllers/events/createEvent';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 

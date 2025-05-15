@@ -18,6 +18,11 @@ FROM issuers;
 SELECT *
 FROM events;
 /*
+ @name getAllPoaps
+ */
+SELECT *
+FROM poaps;
+/*
   @name getLastEvent
 */
 SELECT *
@@ -62,23 +67,21 @@ FROM "owners" AS "Owner"
 LEFT OUTER JOIN "poaps" AS "Poap" 
 ON "Owner"."ownerUuid" = "Poap"."ownerUuid";
 
+
 /*
   @name getOwnerPoaps
 */
-SELECT 
-  "Owner"."ownerUuid", 
-  "Owner"."address", 
-  "Owner"."email", 
-  "Owner"."createdAt", 
-  "Owner"."updatedAt", 
-  "Poap"."poapUuid" AS "Poap.poapUuid", 
-  "Poap"."instance" AS "Poap.instance", 
-  "Poap"."createdAt" AS "Poap.createdAt", 
-  "Poap"."updatedAt" AS "Poap.updatedAt"
-FROM "owners" AS "Owner"
-LEFT OUTER JOIN "poaps" AS "Poap" 
-ON "Owner"."ownerUuid" = "Poap"."ownerUuid"
-WHERE "Owner"."address" = :address!;
+SELECT poaps."poapUuid",
+  poaps.instance,
+  poaps."createdAt" AS poapCreatedAt,
+  eventpoaps."relationUuid",
+  eventpoaps."createdAt" AS relationCreatedAt,
+  events.*
+FROM owners
+  JOIN poaps ON owners."ownerUuid" = poaps."ownerUuid"
+  JOIN eventpoaps ON poaps."poapUuid" = eventpoaps."poapUuid"
+  JOIN events ON eventpoaps."eventUuid" = events."eventUuid"
+WHERE owners.address = :address !;
 
 /*
   @name getIssuerByAddress

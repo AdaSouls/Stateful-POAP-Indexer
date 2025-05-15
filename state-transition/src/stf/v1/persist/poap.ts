@@ -7,10 +7,8 @@ import type {
 } from "@game/db";
 import { createIssuer, createEvent, createPoap } from "@game/db";
 import { updateEvent } from "@game/db/src/update.queries";
-import type { PoapType } from "@game/utils";
 import type { SQLUpdate } from "@paima/node-sdk/db";
 import type { WalletAddress } from "@paima/sdk/utils";
-import { title } from "process";
 
 // this file deals with receiving blockchain data input and outputting SQL updates (imported from pgTyped output of our SQL files)
 // PGTyped SQL updates are a tuple of the function calling the database and the params sent to it.
@@ -86,10 +84,6 @@ export function persistEventCreate(
 }
 
 export function persistUpdateEvent(eventIdInContract: number): SQLUpdate {
-  console.log(
-    "🚀 ~ persistUpdateEvent ~ eventIdInContract:",
-    eventIdInContract
-  );
   const params = {
     eventIdInContract,
     approved: "Approved",
@@ -98,12 +92,10 @@ export function persistUpdateEvent(eventIdInContract: number): SQLUpdate {
 }
 
 export function persistPoapCreate(
-  poapUuid: string,
   ownerUuid: string,
   instance: number
 ): SQLUpdate {
   const params: ICreatePoapParams = {
-    poapUuid,
     ownerUuid,
     instance,
   };
