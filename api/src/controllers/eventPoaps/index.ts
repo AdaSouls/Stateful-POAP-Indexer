@@ -1,0 +1,1 @@
+export { CreateEventPoapRelationController } from "./createEventPoapRelation";

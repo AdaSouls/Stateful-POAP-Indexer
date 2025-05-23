@@ -7,8 +7,8 @@ import type {
   GetIssuerByUuidResponse,
   GetAllPoapsResponse,
   GetAllOwnersResponse,
-  // GetOwnerByAddressResponse,
-  // GetOwnerByUuidResponse,
+  GetOwnerByAddressResponse,
+  GetOwnerByUuidResponse,
 } from "@game/utils";
 import {
   backendQueryOwnedPoaps,
