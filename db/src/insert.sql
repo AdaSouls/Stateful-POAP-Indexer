@@ -86,7 +86,7 @@ RETURNING *;
  @name createPoap
  */
 INSERT INTO poaps("instance", "ownerUuid")
-VALUES (:instance !, :ownerUuid !)
+VALUES (:instance !, :ownerUuid)
 RETURNING *;
 /* 
  @name createOwner

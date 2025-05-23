@@ -8,9 +8,20 @@ import type {
   IGetOwnerPoapsResult,
   IGetIssuerByAddressResult,
   IGetAllIssuersResult,
-  IGetIssuerByAddressQuery,
   IGetIssuerByUuidResult,
+  ICreatePoapResult,
+  IGetAllOwnersResult,
+  // IGetOwnerByAddressResult,
+  // IGetOwnerByUuidResult,
 } from "@game/db";
+
+interface OwnerResult {
+  address: string | null;
+  createdAt: Date | null;
+  email: string | null;
+  ownerUuid: string;
+  updatedAt: Date | null;
+}
 
 export interface InvalidInput {
   input: "invalidString";
@@ -57,4 +68,21 @@ export interface GetAllIssuersResponse {
 }
 export interface GetIssuerByUuidResponse {
   issuer: IGetIssuerByUuidResult;
+}
+
+export interface GetAllPoapsResponse {
+  poaps: IGetAllEventPoapsResult[]
+}
+export interface MintPoapResponse {
+  poap: ICreatePoapResult
+}
+
+export interface GetOwnerByAddressResponse {
+  owner: OwnerResult;
+}
+export interface GetOwnerByUuidResponse {
+  owner: OwnerResult;
+}
+export interface GetAllOwnersResponse {
+  owners: IGetAllOwnersResult[];
 }

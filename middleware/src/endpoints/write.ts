@@ -1,100 +1,38 @@
-import { builder } from "@paima/sdk/concise";
 import type { Result } from "@paima/sdk/mw-core";
-import { awaitBlock, postConciseData } from "@paima/sdk/mw-core";
-import { MiddlewareErrorCode, buildEndpointErrorFxn } from "../errors";
-import type { WalletAddress } from "@paima/sdk/utils";
-import { getOwnerPoaps } from "./queries";
-import { getUserWallet } from "../helpers/utility-functions";
-import { CreateEventResponse, CreateIssuerResponse } from "@game/utils";
+import { CreateEventPoapRelationResponse, CreateEventResponse, CreateIssuerResponse, CreateOwnerResponse } from "@game/utils";
 import {
   backendQueryCreateEvent,
+  backendQueryCreateEventPoapRelation,
   backendQueryCreateIssuer,
-  backendQueryUpdateEvent,
+  backendQueryCreateOwner,
+  backendQueryUpdateOwner,
 } from "../helpers/query-constructors";
-import { ICreateEventParams } from "@game/db";
-// import { randomUUID } from "crypto";
+import { ICreateEventParams, ICreateEventPoapParams } from "@game/db";
 
-// async function createEvent(
-//   issuerId: number,
-//   eventId: number,
-//   maxSupply: number,
-//   mintExpiration: number,
-//   eventOrganizer: WalletAddress,
-//   type: string,
-// ): Promise<Result<CreateEventResponse>> {
-//   const errorFxn = buildEndpointErrorFxn('createEvent');
 
-//   const query = getUserWallet(errorFxn);
-//   if (!query.success) return query;
-//   const userWalletAddress = query.result;
+export async function createEventPoapRelation(
+  relationInfo: ICreateEventPoapParams
+): Promise<Result<CreateEventPoapRelationResponse>> {
+  console.log("🚀 ~ relationInfo:", relationInfo)
+  const query = backendQueryCreateEventPoapRelation(relationInfo.eventUuid, relationInfo.poapUuid);
+  console.log("🚀 ~ query:", query);
+  const cleanedEndpoint = query.split("?")[0];
 
-//   const conciseBuilder = builder.initialize(undefined);
-//   conciseBuilder.setPrefix('l');
-//   conciseBuilder.addValue({ value: contractAddress });
-//   conciseBuilder.addValue({ value: nftId, isStateIdentifier: true });
-
-//   const response = await postConciseData(conciseBuilder.build(), errorFxn);
-//   if (!response.success) return response;
-
-//   const currentBlock = response.blockHeight;
-//   try {
-//     await awaitBlock(currentBlock + 1);
-//     const ownedCharacters = await getOwnedPoaps(userWalletAddress);
-//     const updatedCharacter =
-//       ownedCharacters.success &&
-//       ownedCharacters.result.poaps.find(character => character.nft_id === nftId);
-//     if (!updatedCharacter) {
-//       return errorFxn(MiddlewareErrorCode.FAILURE_VERIFYING_NFT_OWNERSHIP);
-//     }
-//     return {
-//       success: true,
-//       result: { character: updatedCharacter },
-//     };
-//   } catch (err) {
-//     return errorFxn(MiddlewareErrorCode.FAILURE_VERIFYING_NFT_OWNERSHIP);
-//   }
-// }
-
-// async function updatePoap(
-//   issuerId: number,
-//   eventId: number,
-//   maxSupply: number,
-//   mintExpiration: number,
-//   eventOrganizer: WalletAddress,
-//   type: string,
-// ): Promise<Result<CreateEventResponse>> {
-//   const errorFxn = buildEndpointErrorFxn('updatePoap');
-
-//   const query = getUserWallet(errorFxn);
-//   if (!query.success) return query;
-//   const userWalletAddress = query.result;
-
-//   const conciseBuilder = builder.initialize(undefined);
-//   conciseBuilder.setPrefix('l');
-//   conciseBuilder.addValue({ value: contractAddress });
-//   conciseBuilder.addValue({ value: nftId, isStateIdentifier: true });
-
-//   const response = await postConciseData(conciseBuilder.build(), errorFxn);
-//   if (!response.success) return response;
-
-//   const currentBlock = response.blockHeight;
-//   try {
-//     await awaitBlock(currentBlock + 1);
-//     const ownedCharacters = await getOwnedPoaps(userWalletAddress);
-//     const updatedCharacter =
-//       ownedCharacters.success &&
-//       ownedCharacters.result.poaps.find(character => character.nft_id === nftId);
-//     if (!updatedCharacter) {
-//       return errorFxn(MiddlewareErrorCode.FAILURE_VERIFYING_NFT_OWNERSHIP);
-//     }
-//     return {
-//       success: true,
-//       result: { character: updatedCharacter },
-//     };
-//   } catch (err) {
-//     return errorFxn(MiddlewareErrorCode.FAILURE_VERIFYING_NFT_OWNERSHIP);
-//   }
-// }
+  const response = await fetch(cleanedEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...relationInfo,
+    }),
+  });
+  const json = (await response.json()) as CreateEventPoapRelationResponse;
+  return {
+    success: true,
+    result: json,
+  };
+}
 
 export async function createEvent(
   eventInfo: ICreateEventParams
@@ -149,35 +87,76 @@ export async function createIssuer(
   };
 }
 
-// export async function updateEvent(
-//   eventIdInContract: number,
-//   approved: string
-// ): Promise<Result<IUpdateEventResult>> {
-//   const query = backendQueryUpdateEvent(eventIdInContract, approved);
-//   console.log("🚀 ~ query:", query);
-//   const cleanedEndpoint = query.split("?")[0];
+export async function createOwner(address: string, email: string | undefined): Promise<Result<CreateOwnerResponse>> {
+  const query = backendQueryCreateOwner(address, email);
+    const cleanedEndpoint = query.split("?")[0];
 
-//   const response = await fetch(cleanedEndpoint, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       address,
-//       name,
-//       email,
-//       organization,
-//     }),
-//   });
-//   const json = (await response.json()) as CreateIssuerResponse;
-//   return {
-//     success: true,
-//     result: json,
-//   };
-// }
+  const response = await fetch(cleanedEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      address,
+      email
+    }),
+  });
+  const json = (await response.json()) as CreateOwnerResponse;
+  return {
+    success: true,
+    result: json,
+  };
+}
+
+export async function updateOwner(address: string, email: string): Promise<Result<string>> {
+  const query = backendQueryUpdateOwner(address, email);
+    const cleanedEndpoint = query.split("?")[0];
+
+  const response = await fetch(cleanedEndpoint, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      address,
+      email
+    }),
+  });
+  const json = (await response.json())
+  console.log("🚀 ~ updateOwner ~ json:", json)
+  return {
+    success: true,
+    result: json,
+  };
+}
+
+export async function updatePoap(poapUuid: string, ownerUuid: string): Promise<Result<string>> {
+  const query = backendQueryUpdateOwner(poapUuid, ownerUuid);
+    const cleanedEndpoint = query.split("?")[0];
+
+  const response = await fetch(cleanedEndpoint, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      poapUuid,
+      ownerUuid
+    }),
+  });
+  const json = (await response.json())
+  console.log("🚀 ~ updateOwner ~ json:", json)
+  return {
+    success: true,
+    result: json,
+  };
+}
 
 export const writeEndpoints = {
+  createEventPoapRelation,
   createEvent,
-  //mintPoap,
   createIssuer,
+  createOwner,
+  updateOwner,
+  updatePoap
 };

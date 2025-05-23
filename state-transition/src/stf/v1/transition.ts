@@ -88,9 +88,9 @@ export const eventUpdate = async (input: EventCreateInput): Promise<SQLUpdate[]>
 
 export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
   const poapCreateQuery = persistPoapCreate(
-    input.payload.poapUuid,
-    input.payload.ownerUuid,
-    input.payload.instance
+    // input.payload.poapUuid,
+    input.payload.instance,
+    // input.payload.ownerUuid
   );
   return [poapCreateQuery];
 };
@@ -99,9 +99,9 @@ export const poapUpdate = async (
   input: PoapUpdateInput
 ): Promise<SQLUpdate[]> => {
   const poapUpdateQuery = persistPoapCreate(
-    input.payload.poapUuid,
-    input.payload.ownerUuid,
-    input.payload.instance
+    // input.payload.poapUuid,
+    input.payload.instance,
+    // input.payload.ownerUuid
   );
   return [poapUpdateQuery];
 };

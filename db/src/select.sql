@@ -95,3 +95,14 @@ WHERE "address" = :address!;
 SELECT * FROM issuers
 WHERE "issuerUuid" = :issuerUuid!;
 
+/*
+  @name getOwnerByAddress
+*/
+SELECT * FROM owners
+WHERE "address" = :address!;
+
+/*
+  @name getOwnerByUuid
+*/
+SELECT * FROM owners
+WHERE "ownerUuid" = :ownerUuid!;

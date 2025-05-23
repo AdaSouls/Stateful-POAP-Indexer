@@ -63,3 +63,34 @@ const updateEventIR: any = {"usedParamSet":{"approved":true,"eventIdInContract":
 export const updateEvent = new PreparedQuery<IUpdateEventParams,IUpdateEventResult>(updateEventIR);
 
 
+/** 'UpdatePoap' parameters type */
+export interface IUpdatePoapParams {
+  ownerUuid: string;
+  poapUuid: string;
+}
+
+/** 'UpdatePoap' return type */
+export type IUpdatePoapResult = void;
+
+/** 'UpdatePoap' query type */
+export interface IUpdatePoapQuery {
+  params: IUpdatePoapParams;
+  result: IUpdatePoapResult;
+}
+
+const updatePoapIR: any = {"usedParamSet":{"ownerUuid":true,"poapUuid":true},"params":[{"name":"ownerUuid","required":true,"transform":{"type":"scalar"},"locs":[{"a":33,"b":43}]},{"name":"poapUuid","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":98}]}],"statement":"UPDATE poaps\nSET\n  \"ownerUuid\" = :ownerUuid!,\n  \"updatedAt\" = now()\nWHERE\n  \"poapUuid\" = :poapUuid!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * UPDATE poaps
+ * SET
+ *   "ownerUuid" = :ownerUuid!,
+ *   "updatedAt" = now()
+ * WHERE
+ *   "poapUuid" = :poapUuid!
+ * ```
+ */
+export const updatePoap = new PreparedQuery<IUpdatePoapParams,IUpdatePoapResult>(updatePoapIR);
+
+

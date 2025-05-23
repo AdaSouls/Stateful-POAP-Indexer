@@ -17,3 +17,13 @@ SET
   "updatedAt" = now()
 WHERE
   "eventIdInContract" = :eventIdInContract!;
+
+/*
+  @name updatePoap
+*/
+UPDATE poaps
+SET
+  "ownerUuid" = :ownerUuid!,
+  "updatedAt" = now()
+WHERE
+  "poapUuid" = :poapUuid!;

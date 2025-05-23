@@ -67,10 +67,9 @@ CREATE TABLE IF NOT EXISTS "poaps" (
 
 -- EventPoaps table
 CREATE TABLE IF NOT EXISTS "eventpoaps" (
-  "relationUuid" UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
+  "relationUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
   "poapUuid" UUID NOT NULL REFERENCES "poaps" ("poapUuid") ON DELETE CASCADE ON UPDATE CASCADE,
   "eventUuid" UUID NOT NULL REFERENCES "events" ("eventUuid") ON DELETE CASCADE ON UPDATE CASCADE,
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  PRIMARY KEY ("poapUuid", "eventUuid")
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
 );

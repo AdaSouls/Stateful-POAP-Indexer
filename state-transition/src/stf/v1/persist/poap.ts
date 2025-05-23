@@ -92,12 +92,12 @@ export function persistUpdateEvent(eventIdInContract: number): SQLUpdate {
 }
 
 export function persistPoapCreate(
-  ownerUuid: string,
-  instance: number
+  instance: number,
+  ownerUuid: string | null | void
 ): SQLUpdate {
   const params: ICreatePoapParams = {
-    ownerUuid,
     instance,
+    ownerUuid,
   };
   return [createPoap, params];
 }

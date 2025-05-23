@@ -467,3 +467,67 @@ const getIssuerByUuidIR: any = {"usedParamSet":{"issuerUuid":true},"params":[{"n
 export const getIssuerByUuid = new PreparedQuery<IGetIssuerByUuidParams,IGetIssuerByUuidResult>(getIssuerByUuidIR);
 
 
+/** 'GetOwnerByAddress' parameters type */
+export interface IGetOwnerByAddressParams {
+  address: string;
+}
+
+/** 'GetOwnerByAddress' return type */
+export interface IGetOwnerByAddressResult {
+  address: string | null;
+  createdAt: Date | null;
+  email: string | null;
+  ownerUuid: string;
+  updatedAt: Date | null;
+}
+
+/** 'GetOwnerByAddress' query type */
+export interface IGetOwnerByAddressQuery {
+  params: IGetOwnerByAddressParams;
+  result: IGetOwnerByAddressResult;
+}
+
+const getOwnerByAddressIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":39,"b":47}]}],"statement":"SELECT * FROM owners\nWHERE \"address\" = :address!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM owners
+ * WHERE "address" = :address!
+ * ```
+ */
+export const getOwnerByAddress = new PreparedQuery<IGetOwnerByAddressParams,IGetOwnerByAddressResult>(getOwnerByAddressIR);
+
+
+/** 'GetOwnerByUuid' parameters type */
+export interface IGetOwnerByUuidParams {
+  ownerUuid: string;
+}
+
+/** 'GetOwnerByUuid' return type */
+export interface IGetOwnerByUuidResult {
+  address: string | null;
+  createdAt: Date | null;
+  email: string | null;
+  ownerUuid: string;
+  updatedAt: Date | null;
+}
+
+/** 'GetOwnerByUuid' query type */
+export interface IGetOwnerByUuidQuery {
+  params: IGetOwnerByUuidParams;
+  result: IGetOwnerByUuidResult;
+}
+
+const getOwnerByUuidIR: any = {"usedParamSet":{"ownerUuid":true},"params":[{"name":"ownerUuid","required":true,"transform":{"type":"scalar"},"locs":[{"a":41,"b":51}]}],"statement":"SELECT * FROM owners\nWHERE \"ownerUuid\" = :ownerUuid!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM owners
+ * WHERE "ownerUuid" = :ownerUuid!
+ * ```
+ */
+export const getOwnerByUuid = new PreparedQuery<IGetOwnerByUuidParams,IGetOwnerByUuidResult>(getOwnerByUuidIR);
+
+

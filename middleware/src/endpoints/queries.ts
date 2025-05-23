@@ -1,41 +1,50 @@
 import type {
   GetEventsResponse,
   CreateEventPoapRelationResponse,
-  CreateEventResponse,
-  CreateIssuerResponse,
-  CreateOwnerResponse,
   OwnerPoapsResponse,
   GetIssuerByAddressResponse,
   GetAllIssuersResponse,
   GetIssuerByUuidResponse,
+  GetAllPoapsResponse,
+  GetAllOwnersResponse,
+  // GetOwnerByAddressResponse,
+  // GetOwnerByUuidResponse,
 } from "@game/utils";
 import {
   backendQueryOwnedPoaps,
   backendQueryLastEvent,
-  backendQueryCreateEvent,
-  backendQueryCreateOwner,
-  backendQueryCreateIssuer,
   backendQueryCreateEventPoapRelation,
   backendQueryGetAllEvents,
   backendQueryGetIssuerByAddress,
   backendQueryGetAllIssuers,
   backendQueryGetIssuerByUuid,
+  backendQueryGetAllPoaps,
+  backendQueryGetAllOwners,
+  backendQueryGetOwnerByAddress,
+  backendQueryGetOwnerByUuid,
 } from "../helpers/query-constructors";
 import type { Result } from "../types";
 
-export async function getOwnerPoaps(
-  wallet: string
-): Promise<Result<OwnerPoapsResponse>> {
-  const query = backendQueryOwnedPoaps(wallet);
-  const response = await fetch(query);
+///////// Event Poap Relation endpoints /////////
 
-  const json = (await response.json()) as OwnerPoapsResponse;
-  console.log("🚀 ~ json:", json);
+export async function createEventPoapRelation(
+  poapUuid: string,
+  eventUuid: string
+): Promise<Result<CreateEventPoapRelationResponse>> {
+  const query = backendQueryCreateEventPoapRelation(
+    poapUuid,
+    eventUuid
+  );
+
+  const response = await fetch(query);
+  const json = (await response.json()) as CreateEventPoapRelationResponse;
   return {
     success: true,
     result: json,
   };
 }
+
+///////// Event endpoints /////////
 
 export async function getAllEvents(): Promise<Result<GetEventsResponse>> {
   const query = backendQueryGetAllEvents();
@@ -60,55 +69,14 @@ export async function getLastEvent(): Promise<Result<OwnerPoapsResponse>> {
   };
 }
 
-export async function createOwner(
-  ownerUuid: string,
-  address: string,
-  email?: string
-): Promise<Result<CreateOwnerResponse>> {
-  const query = backendQueryCreateOwner(ownerUuid, address, email);
+///////// Issuer endpoints /////////
 
+export async function getAllIssuers(): Promise<Result<GetAllIssuersResponse>> {
+  const query = backendQueryGetAllIssuers();
   const response = await fetch(query);
-  const json = (await response.json()) as CreateOwnerResponse;
-  return {
-    success: true,
-    result: json,
-  };
-}
 
-// export async function createIssuer(
-//   address: string,
-//   name: string,
-//   email: string,
-//   organization: string
-// ): Promise<Result<CreateIssuerResponse>> {
-//   const query = backendQueryCreateIssuer(
-//     address,
-//     name,
-//     email,
-//     organization
-//   );
-
-//   const response = await fetch(query);
-//   const json = (await response.json()) as CreateIssuerResponse;
-//   return {
-//     success: true,
-//     result: json,
-//   };
-// }
-
-export async function createEventPoapRelation(
-  relationUuid: string,
-  poapUuid: string,
-  eventUuid: string
-): Promise<Result<CreateEventPoapRelationResponse>> {
-  const query = backendQueryCreateEventPoapRelation(
-    relationUuid,
-    poapUuid,
-    eventUuid
-  );
-
-  const response = await fetch(query);
-  const json = (await response.json()) as CreateEventPoapRelationResponse;
+  const json = (await response.json()) as GetAllIssuersResponse;
+  console.log("🚀 ~ getAllIssuers ~ json:", json);
   return {
     success: true,
     result: json,
@@ -131,10 +99,10 @@ export async function getIssuerByAddress(
 export async function getIssuerByUuid(
   issuerUuid: string
 ): Promise<Result<GetIssuerByUuidResponse>> {
-  console.log("🚀 ~ issuerUuid:", issuerUuid)
+  console.log("🚀 ~ issuerUuid:", issuerUuid);
   const query = backendQueryGetIssuerByUuid(issuerUuid);
   const response = await fetch(query);
-  console.log("🚀 ~ response:", response)
+  console.log("🚀 ~ response:", response);
 
   const json = (await response.json()) as GetIssuerByUuidResponse;
   return {
@@ -143,17 +111,76 @@ export async function getIssuerByUuid(
   };
 }
 
-export async function getAllIssuers(): Promise<Result<GetAllIssuersResponse>> {
-  const query = backendQueryGetAllIssuers();
+///////// Owner endpoints /////////
+
+export async function getAllOwners(): Promise<Result<GetAllOwnersResponse>> {
+  const query = backendQueryGetAllOwners();
   const response = await fetch(query);
 
-  const json = (await response.json()) as GetAllIssuersResponse;
-  console.log("🚀 ~ getAllIssuers ~ json:", json);
+  const json = (await response.json()) as GetAllOwnersResponse;
+  console.log("🚀 ~ getAllOwners ~ json:", json);
   return {
     success: true,
     result: json,
   };
 }
+
+export async function getOwnerByAddress(
+  address: string
+): Promise<Result<GetOwnerByAddressResponse>> {
+  const query = backendQueryGetOwnerByAddress(address);
+  const response = await fetch(query);
+
+  const json = (await response.json()) as GetOwnerByAddressResponse;
+  return {
+    success: true,
+    result: json,
+  };
+}
+
+export async function getOwnerByUuid(
+  ownerUuid: string
+): Promise<Result<GetOwnerByUuidResponse>> {
+  console.log("🚀 ~ ownerUuid:", ownerUuid);
+  const query = backendQueryGetOwnerByUuid(ownerUuid);
+  const response = await fetch(query);
+  console.log("🚀 ~ response:", response);
+
+  const json = (await response.json()) as GetOwnerByUuidResponse;
+  return {
+    success: true,
+    result: json,
+  };
+}
+
+export async function getOwnerPoaps(
+  wallet: string
+): Promise<Result<OwnerPoapsResponse>> {
+  const query = backendQueryOwnedPoaps(wallet);
+  const response = await fetch(query);
+
+  const json = (await response.json()) as OwnerPoapsResponse;
+  console.log("🚀 ~ json:", json);
+  return {
+    success: true,
+    result: json,
+  };
+}
+
+///////// Poap endpoints /////////
+
+
+export async function getAllPoaps(): Promise<Result<GetAllPoapsResponse>> {
+  const query = backendQueryGetAllPoaps();
+  const response = await fetch(query);
+
+  const json = (await response.json()) as GetAllPoapsResponse;
+  return {
+    success: true,
+    result: json,
+  };
+}
+
 
 export const queryEndpoints = {
   getOwnerPoaps,
@@ -162,8 +189,5 @@ export const queryEndpoints = {
   getLastEvent,
   getIssuerByAddress,
   getIssuerByUuid,
-  // createEvent,
-  createOwner,
-  // createIssuer,
   createEventPoapRelation,
 };
