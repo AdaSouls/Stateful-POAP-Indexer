@@ -408,6 +408,10 @@
 					"image": {
 						"type": "string"
 					},
+					"issuerIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
 					"issuerUuid": {
 						"type": "string"
 					},
@@ -479,6 +483,7 @@
 					"eventUuid",
 					"expiryDate",
 					"image",
+					"issuerIdInContract",
 					"issuerUuid",
 					"mintedPoaps",
 					"platform",
@@ -686,6 +691,52 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"ICreateIssuerResult": {
+				"description": "'CreateIssuer' return type",
+				"properties": {
+					"address": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string"
+					},
+					"issuerIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerUuid": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"organization": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"address",
+					"createdAt",
+					"email",
+					"issuerIdInContract",
+					"issuerUuid",
+					"name",
+					"organization",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ICreateIssuerParams": {
 				"description": "'CreateIssuer' parameters type",
 				"properties": {
@@ -856,6 +907,41 @@
 					"issuerUuid",
 					"name",
 					"organization",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateOwnerResult": {
+				"description": "'CreateOwner' return type",
+				"properties": {
+					"address": {
+						"type": "string",
+						"nullable": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string",
+						"nullable": true
+					},
+					"ownerUuid": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"address",
+					"createdAt",
+					"email",
+					"ownerUuid",
 					"updatedAt"
 				],
 				"type": "object",
@@ -1228,8 +1314,7 @@
 						"format": "double"
 					},
 					"ownerUuid": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"poapUuid": {
 						"type": "string"
@@ -1263,8 +1348,7 @@
 						"format": "double"
 					},
 					"ownerUuid": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"poapUuid": {
 						"type": "string"
@@ -1288,11 +1372,7 @@
 			"ICreatePoapParams": {
 				"description": "'CreatePoap' parameters type",
 				"properties": {
-					"instance": {
-						"type": "number",
-						"format": "double"
-					},
-					"ownerUuid": {
+					"address": {
 						"anyOf": [
 							{
 								"type": "string"
@@ -1300,11 +1380,18 @@
 							{}
 						],
 						"nullable": true
+					},
+					"instance": {
+						"anyOf": [
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{}
+						],
+						"nullable": true
 					}
 				},
-				"required": [
-					"instance"
-				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -1483,7 +1570,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/ICreateIssuerResult"
 								}
 							}
 						}
@@ -1598,7 +1685,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/ICreateOwnerResult"
 								}
 							}
 						}

@@ -37,8 +37,8 @@ contract Poap is
         uint256 eventMintExpiration,
         address eventOrganizer
     );
-    event TokenMinted(uint256 issuerId, uint256 eventId, uint256 tokenId);
-    event TokenUpdated(uint256 issuerId, uint256 eventId, uint256 tokenId);
+    event TokenMinted(uint256 issuerId, uint256 eventId, uint256 tokenId, address to);
+    event TokenUpdated(uint256 issuerId, uint256 eventId, uint256 tokenId, address to);
     event TokenFrozen(uint256 tokenId);
     event TokenUnfrozen(uint256 tokenId);
 
@@ -414,13 +414,13 @@ contract Poap is
 
         if (isMinterIssuerHolder(to, issuerId)) {
             tokenId = _issuerHolders[to][issuerId];
-            emit TokenUpdated(issuerId, eventId, tokenId);
+            emit TokenUpdated(issuerId, eventId, tokenId, to);
         } else {
             tokenId = PoapStatefulPublic.mint(to, "");
             _tokenEvent[tokenId] = eventId;
             _issuerHolders[to][issuerId] = tokenId;
             _eventHolders[to][eventId] = true;
-            emit TokenMinted(issuerId, eventId, tokenId);
+            emit TokenMinted(issuerId, eventId, tokenId, to);
         }
 
         _eventTotalSupply[eventId]++;

@@ -85,8 +85,14 @@ RETURNING *;
 /* 
  @name createPoap
  */
-INSERT INTO poaps("instance", "ownerUuid")
-VALUES (:instance !, :ownerUuid)
+WITH owner_data AS (
+  SELECT "ownerUuid"
+  FROM owners
+  WHERE address = :address
+)
+INSERT INTO poaps (instance, "ownerUuid")
+SELECT :instance, owner_data."ownerUuid"
+FROM owner_data
 RETURNING *;
 /* 
  @name createOwner

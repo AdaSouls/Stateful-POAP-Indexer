@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS "poaps" (
   "instance" INTEGER NOT NULL,
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
   "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "ownerUuid" UUID REFERENCES "owners" ("ownerUuid") ON DELETE SET NULL ON UPDATE CASCADE
+  "ownerUuid" UUID NOT NULL REFERENCES "owners" ("ownerUuid") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- EventPoaps table

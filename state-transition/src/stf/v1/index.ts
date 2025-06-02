@@ -5,14 +5,13 @@ import type { SQLUpdate } from "@paima/node-sdk/db";
 import type { Pool } from "pg";
 // import { issuerCreate, eventCreate, poapMint, poapUpdate } from './transition.js';
 import {
-  issuerCreate,
+  // issuerCreate,
   poapMint,
   poapUpdate,
   eventUpdate,
 } from "./transition.js";
 import {
   EventCreateInput,
-  IssuerCreateInput,
   PoapMintInput,
   PoapUpdateInput,
 } from "./types.js";

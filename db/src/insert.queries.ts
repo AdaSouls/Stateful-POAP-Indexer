@@ -197,15 +197,15 @@ export const createEvent = new PreparedQuery<ICreateEventParams,ICreateEventResu
 
 /** 'CreatePoap' parameters type */
 export interface ICreatePoapParams {
-  instance: number;
-  ownerUuid?: string | null | void;
+  address?: string | null | void;
+  instance?: number | null | void;
 }
 
 /** 'CreatePoap' return type */
 export interface ICreatePoapResult {
   createdAt: Date | null;
   instance: number;
-  ownerUuid: string | null;
+  ownerUuid: string;
   poapUuid: string;
   updatedAt: Date | null;
 }
@@ -216,13 +216,19 @@ export interface ICreatePoapQuery {
   result: ICreatePoapResult;
 }
 
-const createPoapIR: any = {"usedParamSet":{"instance":true,"ownerUuid":true},"params":[{"name":"instance","required":true,"transform":{"type":"scalar"},"locs":[{"a":51,"b":61}]},{"name":"ownerUuid","required":false,"transform":{"type":"scalar"},"locs":[{"a":64,"b":73}]}],"statement":"INSERT INTO poaps(\"instance\", \"ownerUuid\")\nVALUES (:instance !, :ownerUuid)\nRETURNING *"};
+const createPoapIR: any = {"usedParamSet":{"address":true,"instance":true},"params":[{"name":"address","required":false,"transform":{"type":"scalar"},"locs":[{"a":74,"b":81}]},{"name":"instance","required":false,"transform":{"type":"scalar"},"locs":[{"a":134,"b":142}]}],"statement":"WITH owner_data AS (\n  SELECT \"ownerUuid\"\n  FROM owners\n  WHERE address = :address\n)\nINSERT INTO poaps (instance, \"ownerUuid\")\nSELECT :instance, owner_data.\"ownerUuid\"\nFROM owner_data\nRETURNING *"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO poaps("instance", "ownerUuid")
- * VALUES (:instance !, :ownerUuid)
+ * WITH owner_data AS (
+ *   SELECT "ownerUuid"
+ *   FROM owners
+ *   WHERE address = :address
+ * )
+ * INSERT INTO poaps (instance, "ownerUuid")
+ * SELECT :instance, owner_data."ownerUuid"
+ * FROM owner_data
  * RETURNING *
  * ```
  */

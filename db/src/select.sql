@@ -15,8 +15,11 @@ FROM issuers;
 /*
  @name getAllEvents
  */
-SELECT *
-FROM events;
+SELECT 
+  events.*,
+  issuers."issuerIdInContract"
+FROM events
+JOIN issuers ON events."issuerUuid" = issuers."issuerUuid";
 /*
  @name getAllPoaps
  */

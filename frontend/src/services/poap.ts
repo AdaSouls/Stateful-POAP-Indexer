@@ -152,6 +152,39 @@ export const createEventId = async (
   }
 };
 
+export const mintToken = async (
+  issuerId: number,
+  eventId: number,
+  to: string
+  // initialData: string
+) => {
+  try {
+    const signerObj = await getSigner(to);
+
+    const poapContract = new Contract(
+      POAP,
+      Poap__Abi,
+      signerObj
+    ) as unknown as {
+      mintToken: (
+        issuerId: number,
+        eventId: number,
+        to: string,
+        overrides?: any
+      ) => Promise<any>;
+    };
+
+    console.log("🚀 ~ poapContract:", poapContract);
+    // const txResponse = await poap.mintToken(issuerId, eventId, to, initialData);
+    const txResponse = await poapContract.mintToken(issuerId, eventId, to);
+    console.log("mintToken Transaction response:", txResponse);
+    return txResponse;
+  } catch (error) {
+    console.error("Failed to mint Token:", error);
+    throw error;
+  }
+};
+
 export const mintPoap = async (
   issuerId: number,
   eventId: number,
@@ -194,4 +227,58 @@ const getPoapContract = async (account: string) => {
   const contract = new Contract(POAP, Poap__Abi, signer);
   console.log(contract);
   return contract;
+};
+
+export const getPoaps = async (signer: string) => {
+  // const poapContract = new ethers.Contract(
+  //   poapContractAddress,
+  //   poapContractAbi,
+  //   signer
+  // );
+  console.log("In getPoaps");
+
+  try {
+    const signerObj = await getSigner(signer);
+
+    const poapContract = new Contract(POAP, Poap__Abi, signerObj);
+    console.log("🚀 ~ poapContract:", poapContract);
+
+    // Create a filter for the EventCreated event
+    const poapFilter = poapContract.filters;
+    console.log("🚀 ~ getPoaps ~ poapFilter:", poapFilter);
+    const poapMinted = poapContract.filters.TokenMinted();
+    console.log("🚀 ~ getPoaps ~ eventFilter:", poapMinted);
+
+    // Get all past EventCreated events
+    const poaps = await poapContract.queryFilter("TokenMinted", 1, "latest");
+    console.log("🚀 ~ getPoaps ~ poaps:", poaps);
+
+    const poapData = [];
+
+    for (const poap of poaps) {
+      // Check if poap is an EventLog before accessing args
+      if (!("args" in poap)) {
+        console.log("Log doesn't have args property:", poap);
+        continue;
+      }
+
+      const { issuerId, eventId, tokenId } = poap.args;
+      console.log("🚀 ~ getPoaps ~ poap.args:", poap.args);
+
+      const issuerIdNumber = Number(issuerId);
+      const eventIdNumber = Number(eventId);
+      const tokenIdNumber = Number(tokenId);
+
+      poapData.push({
+        issuerId: issuerIdNumber,
+        eventId: eventIdNumber,
+        tokenId: tokenIdNumber,
+      });
+    }
+    console.log("Events with non-zero max supply:", poapData);
+    return poapData;
+  } catch (error) {
+    console.error("Failed to get Events:", error);
+    return [];
+  }
 };

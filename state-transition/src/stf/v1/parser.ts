@@ -12,8 +12,8 @@ import type {
 
 // Stays the same
 // eventCreate|{"0":"1","1":"14","2":"100","3":"1748943196","4":"0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199","issuerId":"1","eventId":"14","eventMaxSupply":"100","eventMintExpiration":"1748943196","eventOrganizer":"0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"}
-// poapMint|{"0":"1","1":"14","2":"100", issuerId: "1", eventId: "14", tokenId: "100"}
-// poapUpdate|{"0":"1","1":"33","2":"100", issuerId: "1", eventId: "33", tokenId: "100"}
+// poapMint|{"0":"1","1":"14","2":"100","3":"0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199", issuerId: "1", eventId: "14", tokenId: "100", to: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"}
+// poapUpdate|{"0":"1","1":"33","2":"100","3":"0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199", issuerId: "1", eventId: "33", tokenId: "100", to: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"}
 
 const myGrammar = `
 eventCreate         = eventCreate|payload
@@ -44,7 +44,7 @@ const eventCreate = {
     console.log("🚀 ~ data.eventMaxSupply:", data.eventMaxSupply);
     const eventMintExpiration = parseInt(data.eventMintExpiration, 10);
     console.log("🚀 ~ data.eventMintExpiration:", data.eventMintExpiration);
-    const eventOrganizer = data.eventOrganizer;
+    const eventOrganizer = data.eventOrganizer.toLocaleLowerCase();
 
     return {
       issuerId,
@@ -63,15 +63,17 @@ const poapMint = {
   ): {
     issuerId: number;
     eventId: number;
-    tokenId: number;
+    instance: number;
+    address: string;
   } => {
     if (!input) throw new Error("Input expected for swap_commands");
     const data: Record<string, string> = JSON.parse(input);
     const issuerId = parseInt(data.issuerId, 10);
     const eventId = parseInt(data.eventId, 10);
     const tokenId = parseInt(data.tokenId, 10);
+    const to = data.to.toLocaleLowerCase();
 
-    return { issuerId, eventId, tokenId };
+    return { issuerId, eventId, instance: tokenId, address: to };
   },
 };
 
@@ -82,15 +84,17 @@ const poapUpdate = {
   ): {
     issuerId: number;
     eventId: number;
-    tokenId: number;
+    instance: number;
+    address: string;
   } => {
     if (!input) throw new Error("Input expected for swap_commands");
     const data: Record<string, string> = JSON.parse(input);
     const issuerId = parseInt(data.issuerId, 10);
     const eventId = parseInt(data.eventId, 10);
     const tokenId = parseInt(data.tokenId, 10);
+    const to = data.to.toLocaleLowerCase();
 
-    return { issuerId, eventId, tokenId };
+    return { issuerId, eventId, instance: tokenId, address: to };
   },
 };
 

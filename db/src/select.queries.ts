@@ -89,6 +89,7 @@ export interface IGetAllEventsResult {
   eventUuid: string;
   expiryDate: Date | null;
   image: string;
+  issuerIdInContract: number;
   issuerUuid: string;
   mintedPoaps: number;
   platform: string | null;
@@ -111,13 +112,16 @@ export interface IGetAllEventsQuery {
   result: IGetAllEventsResult;
 }
 
-const getAllEventsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *\nFROM events"};
+const getAllEventsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT \n  events.*,\n  issuers.\"issuerIdInContract\"\nFROM events\nJOIN issuers ON events.\"issuerUuid\" = issuers.\"issuerUuid\""};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT *
+ * SELECT 
+ *   events.*,
+ *   issuers."issuerIdInContract"
  * FROM events
+ * JOIN issuers ON events."issuerUuid" = issuers."issuerUuid"
  * ```
  */
 export const getAllEvents = new PreparedQuery<IGetAllEventsParams,IGetAllEventsResult>(getAllEventsIR);
@@ -130,7 +134,7 @@ export type IGetAllPoapsParams = void;
 export interface IGetAllPoapsResult {
   createdAt: Date | null;
   instance: number;
-  ownerUuid: string | null;
+  ownerUuid: string;
   poapUuid: string;
   updatedAt: Date | null;
 }

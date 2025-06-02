@@ -146,6 +146,7 @@ const models: TsoaRoute.Models = {
             "eventUuid": {"dataType":"string","required":true},
             "expiryDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "image": {"dataType":"string","required":true},
+            "issuerIdInContract": {"dataType":"double","required":true},
             "issuerUuid": {"dataType":"string","required":true},
             "mintedPoaps": {"dataType":"double","required":true},
             "platform": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
@@ -218,6 +219,21 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ICreateIssuerResult": {
+        "dataType": "refObject",
+        "properties": {
+            "address": {"dataType":"string","required":true},
+            "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "email": {"dataType":"string","required":true},
+            "issuerIdInContract": {"dataType":"double","required":true},
+            "issuerUuid": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
+            "organization": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ICreateIssuerParams": {
         "dataType": "refObject",
         "properties": {
@@ -277,6 +293,18 @@ const models: TsoaRoute.Models = {
             "issuerUuid": {"dataType":"string","required":true},
             "name": {"dataType":"string","required":true},
             "organization": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ICreateOwnerResult": {
+        "dataType": "refObject",
+        "properties": {
+            "address": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "email": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ownerUuid": {"dataType":"string","required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
@@ -399,7 +427,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "instance": {"dataType":"double","required":true},
-            "ownerUuid": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ownerUuid": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
@@ -411,7 +439,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "instance": {"dataType":"double","required":true},
-            "ownerUuid": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "ownerUuid": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
@@ -421,8 +449,8 @@ const models: TsoaRoute.Models = {
     "ICreatePoapParams": {
         "dataType": "refObject",
         "properties": {
-            "instance": {"dataType":"double","required":true},
-            "ownerUuid": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
+            "address": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
+            "instance": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
         },
         "additionalProperties": false,
     },

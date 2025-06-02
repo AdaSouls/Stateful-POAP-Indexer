@@ -8,7 +8,7 @@ import type {
   ScheduledDataInput,
 } from "./types";
 import {
-  persistIssuerCreate,
+  // persistIssuerCreate,
   persistEventCreate,
   persistPoapCreate,
   persistUpdateEvent,
@@ -22,17 +22,17 @@ import {
   CONSENSUAL_SOULBOUND_POAP_CODE,
 } from "@game/utils";
 
-export const issuerCreate = async (
-  input: IssuerCreateInput
-): Promise<SQLUpdate[]> => {
-  const issuerCreateQuery = persistIssuerCreate(
-    input.payload.address,
-    input.payload.email,
-    input.payload.name,
-    input.payload.organization
-  );
-  return [issuerCreateQuery];
-};
+// export const issuerCreate = async (
+//   input: IssuerCreateInput
+// ): Promise<SQLUpdate[]> => {
+//   const issuerCreateQuery = persistIssuerCreate(
+//     input.payload.address,
+//     input.payload.email,
+//     input.payload.name,
+//     input.payload.organization
+//   );
+//   return [issuerCreateQuery];
+// };
 
 // export const ownerCreate = async (
 //   input: IssuerCreateInput
@@ -87,10 +87,10 @@ export const eventUpdate = async (input: EventCreateInput): Promise<SQLUpdate[]>
 };
 
 export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
-  const poapCreateQuery = persistPoapCreate(
-    // input.payload.poapUuid,
+  console.log("🚀 ~ poapMint ~ input:", input)
+  const poapCreateQuery = await persistPoapCreate(
+    input.payload.address,
     input.payload.instance,
-    // input.payload.ownerUuid
   );
   return [poapCreateQuery];
 };
@@ -98,10 +98,10 @@ export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
 export const poapUpdate = async (
   input: PoapUpdateInput
 ): Promise<SQLUpdate[]> => {
-  const poapUpdateQuery = persistPoapCreate(
-    // input.payload.poapUuid,
+  console.log("🚀 ~ input:", input)
+  const poapUpdateQuery = await persistPoapCreate(
+    input.payload.address,
     input.payload.instance,
-    // input.payload.ownerUuid
   );
   return [poapUpdateQuery];
 };

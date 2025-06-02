@@ -1,32 +1,30 @@
 import type {
-  ICreateIssuerParams,
   ICreateEventParams,
   ICreatePoapParams,
   DateOrString,
   // IApproveEventParams,
 } from "@game/db";
-import { createIssuer, createEvent, createPoap } from "@game/db";
+import { createEvent, createPoap } from "@game/db";
 import { updateEvent } from "@game/db/src/update.queries";
 import type { SQLUpdate } from "@paima/node-sdk/db";
-import type { WalletAddress } from "@paima/sdk/utils";
 
 // this file deals with receiving blockchain data input and outputting SQL updates (imported from pgTyped output of our SQL files)
 // PGTyped SQL updates are a tuple of the function calling the database and the params sent to it.
 
-export function persistIssuerCreate(
-  address: WalletAddress,
-  email: string,
-  name: string,
-  organization: string
-): SQLUpdate {
-  const params: ICreateIssuerParams = {
-    address,
-    email,
-    name,
-    organization,
-  };
-  return [createIssuer, params];
-}
+// export function persistIssuerCreate(
+//   address: WalletAddress,
+//   email: string,
+//   name: string,
+//   organization: string
+// ): SQLUpdate {
+//   const params: ICreateIssuerParams = {
+//     address,
+//     email,
+//     name,
+//     organization,
+//   };
+//   return [createIssuer, params];
+// }
 
 export function persistEventCreate(
   description: string,
@@ -92,12 +90,15 @@ export function persistUpdateEvent(eventIdInContract: number): SQLUpdate {
 }
 
 export function persistPoapCreate(
-  instance: number,
-  ownerUuid: string | null | void
+  address: string,
+  instance: number
 ): SQLUpdate {
+  console.log("🚀 ~ instance:", instance);
+  console.log("🚀 ~ address:", address);
   const params: ICreatePoapParams = {
+    address: address,
     instance,
-    ownerUuid,
   };
+  console.log("🚀 ~ params:", params);
   return [createPoap, params];
 }

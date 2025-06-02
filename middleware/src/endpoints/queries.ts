@@ -183,11 +183,15 @@ export async function getAllPoaps(): Promise<Result<GetAllPoapsResponse>> {
 
 
 export const queryEndpoints = {
-  getOwnerPoaps,
+  // createEventPoapRelation,
   getAllEvents,
-  getAllIssuers,
   getLastEvent,
+  getAllIssuers,
   getIssuerByAddress,
   getIssuerByUuid,
-  createEventPoapRelation,
+  getAllOwners,
+  getOwnerByAddress,
+  getOwnerByUuid,
+  getOwnerPoaps,
+  getAllPoaps,
 };

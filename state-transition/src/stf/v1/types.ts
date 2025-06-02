@@ -33,6 +33,7 @@ export interface PoapMintInput {
     poapUuid: string;
     ownerUuid: string;
     instance: number;
+    address: string;
   };
 }
 
@@ -42,6 +43,7 @@ export interface PoapUpdateInput {
     poapUuid: string;
     ownerUuid: string;
     instance: number;
+    address: string;
   };
 }
 

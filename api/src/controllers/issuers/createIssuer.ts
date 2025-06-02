@@ -1,11 +1,11 @@
 import { Controller, Route, Post, Body } from 'tsoa';
-import { requirePool, ICreateIssuerParams, createIssuer } from '@game/db';
+import { requirePool, ICreateIssuerParams, createIssuer, ICreateIssuerResult } from '@game/db';
 
 
 @Route('create_issuer')
 export class CreateIssuerController extends Controller {
   @Post()
-  public async createIssuer(@Body() issuerInfo: ICreateIssuerParams): Promise<string> {
+  public async createIssuer(@Body() issuerInfo: ICreateIssuerParams): Promise<ICreateIssuerResult> {
     console.log("🚀 ~ CreateIssuerController ~ createIssuer blabla ~ issuerInfo:", issuerInfo)
     const pool = requirePool();
     // const issuerUuid = randomUUID() as string
@@ -27,6 +27,6 @@ export class CreateIssuerController extends Controller {
     );
     console.log("🚀 ~ CreateIssuerController ~ createIssuer ~ createIssuerRunAnswer:", createIssuerRunAnswer)
     
-    return createIssuerRunAnswer[0].issuerUuid;
+    return createIssuerRunAnswer[0];
   }
 }

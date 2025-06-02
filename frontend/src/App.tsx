@@ -5,14 +5,27 @@ import type {
   IGetOwnerPoapsResult,
   ICreateEventParams,
   ICreateIssuerResult,
+  ICreateOwnerResult,
+  IGetAllEventsResult,
+  IGetAllPoapsResult,
 } from "@game/db";
 import { WalletMode } from "@paima/sdk/providers.js";
-import { createEvent, createEventId, mintPoap } from "./services/poap.js";
+import {
+  createEvent,
+  createEventId,
+  getPoaps,
+  mintPoap,
+  mintToken,
+} from "./services/poap.js";
 import { POAP } from "./services/constants.js";
+import { get } from "http";
 
 function App() {
-  const [poaps, setPoaps] = useState<IGetOwnerPoapsResult[]>([]);
+  const [ownerPoaps, setOwnerPoaps] = useState<IGetOwnerPoapsResult[]>([]);
+  const [events, setEvents] = useState<IGetAllEventsResult[]>([]);
+  const [poaps, setPoaps] = useState<IGetAllPoapsResult[]>([]);
   const [wallet, setWallet] = useState("");
+  const [owner, setOwner] = useState<ICreateOwnerResult | null>(null);
   const [issuer, setIssuer] = useState<ICreateIssuerResult | null>(null);
   const [eventId, setEventId] = useState(0);
   const [maxSupply, setMaxSupply] = useState(0);
@@ -96,26 +109,67 @@ function App() {
     if (!response.success) {
       console.log("Failed to fetch your POAPs");
     } else {
-      setPoaps(response.result.poaps);
+      setOwnerPoaps(response.result.poaps);
     }
   };
 
   const getLastEvent = async () => {
     const response = await mw.getLastEvent();
-    console.log("🚀 ~ getLastEvent ~ response:", response);
+    // console.log("🚀 ~ getLastEvent ~ response:", response);
+  };
+  const getOwnerByAddress = async (address: string) => {
+    // console.log("🚀 ~ getOwnerByAddress ~ address:", address)
+    const response = await mw.getOwnerByAddress(address);
+    if (response.success && response.result.owner) {
+      console.log(
+        "🚀 ~ getOwnerByAddress ~ response.result.owner:",
+        response.result.owner
+      );
+      setOwner(response.result.owner);
+    } else {
+      const newOwner = await mw.createOwner(address);
+      console.log("🚀 ~ getOwnerByAddress ~ newOwner:", newOwner);
+      if (newOwner.success && newOwner.result.owner) {
+        setOwner(newOwner.result.owner);
+        console.log("New owner created successfully:", newOwner.result.owner);
+      }
+    }
+    // console.log("🚀 ~ getOwnerByAddress ~ response:", response);
   };
   const getAllEvents = async () => {
     const response = await mw.getAllEvents();
     console.log("🚀 ~ getAllEvents ~ response:", response);
+    if (response.success && response.result.events) {
+      setEvents(response.result.events);
+    } else {
+      console.log("Failed to fetch all events");
+    }
   };
   const getAllIssuers = async () => {
     const response = await mw.getAllIssuers();
-    console.log("🚀 ~ getAllIssuers ~ response:", response);
+    // console.log("🚀 ~ getAllIssuers ~ response:", response);
+  };
+  const getAllPoaps = async () => {
+    const response = await mw.getAllPoaps();
+    console.log("🚀 ~ getAllPoaps ~ response:", response);
+    if (response.success && response.result.poaps) {
+      setPoaps(response.result.poaps);
+    } else {
+      console.log("Failed to fetch all POAPs");
+    }
   };
   const getIssuerByAddress = async (address: string) => {
     const issuer = await mw.getIssuerByAddress(address);
-    console.log("🚀 ~ getIssuerByAddress ~ issuer:", issuer);
-    if (!issuer.result.issuer) {
+    // console.log("🚀 ~ getIssuerByAddress ~ issuer:", issuer);
+    if (issuer.result.issuer) {
+      console.log(
+        "🚀 ~ getIssuerByAddress ~ issuer.result.issuer:",
+        issuer.result.issuer
+      );
+      setIssuer(issuer.result.issuer);
+      // If the issuer already exists, we set it in the state
+      return issuer.result.issuer;
+    } else {
       const newIssuer = await createIssuerOnDB(
         address,
         issuerInfo.name,
@@ -123,16 +177,13 @@ function App() {
         issuerInfo.organization
       );
       console.log("🚀 ~ getIssuerByAddress ~ newIssuer:", newIssuer);
+      setIssuer(newIssuer);
       return newIssuer;
-    } else {
-      setIssuer(issuer.result.issuer);
-      console.log("🚀 ~ getIssuerByAddress ~ issuer:", issuer.result.issuer);
-      return issuer.result.issuer;
     }
   };
 
   const handleEventCreation = async () => {
-    console.log("🚀 ~ handleEventCreation");
+    // console.log("🚀 ~ handleEventCreation");
     if (!issuer) {
       console.log("Issuer not found");
       return;
@@ -141,20 +192,12 @@ function App() {
       ...eventInfo,
       issuerUuid: issuer.issuerUuid,
     });
-    console.log("🚀 ~ handleEventCreation ~ event : ", event);
+    // console.log("🚀 ~ handleEventCreation ~ event : ", event);
     if (!event.eventIdInContract) {
       console.log("Failed to create event");
       return;
     } else {
       console.log("Event created successfully:", event);
-      // const eventInContractTransaction = await createEvent(
-      //   issuer.issuerIdInContract,
-      //   event.eventIdInContract,
-      //   event.maxSupply,
-      //   event.mintExpiration,
-      //   event.eventOrganizer,
-      //   "poap"
-      // );
       let miliseconds;
       let timestamp;
       if (!event.expiryDate) {
@@ -176,20 +219,69 @@ function App() {
         "🚀 ~ handleEventCreation ~ eventInContractTransaction:",
         eventInContractTransaction
       );
+      if (eventInContractTransaction.blockHash) {
+        const events = await mw.getAllEvents();
+        if (events.success && events.result.events) {
+          setEvents(events.result.events);
+          console.log("Events updated successfully");
+        }
+      }
+    }
+  };
+
+  const handleMintingPoap = async (
+    issuerId: number,
+    eventId: number,
+    wallet: string
+  ) => {
+    console.log("🚀 ~ App ~ owner:", owner);
+    if (owner && owner.ownerUuid) {
+      const mintedTx = await mintToken(issuerId, eventId, wallet);
+      // Do the update of the Poap instance to add Owner and Event data
+      if (mintedTx && mintedTx.blockHash) {
+        console.log("Poap minted successfully:", mintedTx);
+        getAllPoaps();
+      }
+    } else {
+      const newOwner = await mw.createOwner(wallet);
+      console.log("🚀 ~ handleMintingPoap ~ newOwner:", newOwner);
+      if (newOwner.success && newOwner.result.owner) {
+        setOwner(newOwner.result.owner);
+        const mintedTx = await mintToken(issuerId, eventId, wallet);
+        // Do the update of the Poap instance to add Owner and Event data
+        if (mintedTx && mintedTx.blockHash) {
+          console.log("Poap minted successfully:", mintedTx);
+          getAllPoaps();
+        }
+      } else {
+        console.log("Failed to create owner");
+      }
     }
   };
 
   useEffect(() => {
-    getLastEvent();
+    // getLastEvent();
     getAllEvents();
     getAllIssuers();
+    getAllPoaps();
   }, []);
 
   useEffect(() => {
     if (wallet) {
+      getOwnerByAddress(wallet);
       getIssuerByAddress(wallet);
+      fetchPoaps(wallet);
+      // getPoaps(wallet)
     }
   }, [wallet]);
+
+  useEffect(() => {
+    if (owner) {
+      console.log("Owner fetched successfully:", owner.ownerUuid);
+    } else {
+      console.log("No owner found");
+    }
+  }, [owner]);
 
   /*   const poapAppendEventData = async (poap: IGetUserPoapsResult) => {
     const response = await mw.appendEventData(poap.address, poap.nft_id);
@@ -221,11 +313,11 @@ function App() {
       const { walletAddress } = response.result;
       console.log("Successfully logged in address:", walletAddress);
       setWallet(walletAddress);
-      fetchPoaps(walletAddress);
+      // fetchPoaps(walletAddress);
     }
   }
 
-  const hasPoaps = poaps?.length > 0;
+  const hasPoaps = ownerPoaps?.length > 0;
 
   return (
     <div className="container">
@@ -250,10 +342,10 @@ function App() {
             {hasPoaps ? (
               <div className="poaps">
                 {poaps.map((poap) => (
-                  <div key={poap["Poap.instance"]} className={`poap poap-poap`}>
+                  <div key={poap["poapUuid"]} className={`poap poap-poap`}>
                     <p>
-                      Type: Poap Address: {poap.address} Token ID:{" "}
-                      {poap["Poap.instance"]}
+                      Type: Poap Address: {"Some address"} Token ID:{" "}
+                      {poap["instance"]}
                     </p>
                     {/* <button onClick={() => poapAppendEventData(poap)}>Lvl Up</button> */}
                   </div>
@@ -281,7 +373,7 @@ function App() {
               </button>
             </div>
           </div>
-          <form>
+          {/* <form>
             <label>
               Issuer ID:
               <input
@@ -320,7 +412,40 @@ function App() {
                 onChange={handleMintExpirationChange}
               />
             </label>
-          </form>
+          </form> */}
+          {events.length > 0 && (
+            <div className="events">
+              <h3>Events</h3>
+              <ul>
+                {events.map((event) => (
+                  <li
+                    key={event.eventIdInContract}
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "10px",
+                    }}
+                  >
+                    <p>
+                      Event ID: {event.eventIdInContract} - Title: {event.title}{" "}
+                      - Description: {event.description}
+                    </p>
+                    <button
+                      onClick={() =>
+                        handleMintingPoap(
+                          event.issuerIdInContract,
+                          event.eventIdInContract,
+                          wallet
+                        )
+                      }
+                    >
+                      Mint Poap
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </main>
     </div>
