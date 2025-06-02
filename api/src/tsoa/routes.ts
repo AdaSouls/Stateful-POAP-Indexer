@@ -5,6 +5,8 @@ import { TsoaRoute, fetchMiddlewares, ExpressTemplateService } from '@tsoa/runti
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CreateEventPoapRelationController } from './../controllers/eventPoaps/createEventPoapRelation';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { AllEventPoapRelationsController } from './../controllers/eventPoaps/getAllEventPoapRelations';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CreateEventController } from './../controllers/events/createEvent';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AllEventsController } from './../controllers/events/getAllEvents';
@@ -45,11 +47,36 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "ICreateEventPoapResult": {
+        "dataType": "refObject",
+        "properties": {
+            "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "eventUuid": {"dataType":"string","required":true},
+            "poapUuid": {"dataType":"string","required":true},
+            "relationUuid": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ICreateEventPoapParams": {
         "dataType": "refObject",
         "properties": {
+            "address": {"dataType":"string","required":true},
+            "eventIdInContract": {"dataType":"double","required":true},
+            "instance": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IGetAllEventPoapsResult": {
+        "dataType": "refObject",
+        "properties": {
+            "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "eventUuid": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
+            "relationUuid": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
     },
@@ -449,8 +476,9 @@ const models: TsoaRoute.Models = {
     "ICreatePoapParams": {
         "dataType": "refObject",
         "properties": {
-            "address": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
-            "instance": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]},{"dataType":"void"}]},
+            "address": {"dataType":"string","required":true},
+            "eventIdInContract": {"dataType":"double","required":true},
+            "instance": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
@@ -493,6 +521,35 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'post',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/get_all_event_poap_relations',
+            ...(fetchMiddlewares<RequestHandler>(AllEventPoapRelationsController)),
+            ...(fetchMiddlewares<RequestHandler>(AllEventPoapRelationsController.prototype.getAll)),
+
+            async function AllEventPoapRelationsController_getAll(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new AllEventPoapRelationsController();
+
+              await templateService.apiHandler({
+                methodName: 'getAll',
                 controller,
                 response,
                 next,

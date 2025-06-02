@@ -88,12 +88,30 @@ RETURNING *;
 WITH owner_data AS (
   SELECT "ownerUuid"
   FROM owners
-  WHERE address = :address
+  WHERE LOWER("address") = LOWER(:address !)
+),
+event_data AS (
+  SELECT "eventUuid"
+  FROM events
+  WHERE "eventIdInContract" = :eventIdInContract !
+),
+poap_insert AS (
+  INSERT INTO poaps ("instance", "ownerUuid")
+  SELECT :instance !,
+    owner_data."ownerUuid"
+  FROM owner_data
+  RETURNING *
+),
+eventpoap_insert AS (
+  INSERT INTO eventpoaps ("poapUuid", "eventUuid")
+  SELECT poap_insert."poapUuid",
+    event_data."eventUuid"
+  FROM poap_insert,
+    event_data
+  RETURNING *
 )
-INSERT INTO poaps (instance, "ownerUuid")
-SELECT :instance, owner_data."ownerUuid"
-FROM owner_data
-RETURNING *;
+SELECT *
+FROM poap_insert;
 /* 
  @name createOwner
  */
@@ -103,6 +121,29 @@ RETURNING *;
 /* 
  @name createEventPoap
  */
-INSERT INTO eventPoaps("poapUuid", "eventUuid")
-VALUES (:poapUuid !, :eventUuid !)
-RETURNING *;
+WITH owner_data AS (
+  SELECT "ownerUuid"
+  FROM owners
+  WHERE LOWER("address") = LOWER(:address !)
+),
+event_data AS (
+  SELECT "eventUuid"
+  FROM events
+  WHERE "eventIdInContract" = :eventIdInContract !
+),
+poap_data AS (
+  SELECT "poapUuid"
+  FROM poaps p
+    JOIN owner_data o ON p."ownerUuid" = o."ownerUuid"
+  WHERE p."instance" = :instance !
+),
+eventpoap_insert AS (
+  INSERT INTO eventpoaps ("poapUuid", "eventUuid")
+  SELECT poap_data."poapUuid",
+    event_data."eventUuid"
+  FROM poap_data,
+    event_data
+  RETURNING *
+)
+SELECT *
+FROM eventpoap_insert;

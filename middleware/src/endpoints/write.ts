@@ -13,9 +13,9 @@ import { ICreateEventParams, ICreateEventPoapParams } from "@game/db";
 export async function createEventPoapRelation(
   relationInfo: ICreateEventPoapParams
 ): Promise<Result<CreateEventPoapRelationResponse>> {
-  console.log("🚀 ~ relationInfo:", relationInfo)
-  const query = backendQueryCreateEventPoapRelation(relationInfo.eventUuid, relationInfo.poapUuid);
-  console.log("🚀 ~ query:", query);
+  // console.log("🚀 ~ relationInfo:", relationInfo)
+  const query = backendQueryCreateEventPoapRelation(relationInfo.address, relationInfo.address)
+  // console.log("🚀 ~ query:", query);
   const cleanedEndpoint = query.split("?")[0];
 
   const response = await fetch(cleanedEndpoint, {

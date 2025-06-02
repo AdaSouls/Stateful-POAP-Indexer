@@ -7,19 +7,91 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"ICreateEventPoapParams": {
-				"description": "'CreateEventPoap' parameters type",
+			"ICreateEventPoapResult": {
+				"description": "'CreateEventPoap' return type",
 				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
 					"eventUuid": {
 						"type": "string"
 					},
 					"poapUuid": {
 						"type": "string"
+					},
+					"relationUuid": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
 					}
 				},
 				"required": [
+					"createdAt",
 					"eventUuid",
-					"poapUuid"
+					"poapUuid",
+					"relationUuid",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateEventPoapParams": {
+				"description": "'CreateEventPoap' parameters type",
+				"properties": {
+					"address": {
+						"type": "string"
+					},
+					"eventIdInContract": {
+						"type": "number",
+						"format": "double"
+					},
+					"instance": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"address",
+					"eventIdInContract",
+					"instance"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetAllEventPoapsResult": {
+				"description": "'GetAllEventPoaps' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventUuid": {
+						"type": "string"
+					},
+					"poapUuid": {
+						"type": "string"
+					},
+					"relationUuid": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"eventUuid",
+					"poapUuid",
+					"relationUuid",
+					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1373,25 +1445,22 @@
 				"description": "'CreatePoap' parameters type",
 				"properties": {
 					"address": {
-						"anyOf": [
-							{
-								"type": "string"
-							},
-							{}
-						],
-						"nullable": true
+						"type": "string"
+					},
+					"eventIdInContract": {
+						"type": "number",
+						"format": "double"
 					},
 					"instance": {
-						"anyOf": [
-							{
-								"type": "number",
-								"format": "double"
-							},
-							{}
-						],
-						"nullable": true
+						"type": "number",
+						"format": "double"
 					}
 				},
+				"required": [
+					"address",
+					"eventIdInContract",
+					"instance"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -1434,7 +1503,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/ICreateEventPoapResult"
 								}
 							}
 						}
@@ -1452,6 +1521,28 @@
 						}
 					}
 				}
+			}
+		},
+		"/get_all_event_poap_relations": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/IGetAllEventPoapsResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/create_event": {

@@ -59,6 +59,9 @@ export interface CreateIssuerResponse {
 export interface CreateEventPoapRelationResponse {
   event: ICreateEventPoapResult;
 }
+export interface GetAllEventPoapRelationsResponse {
+  relations: IGetAllEventPoapsResult[];
+}
 
 export interface GetIssuerByAddressResponse {
   issuer: IGetIssuerByAddressResult;

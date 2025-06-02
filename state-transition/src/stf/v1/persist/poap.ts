@@ -4,7 +4,7 @@ import type {
   DateOrString,
   // IApproveEventParams,
 } from "@game/db";
-import { createEvent, createPoap } from "@game/db";
+import { createEvent, createEventPoap, createPoap } from "@game/db";
 import { updateEvent } from "@game/db/src/update.queries";
 import type { SQLUpdate } from "@paima/node-sdk/db";
 
@@ -91,14 +91,26 @@ export function persistUpdateEvent(eventIdInContract: number): SQLUpdate {
 
 export function persistPoapCreate(
   address: string,
+  eventIdInContract: number,
   instance: number
 ): SQLUpdate {
-  console.log("🚀 ~ instance:", instance);
-  console.log("🚀 ~ address:", address);
   const params: ICreatePoapParams = {
-    address: address,
+    address,
+    eventIdInContract,
     instance,
   };
-  console.log("🚀 ~ params:", params);
   return [createPoap, params];
+}
+
+export function persistPoapUpdateRelation(
+  address: string,
+  eventIdInContract: number,
+  instance: number
+): SQLUpdate {
+  const params: ICreatePoapParams = {
+    address,
+    eventIdInContract,
+    instance,
+  };
+  return [createEventPoap, params];
 }

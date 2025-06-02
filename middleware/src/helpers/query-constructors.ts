@@ -17,6 +17,12 @@ export function backendQueryCreateEventPoapRelation(
   return buildBackendQuery(endpoint, options);
 }
 
+export function backendQueryGetAllEventPoapRelations(): string {
+  const endpoint = "get_all_event_poap_relations";
+  const options = {};
+  return buildBackendQuery(endpoint, options);
+}
+
 
 ///////// Event endpoints /////////
 

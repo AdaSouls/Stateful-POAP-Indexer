@@ -37,13 +37,13 @@ const eventCreate = {
     if (!input) throw new Error("Input expected for swap_commands");
     // "eventId":"6","eventMaxSupply":"100","eventMintExpiration":"1749000901"
     const data: Record<string, string> = JSON.parse(input);
-    console.log("🚀 ~ data:", data);
+    // console.log("🚀 ~ data:", data);
     const issuerId = parseInt(data.issuerId, 10);
     const eventId = parseInt(data.eventId, 10);
     const eventMaxSupply = parseInt(data.eventMaxSupply, 10);
-    console.log("🚀 ~ data.eventMaxSupply:", data.eventMaxSupply);
+    // console.log("🚀 ~ data.eventMaxSupply:", data.eventMaxSupply);
     const eventMintExpiration = parseInt(data.eventMintExpiration, 10);
-    console.log("🚀 ~ data.eventMintExpiration:", data.eventMintExpiration);
+    // console.log("🚀 ~ data.eventMintExpiration:", data.eventMintExpiration);
     const eventOrganizer = data.eventOrganizer.toLocaleLowerCase();
 
     return {

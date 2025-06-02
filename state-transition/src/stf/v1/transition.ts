@@ -11,6 +11,7 @@ import {
   // persistIssuerCreate,
   persistEventCreate,
   persistPoapCreate,
+  persistPoapUpdateRelation,
   persistUpdateEvent,
   // persistUpdateEvent,
 } from "./persist";
@@ -90,6 +91,7 @@ export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
   console.log("🚀 ~ poapMint ~ input:", input)
   const poapCreateQuery = await persistPoapCreate(
     input.payload.address,
+    input.payload.eventId,
     input.payload.instance,
   );
   return [poapCreateQuery];
@@ -99,8 +101,9 @@ export const poapUpdate = async (
   input: PoapUpdateInput
 ): Promise<SQLUpdate[]> => {
   console.log("🚀 ~ input:", input)
-  const poapUpdateQuery = await persistPoapCreate(
+  const poapUpdateQuery = await persistPoapUpdateRelation(
     input.payload.address,
+    input.payload.eventId,
     input.payload.instance,
   );
   return [poapUpdateQuery];

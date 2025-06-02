@@ -30,8 +30,8 @@ export interface EventCreateInput {
 export interface PoapMintInput {
   input: "poapMint";
   payload: {
-    poapUuid: string;
-    ownerUuid: string;
+    issuerId: number;
+    eventId: number;
     instance: number;
     address: string;
   };
@@ -40,8 +40,8 @@ export interface PoapMintInput {
 export interface PoapUpdateInput {
   input: "poapUpdate";
   payload: {
-    poapUuid: string;
-    ownerUuid: string;
+    issuerId: number;
+    eventId: number;
     instance: number;
     address: string;
   };

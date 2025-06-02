@@ -181,6 +181,10 @@ function App() {
       return newIssuer;
     }
   };
+  const getAllEventPoapRelations = async () => {
+    const response = await mw.getAllEventPoapRelations();
+    console.log("🚀 ~ getAllEventPoapRelations ~ response:", response);
+  }
 
   const handleEventCreation = async () => {
     // console.log("🚀 ~ handleEventCreation");
@@ -264,6 +268,7 @@ function App() {
     getAllEvents();
     getAllIssuers();
     getAllPoaps();
+    getAllEventPoapRelations();
   }, []);
 
   useEffect(() => {

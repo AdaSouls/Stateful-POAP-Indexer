@@ -1,6 +1,5 @@
 import type {
   GetEventsResponse,
-  CreateEventPoapRelationResponse,
   OwnerPoapsResponse,
   GetIssuerByAddressResponse,
   GetAllIssuersResponse,
@@ -9,11 +8,11 @@ import type {
   GetAllOwnersResponse,
   GetOwnerByAddressResponse,
   GetOwnerByUuidResponse,
+  GetAllEventPoapRelationsResponse,
 } from "@game/utils";
 import {
   backendQueryOwnedPoaps,
   backendQueryLastEvent,
-  backendQueryCreateEventPoapRelation,
   backendQueryGetAllEvents,
   backendQueryGetIssuerByAddress,
   backendQueryGetAllIssuers,
@@ -22,22 +21,18 @@ import {
   backendQueryGetAllOwners,
   backendQueryGetOwnerByAddress,
   backendQueryGetOwnerByUuid,
+  backendQueryGetAllEventPoapRelations,
 } from "../helpers/query-constructors";
 import type { Result } from "../types";
 
 ///////// Event Poap Relation endpoints /////////
 
-export async function createEventPoapRelation(
-  poapUuid: string,
-  eventUuid: string
-): Promise<Result<CreateEventPoapRelationResponse>> {
-  const query = backendQueryCreateEventPoapRelation(
-    poapUuid,
-    eventUuid
-  );
-
+export async function getAllEventPoapRelations(): Promise<Result<GetAllEventPoapRelationsResponse>> {
+  const query = backendQueryGetAllEventPoapRelations();
   const response = await fetch(query);
-  const json = (await response.json()) as CreateEventPoapRelationResponse;
+
+  const json = (await response.json()) as GetAllEventPoapRelationsResponse;
+  // console.log("🚀 ~ getAllEvents ~ json:", json);
   return {
     success: true,
     result: json,
@@ -51,7 +46,7 @@ export async function getAllEvents(): Promise<Result<GetEventsResponse>> {
   const response = await fetch(query);
 
   const json = (await response.json()) as GetEventsResponse;
-  console.log("🚀 ~ getAllEvents ~ json:", json);
+  // console.log("🚀 ~ getAllEvents ~ json:", json);
   return {
     success: true,
     result: json,
@@ -76,7 +71,7 @@ export async function getAllIssuers(): Promise<Result<GetAllIssuersResponse>> {
   const response = await fetch(query);
 
   const json = (await response.json()) as GetAllIssuersResponse;
-  console.log("🚀 ~ getAllIssuers ~ json:", json);
+  // console.log("🚀 ~ getAllIssuers ~ json:", json);
   return {
     success: true,
     result: json,
@@ -99,10 +94,10 @@ export async function getIssuerByAddress(
 export async function getIssuerByUuid(
   issuerUuid: string
 ): Promise<Result<GetIssuerByUuidResponse>> {
-  console.log("🚀 ~ issuerUuid:", issuerUuid);
+  // console.log("🚀 ~ issuerUuid:", issuerUuid);
   const query = backendQueryGetIssuerByUuid(issuerUuid);
   const response = await fetch(query);
-  console.log("🚀 ~ response:", response);
+  // console.log("🚀 ~ response:", response);
 
   const json = (await response.json()) as GetIssuerByUuidResponse;
   return {
@@ -118,7 +113,7 @@ export async function getAllOwners(): Promise<Result<GetAllOwnersResponse>> {
   const response = await fetch(query);
 
   const json = (await response.json()) as GetAllOwnersResponse;
-  console.log("🚀 ~ getAllOwners ~ json:", json);
+  // console.log("🚀 ~ getAllOwners ~ json:", json);
   return {
     success: true,
     result: json,
@@ -141,10 +136,10 @@ export async function getOwnerByAddress(
 export async function getOwnerByUuid(
   ownerUuid: string
 ): Promise<Result<GetOwnerByUuidResponse>> {
-  console.log("🚀 ~ ownerUuid:", ownerUuid);
+  // console.log("🚀 ~ ownerUuid:", ownerUuid);
   const query = backendQueryGetOwnerByUuid(ownerUuid);
   const response = await fetch(query);
-  console.log("🚀 ~ response:", response);
+  // console.log("🚀 ~ response:", response);
 
   const json = (await response.json()) as GetOwnerByUuidResponse;
   return {
@@ -160,7 +155,7 @@ export async function getOwnerPoaps(
   const response = await fetch(query);
 
   const json = (await response.json()) as OwnerPoapsResponse;
-  console.log("🚀 ~ json:", json);
+  // console.log("🚀 ~ json:", json);
   return {
     success: true,
     result: json,
@@ -184,6 +179,7 @@ export async function getAllPoaps(): Promise<Result<GetAllPoapsResponse>> {
 
 export const queryEndpoints = {
   // createEventPoapRelation,
+  getAllEventPoapRelations,
   getAllEvents,
   getLastEvent,
   getAllIssuers,
