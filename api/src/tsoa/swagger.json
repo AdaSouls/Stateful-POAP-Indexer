@@ -1157,181 +1157,73 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Json": {
+				"anyOf": [
+					{
+						"type": "boolean"
+					},
+					{
+						"type": "number",
+						"format": "double"
+					},
+					{
+						"type": "string"
+					},
+					{
+						"items": {
+							"$ref": "#/components/schemas/Json"
+						},
+						"type": "array"
+					},
+					{
+						"properties": {},
+						"additionalProperties": {
+							"$ref": "#/components/schemas/Json"
+						},
+						"type": "object"
+					}
+				],
+				"nullable": true
+			},
 			"IGetOwnerPoapsResult": {
 				"description": "'GetOwnerPoaps' return type",
 				"properties": {
-					"account": {
-						"type": "string",
-						"nullable": true
-					},
-					"amountOfAttendees": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
-					},
-					"approved": {
-						"type": "string"
-					},
-					"city": {
-						"type": "string",
-						"nullable": true
-					},
-					"country": {
-						"type": "string",
-						"nullable": true
-					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time",
 						"nullable": true
 					},
-					"description": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"endDate": {
-						"type": "string",
-						"format": "date-time",
+					"events": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Json"
+							}
+						],
 						"nullable": true
-					},
-					"eventIdInContract": {
-						"type": "number",
-						"format": "double"
-					},
-					"eventTemplateId": {
-						"type": "string",
-						"nullable": true
-					},
-					"eventType": {
-						"type": "string"
-					},
-					"eventUrl": {
-						"type": "string",
-						"nullable": true
-					},
-					"eventUuid": {
-						"type": "string"
-					},
-					"expiryDate": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"image": {
-						"type": "string"
 					},
 					"instance": {
 						"type": "number",
 						"format": "double"
 					},
-					"issuerUuid": {
-						"type": "string"
-					},
-					"mintedPoaps": {
-						"type": "number",
-						"format": "double"
-					},
-					"platform": {
-						"type": "string",
-						"nullable": true
-					},
-					"poapcreatedat": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"poapsToBeMinted": {
-						"type": "number",
-						"format": "double"
-					},
-					"poapType": {
+					"ownerUuid": {
 						"type": "string"
 					},
 					"poapUuid": {
-						"type": "string"
-					},
-					"privateEvent": {
-						"type": "boolean"
-					},
-					"purpose": {
-						"type": "string",
-						"nullable": true
-					},
-					"relationcreatedat": {
-						"type": "string",
-						"format": "date-time",
-						"nullable": true
-					},
-					"relationUuid": {
-						"type": "string"
-					},
-					"requestedCodes": {
-						"type": "number",
-						"format": "double"
-					},
-					"secretCode": {
-						"type": "string",
-						"nullable": true
-					},
-					"startDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"title": {
 						"type": "string"
 					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time",
 						"nullable": true
-					},
-					"virtualEvent": {
-						"type": "boolean"
-					},
-					"year": {
-						"type": "number",
-						"format": "double",
-						"nullable": true
 					}
 				},
 				"required": [
-					"account",
-					"amountOfAttendees",
-					"approved",
-					"city",
-					"country",
 					"createdAt",
-					"description",
-					"email",
-					"endDate",
-					"eventIdInContract",
-					"eventTemplateId",
-					"eventType",
-					"eventUrl",
-					"eventUuid",
-					"expiryDate",
-					"image",
+					"events",
 					"instance",
-					"issuerUuid",
-					"mintedPoaps",
-					"platform",
-					"poapcreatedat",
-					"poapsToBeMinted",
-					"poapType",
+					"ownerUuid",
 					"poapUuid",
-					"privateEvent",
-					"purpose",
-					"relationcreatedat",
-					"relationUuid",
-					"requestedCodes",
-					"secretCode",
-					"startDate",
-					"title",
-					"updatedAt",
-					"virtualEvent",
-					"year"
+					"updatedAt"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1381,6 +1273,14 @@
 						"format": "date-time",
 						"nullable": true
 					},
+					"events": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Json"
+							}
+						],
+						"nullable": true
+					},
 					"instance": {
 						"type": "number",
 						"format": "double"
@@ -1399,6 +1299,7 @@
 				},
 				"required": [
 					"createdAt",
+					"events",
 					"instance",
 					"ownerUuid",
 					"poapUuid",
@@ -1901,7 +1802,7 @@
 				"parameters": [
 					{
 						"in": "query",
-						"name": "wallet",
+						"name": "ownerAddress",
 						"required": true,
 						"schema": {
 							"type": "string"

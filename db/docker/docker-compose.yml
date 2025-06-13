@@ -8,7 +8,7 @@ services:
     ports:
       - "5433:5433"
     volumes:
-      - poap-1748852490408-db:/var/lib/postgresql/data
+      - poap-1749796875239-db:/var/lib/postgresql/data
       - ../migrations/init/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       # Use pg_isready to check postgres is running. Substitute different
@@ -20,4 +20,4 @@ services:
     command: -p 5433
 
 volumes:
-  poap-1748852490408-db:
+  poap-1749796875239-db:

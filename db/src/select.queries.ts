@@ -1,6 +1,8 @@
 /** Types generated for queries found in "src/select.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
+export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+
 /** 'GetAllEventPoaps' parameters type */
 export type IGetAllEventPoapsParams = void;
 
@@ -133,6 +135,7 @@ export type IGetAllPoapsParams = void;
 /** 'GetAllPoaps' return type */
 export interface IGetAllPoapsResult {
   createdAt: Date | null;
+  events: Json | null;
   instance: number;
   ownerUuid: string;
   poapUuid: string;
@@ -145,13 +148,60 @@ export interface IGetAllPoapsQuery {
   result: IGetAllPoapsResult;
 }
 
-const getAllPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *\nFROM poaps"};
+const getAllPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT \n  p.\"poapUuid\",\n  p.\"ownerUuid\",\n  p.\"instance\",\n  p.\"createdAt\",\n  p.\"updatedAt\",\n  COALESCE(\n    json_agg(\n      jsonb_build_object(\n        'eventUuid', e.\"eventUuid\",\n        'eventIdInContract', e.\"eventIdInContract\",\n        'title', e.\"title\",\n        'description', e.\"description\",\n        'city', e.\"city\",\n        'country', e.\"country\",\n        'startDate', e.\"startDate\",\n        'endDate', e.\"endDate\",\n        'expiryDate', e.\"expiryDate\",\n        'year', e.\"year\",\n        'eventUrl', e.\"eventUrl\",\n        'virtualEvent', e.\"virtualEvent\",\n        'image', e.\"image\",\n        'secretCode', e.\"secretCode\",\n        'eventTemplateId', e.\"eventTemplateId\",\n        'email', e.\"email\",\n        'requestedCodes', e.\"requestedCodes\",\n        'privateEvent', e.\"privateEvent\",\n        'purpose', e.\"purpose\",\n        'platform', e.\"platform\",\n        'eventType', e.\"eventType\",\n        'amountOfAttendees', e.\"amountOfAttendees\",\n        'account', e.\"account\",\n        'poapType', e.\"poapType\",\n        'poapsToBeMinted', e.\"poapsToBeMinted\",\n        'mintedPoaps', e.\"mintedPoaps\",\n        'approved', e.\"approved\",\n        'createdAt', e.\"createdAt\",\n        'updatedAt', e.\"updatedAt\",\n        'issuerUuid', i.\"issuerUuid\",\n        'issuerIdInContract', i.\"issuerIdInContract\"\n      )\n    ) FILTER (WHERE e.\"eventUuid\" IS NOT NULL),\n    '[]'\n  ) AS events\nFROM poaps p\nLEFT JOIN eventpoaps ep ON ep.\"poapUuid\" = p.\"poapUuid\"\nLEFT JOIN events e ON e.\"eventUuid\" = ep.\"eventUuid\"\nLEFT JOIN issuers i ON i.\"issuerUuid\" = e.\"issuerUuid\"\nGROUP BY p.\"poapUuid\", p.\"ownerUuid\", p.\"instance\", p.\"createdAt\", p.\"updatedAt\""};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT *
- * FROM poaps
+ * SELECT 
+ *   p."poapUuid",
+ *   p."ownerUuid",
+ *   p."instance",
+ *   p."createdAt",
+ *   p."updatedAt",
+ *   COALESCE(
+ *     json_agg(
+ *       jsonb_build_object(
+ *         'eventUuid', e."eventUuid",
+ *         'eventIdInContract', e."eventIdInContract",
+ *         'title', e."title",
+ *         'description', e."description",
+ *         'city', e."city",
+ *         'country', e."country",
+ *         'startDate', e."startDate",
+ *         'endDate', e."endDate",
+ *         'expiryDate', e."expiryDate",
+ *         'year', e."year",
+ *         'eventUrl', e."eventUrl",
+ *         'virtualEvent', e."virtualEvent",
+ *         'image', e."image",
+ *         'secretCode', e."secretCode",
+ *         'eventTemplateId', e."eventTemplateId",
+ *         'email', e."email",
+ *         'requestedCodes', e."requestedCodes",
+ *         'privateEvent', e."privateEvent",
+ *         'purpose', e."purpose",
+ *         'platform', e."platform",
+ *         'eventType', e."eventType",
+ *         'amountOfAttendees', e."amountOfAttendees",
+ *         'account', e."account",
+ *         'poapType', e."poapType",
+ *         'poapsToBeMinted', e."poapsToBeMinted",
+ *         'mintedPoaps', e."mintedPoaps",
+ *         'approved', e."approved",
+ *         'createdAt', e."createdAt",
+ *         'updatedAt', e."updatedAt",
+ *         'issuerUuid', i."issuerUuid",
+ *         'issuerIdInContract', i."issuerIdInContract"
+ *       )
+ *     ) FILTER (WHERE e."eventUuid" IS NOT NULL),
+ *     '[]'
+ *   ) AS events
+ * FROM poaps p
+ * LEFT JOIN eventpoaps ep ON ep."poapUuid" = p."poapUuid"
+ * LEFT JOIN events e ON e."eventUuid" = ep."eventUuid"
+ * LEFT JOIN issuers i ON i."issuerUuid" = e."issuerUuid"
+ * GROUP BY p."poapUuid", p."ownerUuid", p."instance", p."createdAt", p."updatedAt"
  * ```
  */
 export const getAllPoaps = new PreparedQuery<IGetAllPoapsParams,IGetAllPoapsResult>(getAllPoapsIR);
@@ -332,46 +382,17 @@ export const getAllOwnersAndPoaps = new PreparedQuery<IGetAllOwnersAndPoapsParam
 
 /** 'GetOwnerPoaps' parameters type */
 export interface IGetOwnerPoapsParams {
-  address: string;
+  ownerAddress?: string | null | void;
 }
 
 /** 'GetOwnerPoaps' return type */
 export interface IGetOwnerPoapsResult {
-  account: string | null;
-  amountOfAttendees: number | null;
-  approved: string;
-  city: string | null;
-  country: string | null;
   createdAt: Date | null;
-  description: string;
-  email: string;
-  endDate: Date | null;
-  eventIdInContract: number;
-  eventTemplateId: string | null;
-  eventType: string;
-  eventUrl: string | null;
-  eventUuid: string;
-  expiryDate: Date | null;
-  image: string;
+  events: Json | null;
   instance: number;
-  issuerUuid: string;
-  mintedPoaps: number;
-  platform: string | null;
-  poapcreatedat: Date | null;
-  poapsToBeMinted: number;
-  poapType: string;
+  ownerUuid: string;
   poapUuid: string;
-  privateEvent: boolean;
-  purpose: string | null;
-  relationcreatedat: Date | null;
-  relationUuid: string;
-  requestedCodes: number;
-  secretCode: string | null;
-  startDate: Date;
-  title: string;
   updatedAt: Date | null;
-  virtualEvent: boolean;
-  year: number | null;
 }
 
 /** 'GetOwnerPoaps' query type */
@@ -380,22 +401,61 @@ export interface IGetOwnerPoapsQuery {
   result: IGetOwnerPoapsResult;
 }
 
-const getOwnerPoapsIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":381,"b":390}]}],"statement":"SELECT poaps.\"poapUuid\",\n  poaps.instance,\n  poaps.\"createdAt\" AS poapCreatedAt,\n  eventpoaps.\"relationUuid\",\n  eventpoaps.\"createdAt\" AS relationCreatedAt,\n  events.*\nFROM owners\n  JOIN poaps ON owners.\"ownerUuid\" = poaps.\"ownerUuid\"\n  JOIN eventpoaps ON poaps.\"poapUuid\" = eventpoaps.\"poapUuid\"\n  JOIN events ON eventpoaps.\"eventUuid\" = events.\"eventUuid\"\nWHERE owners.address = :address !"};
+const getOwnerPoapsIR: any = {"usedParamSet":{"ownerAddress":true},"params":[{"name":"ownerAddress","required":false,"transform":{"type":"scalar"},"locs":[{"a":1619,"b":1631}]}],"statement":"SELECT \n  p.\"poapUuid\",\n  p.\"ownerUuid\",\n  p.\"instance\",\n  p.\"createdAt\",\n  p.\"updatedAt\",\n  COALESCE(\n    json_agg(\n      jsonb_build_object(\n        'eventUuid', e.\"eventUuid\",\n        'eventIdInContract', e.\"eventIdInContract\",\n        'title', e.\"title\",\n        'description', e.\"description\",\n        'city', e.\"city\",\n        'country', e.\"country\",\n        'startDate', e.\"startDate\",\n        'endDate', e.\"endDate\",\n        'expiryDate', e.\"expiryDate\",\n        'year', e.\"year\",\n        'eventUrl', e.\"eventUrl\",\n        'virtualEvent', e.\"virtualEvent\",\n        'image', e.\"image\",\n        'secretCode', e.\"secretCode\",\n        'eventTemplateId', e.\"eventTemplateId\",\n        'email', e.\"email\",\n        'requestedCodes', e.\"requestedCodes\",\n        'privateEvent', e.\"privateEvent\",\n        'purpose', e.\"purpose\",\n        'platform', e.\"platform\",\n        'eventType', e.\"eventType\",\n        'amountOfAttendees', e.\"amountOfAttendees\",\n        'account', e.\"account\",\n        'poapType', e.\"poapType\",\n        'poapsToBeMinted', e.\"poapsToBeMinted\",\n        'mintedPoaps', e.\"mintedPoaps\",\n        'approved', e.\"approved\",\n        'createdAt', e.\"createdAt\",\n        'updatedAt', e.\"updatedAt\",\n        'issuerUuid', i.\"issuerUuid\",\n        'issuerIdInContract', i.\"issuerIdInContract\"\n      )\n    ) FILTER (WHERE e.\"eventUuid\" IS NOT NULL), '[]'\n  ) AS events\nFROM poaps p\nJOIN owners o ON o.\"ownerUuid\" = p.\"ownerUuid\"\nLEFT JOIN eventpoaps ep ON ep.\"poapUuid\" = p.\"poapUuid\"\nLEFT JOIN events e ON e.\"eventUuid\" = ep.\"eventUuid\"\nLEFT JOIN issuers i ON i.\"issuerUuid\" = e.\"issuerUuid\"\nWHERE o.\"address\" = :ownerAddress\nGROUP BY p.\"poapUuid\", p.\"ownerUuid\", p.\"instance\", p.\"createdAt\", p.\"updatedAt\""};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT poaps."poapUuid",
- *   poaps.instance,
- *   poaps."createdAt" AS poapCreatedAt,
- *   eventpoaps."relationUuid",
- *   eventpoaps."createdAt" AS relationCreatedAt,
- *   events.*
- * FROM owners
- *   JOIN poaps ON owners."ownerUuid" = poaps."ownerUuid"
- *   JOIN eventpoaps ON poaps."poapUuid" = eventpoaps."poapUuid"
- *   JOIN events ON eventpoaps."eventUuid" = events."eventUuid"
- * WHERE owners.address = :address !
+ * SELECT 
+ *   p."poapUuid",
+ *   p."ownerUuid",
+ *   p."instance",
+ *   p."createdAt",
+ *   p."updatedAt",
+ *   COALESCE(
+ *     json_agg(
+ *       jsonb_build_object(
+ *         'eventUuid', e."eventUuid",
+ *         'eventIdInContract', e."eventIdInContract",
+ *         'title', e."title",
+ *         'description', e."description",
+ *         'city', e."city",
+ *         'country', e."country",
+ *         'startDate', e."startDate",
+ *         'endDate', e."endDate",
+ *         'expiryDate', e."expiryDate",
+ *         'year', e."year",
+ *         'eventUrl', e."eventUrl",
+ *         'virtualEvent', e."virtualEvent",
+ *         'image', e."image",
+ *         'secretCode', e."secretCode",
+ *         'eventTemplateId', e."eventTemplateId",
+ *         'email', e."email",
+ *         'requestedCodes', e."requestedCodes",
+ *         'privateEvent', e."privateEvent",
+ *         'purpose', e."purpose",
+ *         'platform', e."platform",
+ *         'eventType', e."eventType",
+ *         'amountOfAttendees', e."amountOfAttendees",
+ *         'account', e."account",
+ *         'poapType', e."poapType",
+ *         'poapsToBeMinted', e."poapsToBeMinted",
+ *         'mintedPoaps', e."mintedPoaps",
+ *         'approved', e."approved",
+ *         'createdAt', e."createdAt",
+ *         'updatedAt', e."updatedAt",
+ *         'issuerUuid', i."issuerUuid",
+ *         'issuerIdInContract', i."issuerIdInContract"
+ *       )
+ *     ) FILTER (WHERE e."eventUuid" IS NOT NULL), '[]'
+ *   ) AS events
+ * FROM poaps p
+ * JOIN owners o ON o."ownerUuid" = p."ownerUuid"
+ * LEFT JOIN eventpoaps ep ON ep."poapUuid" = p."poapUuid"
+ * LEFT JOIN events e ON e."eventUuid" = ep."eventUuid"
+ * LEFT JOIN issuers i ON i."issuerUuid" = e."issuerUuid"
+ * WHERE o."address" = :ownerAddress
+ * GROUP BY p."poapUuid", p."ownerUuid", p."instance", p."createdAt", p."updatedAt"
  * ```
  */
 export const getOwnerPoaps = new PreparedQuery<IGetOwnerPoapsParams,IGetOwnerPoapsResult>(getOwnerPoapsIR);

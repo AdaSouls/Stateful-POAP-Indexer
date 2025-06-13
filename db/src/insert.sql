@@ -109,6 +109,13 @@ eventpoap_insert AS (
   FROM poap_insert,
     event_data
   RETURNING *
+),
+event_update AS (
+  UPDATE events
+  SET "mintedPoaps" = "mintedPoaps" + 1,
+      "updatedAt" = NOW()
+  WHERE "eventIdInContract" = :eventIdInContract!
+  RETURNING *
 )
 SELECT *
 FROM poap_insert;
@@ -119,31 +126,35 @@ INSERT INTO owners("email", "address")
 VALUES (:email, :address !)
 RETURNING *;
 /* 
- @name createEventPoap
- */
+  @name createEventPoap
+*/
 WITH owner_data AS (
   SELECT "ownerUuid"
   FROM owners
-  WHERE LOWER("address") = LOWER(:address !)
+  WHERE LOWER("address") = LOWER(:address!)
 ),
 event_data AS (
   SELECT "eventUuid"
   FROM events
-  WHERE "eventIdInContract" = :eventIdInContract !
+  WHERE "eventIdInContract" = :eventIdInContract!
 ),
 poap_data AS (
-  SELECT "poapUuid"
+  SELECT p."poapUuid"
   FROM poaps p
-    JOIN owner_data o ON p."ownerUuid" = o."ownerUuid"
-  WHERE p."instance" = :instance !
+  JOIN owner_data o ON p."ownerUuid" = o."ownerUuid"
+  WHERE p."instance" = :instance!
 ),
 eventpoap_insert AS (
   INSERT INTO eventpoaps ("poapUuid", "eventUuid")
-  SELECT poap_data."poapUuid",
-    event_data."eventUuid"
-  FROM poap_data,
-    event_data
+  SELECT poap_data."poapUuid", event_data."eventUuid"
+  FROM poap_data, event_data
+  RETURNING *
+),
+event_update AS (
+  UPDATE events
+  SET "mintedPoaps" = "mintedPoaps" + 1,
+      "updatedAt" = NOW()
+  WHERE "eventIdInContract" = :eventIdInContract!
   RETURNING *
 )
-SELECT *
-FROM eventpoap_insert;
+SELECT * FROM eventpoap_insert;

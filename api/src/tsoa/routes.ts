@@ -390,44 +390,20 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Json": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":[null]},{"dataType":"boolean"},{"dataType":"double"},{"dataType":"string"},{"dataType":"array","array":{"dataType":"refAlias","ref":"Json"}},{"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"ref":"Json"}}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IGetOwnerPoapsResult": {
         "dataType": "refObject",
         "properties": {
-            "account": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "amountOfAttendees": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
-            "approved": {"dataType":"string","required":true},
-            "city": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "country": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "description": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "endDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "eventIdInContract": {"dataType":"double","required":true},
-            "eventTemplateId": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "eventType": {"dataType":"string","required":true},
-            "eventUrl": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "eventUuid": {"dataType":"string","required":true},
-            "expiryDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "image": {"dataType":"string","required":true},
+            "events": {"dataType":"union","subSchemas":[{"ref":"Json"},{"dataType":"enum","enums":[null]}],"required":true},
             "instance": {"dataType":"double","required":true},
-            "issuerUuid": {"dataType":"string","required":true},
-            "mintedPoaps": {"dataType":"double","required":true},
-            "platform": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "poapcreatedat": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "poapsToBeMinted": {"dataType":"double","required":true},
-            "poapType": {"dataType":"string","required":true},
+            "ownerUuid": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
-            "privateEvent": {"dataType":"boolean","required":true},
-            "purpose": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "relationcreatedat": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "relationUuid": {"dataType":"string","required":true},
-            "requestedCodes": {"dataType":"double","required":true},
-            "secretCode": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
-            "startDate": {"dataType":"datetime","required":true},
-            "title": {"dataType":"string","required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
-            "virtualEvent": {"dataType":"boolean","required":true},
-            "year": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
     },
@@ -453,6 +429,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
+            "events": {"dataType":"union","subSchemas":[{"ref":"Json"},{"dataType":"enum","enums":[null]}],"required":true},
             "instance": {"dataType":"double","required":true},
             "ownerUuid": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
@@ -923,7 +900,7 @@ export function RegisterRoutes(app: Router) {
 
             async function OwnerPoapsController_get(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    wallet: {"in":"query","name":"wallet","required":true,"dataType":"string"},
+                    ownerAddress: {"in":"query","name":"ownerAddress","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

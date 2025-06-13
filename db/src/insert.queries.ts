@@ -217,7 +217,7 @@ export interface ICreatePoapQuery {
   result: ICreatePoapResult;
 }
 
-const createPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContract":true,"instance":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":98}]},{"name":"eventIdInContract","required":true,"transform":{"type":"scalar"},"locs":[{"a":185,"b":204}]},{"name":"instance","required":true,"transform":{"type":"scalar"},"locs":[{"a":281,"b":291}]}],"statement":"WITH owner_data AS (\n  SELECT \"ownerUuid\"\n  FROM owners\n  WHERE LOWER(\"address\") = LOWER(:address !)\n),\nevent_data AS (\n  SELECT \"eventUuid\"\n  FROM events\n  WHERE \"eventIdInContract\" = :eventIdInContract !\n),\npoap_insert AS (\n  INSERT INTO poaps (\"instance\", \"ownerUuid\")\n  SELECT :instance !,\n    owner_data.\"ownerUuid\"\n  FROM owner_data\n  RETURNING *\n),\neventpoap_insert AS (\n  INSERT INTO eventpoaps (\"poapUuid\", \"eventUuid\")\n  SELECT poap_insert.\"poapUuid\",\n    event_data.\"eventUuid\"\n  FROM poap_insert,\n    event_data\n  RETURNING *\n)\nSELECT *\nFROM poap_insert"};
+const createPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContract":true,"instance":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":98}]},{"name":"eventIdInContract","required":true,"transform":{"type":"scalar"},"locs":[{"a":185,"b":204},{"a":672,"b":690}]},{"name":"instance","required":true,"transform":{"type":"scalar"},"locs":[{"a":281,"b":291}]}],"statement":"WITH owner_data AS (\n  SELECT \"ownerUuid\"\n  FROM owners\n  WHERE LOWER(\"address\") = LOWER(:address !)\n),\nevent_data AS (\n  SELECT \"eventUuid\"\n  FROM events\n  WHERE \"eventIdInContract\" = :eventIdInContract !\n),\npoap_insert AS (\n  INSERT INTO poaps (\"instance\", \"ownerUuid\")\n  SELECT :instance !,\n    owner_data.\"ownerUuid\"\n  FROM owner_data\n  RETURNING *\n),\neventpoap_insert AS (\n  INSERT INTO eventpoaps (\"poapUuid\", \"eventUuid\")\n  SELECT poap_insert.\"poapUuid\",\n    event_data.\"eventUuid\"\n  FROM poap_insert,\n    event_data\n  RETURNING *\n),\nevent_update AS (\n  UPDATE events\n  SET \"mintedPoaps\" = \"mintedPoaps\" + 1,\n      \"updatedAt\" = NOW()\n  WHERE \"eventIdInContract\" = :eventIdInContract!\n  RETURNING *\n)\nSELECT *\nFROM poap_insert"};
 
 /**
  * Query generated from SQL:
@@ -245,6 +245,13 @@ const createPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContract":tr
  *     event_data."eventUuid"
  *   FROM poap_insert,
  *     event_data
+ *   RETURNING *
+ * ),
+ * event_update AS (
+ *   UPDATE events
+ *   SET "mintedPoaps" = "mintedPoaps" + 1,
+ *       "updatedAt" = NOW()
+ *   WHERE "eventIdInContract" = :eventIdInContract!
  *   RETURNING *
  * )
  * SELECT *
@@ -310,7 +317,7 @@ export interface ICreateEventPoapQuery {
   result: ICreateEventPoapResult;
 }
 
-const createEventPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContract":true,"instance":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":98}]},{"name":"eventIdInContract","required":true,"transform":{"type":"scalar"},"locs":[{"a":185,"b":204}]},{"name":"instance","required":true,"transform":{"type":"scalar"},"locs":[{"a":337,"b":347}]}],"statement":"WITH owner_data AS (\n  SELECT \"ownerUuid\"\n  FROM owners\n  WHERE LOWER(\"address\") = LOWER(:address !)\n),\nevent_data AS (\n  SELECT \"eventUuid\"\n  FROM events\n  WHERE \"eventIdInContract\" = :eventIdInContract !\n),\npoap_data AS (\n  SELECT \"poapUuid\"\n  FROM poaps p\n    JOIN owner_data o ON p.\"ownerUuid\" = o.\"ownerUuid\"\n  WHERE p.\"instance\" = :instance !\n),\neventpoap_insert AS (\n  INSERT INTO eventpoaps (\"poapUuid\", \"eventUuid\")\n  SELECT poap_data.\"poapUuid\",\n    event_data.\"eventUuid\"\n  FROM poap_data,\n    event_data\n  RETURNING *\n)\nSELECT *\nFROM eventpoap_insert"};
+const createEventPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContract":true,"instance":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":97}]},{"name":"eventIdInContract","required":true,"transform":{"type":"scalar"},"locs":[{"a":184,"b":202},{"a":653,"b":671}]},{"name":"instance","required":true,"transform":{"type":"scalar"},"locs":[{"a":335,"b":344}]}],"statement":"WITH owner_data AS (\n  SELECT \"ownerUuid\"\n  FROM owners\n  WHERE LOWER(\"address\") = LOWER(:address!)\n),\nevent_data AS (\n  SELECT \"eventUuid\"\n  FROM events\n  WHERE \"eventIdInContract\" = :eventIdInContract!\n),\npoap_data AS (\n  SELECT p.\"poapUuid\"\n  FROM poaps p\n  JOIN owner_data o ON p.\"ownerUuid\" = o.\"ownerUuid\"\n  WHERE p.\"instance\" = :instance!\n),\neventpoap_insert AS (\n  INSERT INTO eventpoaps (\"poapUuid\", \"eventUuid\")\n  SELECT poap_data.\"poapUuid\", event_data.\"eventUuid\"\n  FROM poap_data, event_data\n  RETURNING *\n),\nevent_update AS (\n  UPDATE events\n  SET \"mintedPoaps\" = \"mintedPoaps\" + 1,\n      \"updatedAt\" = NOW()\n  WHERE \"eventIdInContract\" = :eventIdInContract!\n  RETURNING *\n)\nSELECT * FROM eventpoap_insert"};
 
 /**
  * Query generated from SQL:
@@ -318,29 +325,33 @@ const createEventPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContrac
  * WITH owner_data AS (
  *   SELECT "ownerUuid"
  *   FROM owners
- *   WHERE LOWER("address") = LOWER(:address !)
+ *   WHERE LOWER("address") = LOWER(:address!)
  * ),
  * event_data AS (
  *   SELECT "eventUuid"
  *   FROM events
- *   WHERE "eventIdInContract" = :eventIdInContract !
+ *   WHERE "eventIdInContract" = :eventIdInContract!
  * ),
  * poap_data AS (
- *   SELECT "poapUuid"
+ *   SELECT p."poapUuid"
  *   FROM poaps p
- *     JOIN owner_data o ON p."ownerUuid" = o."ownerUuid"
- *   WHERE p."instance" = :instance !
+ *   JOIN owner_data o ON p."ownerUuid" = o."ownerUuid"
+ *   WHERE p."instance" = :instance!
  * ),
  * eventpoap_insert AS (
  *   INSERT INTO eventpoaps ("poapUuid", "eventUuid")
- *   SELECT poap_data."poapUuid",
- *     event_data."eventUuid"
- *   FROM poap_data,
- *     event_data
+ *   SELECT poap_data."poapUuid", event_data."eventUuid"
+ *   FROM poap_data, event_data
+ *   RETURNING *
+ * ),
+ * event_update AS (
+ *   UPDATE events
+ *   SET "mintedPoaps" = "mintedPoaps" + 1,
+ *       "updatedAt" = NOW()
+ *   WHERE "eventIdInContract" = :eventIdInContract!
  *   RETURNING *
  * )
- * SELECT *
- * FROM eventpoap_insert
+ * SELECT * FROM eventpoap_insert
  * ```
  */
 export const createEventPoap = new PreparedQuery<ICreateEventPoapParams,ICreateEventPoapResult>(createEventPoapIR);
