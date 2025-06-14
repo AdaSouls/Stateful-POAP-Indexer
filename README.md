@@ -2,6 +2,29 @@
  
 This documentation provides a basic overview of what are Stateful POAPs and how its indexer works. Each module has its own `README` file with more detailed information.
 
+## Directory Structure
+
+The project follows a specific directory structure to organize the code and resources effectively. Here's an overview of the important directories and files:
+
+```
+poap-indexer/
+├── Stateful-POAP-Indexer/
+│   ├── src/
+│   │   ├── api/            # API routes and controllers
+│   │   ├── gamelogic/      # Core game logic
+│   │   ├── generated/      # Auto-generated files
+│   │   ├── models/         # Data models
+│   │   ├── queries/        # Database queries
+│   │   └── utils/          # Helper utilities
+│   ├── test/               # Test files
+│   ├── package.json        # Project dependencies
+│   ├── tsconfig.json       # TypeScript configuration
+│   ├── .env.example        # Example environment variables
+│   └── README.md           # Project documentation
+└── paima-engine-linux      # Paima Engine executable (parent directory)
+```
+
+
 ## Installation
 
 To install dependencies and perform initial setup, run the following command:
@@ -99,3 +122,54 @@ If you've got this far you're probably already familiar with our documentation. 
 ```
 
 Or you can visit our [Paima Documentation Website](docs.paimastudios.com) at any time.
+
+#
+#
+# Developer's steps
+
+## Build Commands
+
+Our project uses several commands to compile and build different parts of the application. This should be done while all terminals (Local Blockchain if there is one for testing, DB and Paima Engine):
+
+- **npm run compile:db**: Updates the database's queries and types using pgTyped, generating type-safe database query functions from SQL files in the queries directory. This ensures type safety between your database schema and TypeScript code.
+
+- **npm run compile:api**: Updates the controllers used to post or get data from the database. This script regenerates API routes and controllers using the tsoa framework, creating OpenAPI documentation and type-safe route handlers.
+
+- **npm run pack:middleware**: Builds the routing middleware that handles request routing to the different API endpoints. This compiles the middleware layer that sits between the client requests and your core application logic.
+
+- **npm run pack**: Builds the entire workspace, compiling all TypeScript code and packaging the application for deployment. After running this command, you should reset the Paima Engine to ensure all changes are properly applied.
+
+
+# POAP Indexer Implementation Steps
+
+This document outlines the step-by-step process for implementing the Stateful POAP Indexer:
+
+## Database Setup
+1. **Create Database Schema**
+  - Define tables in `/db/migrations/init/init.sql`
+
+## Query Layer
+2. **Implement SQL Operations**
+  - Create SQL queries (select, insert, update, delete) in `/db/src/*.sql`
+
+## Middleware Layer
+3. **Establish API Endpoints**
+  - Define endpoint constructors in `/middleware/src/helpers/query-constructors.ts`
+
+4. **Create Query Functions**
+  - Implement endpoint triggers in:
+    - `/middleware/src/endpoints/queries.ts` (read operations)
+    - `/middleware/src/endpoints/write.ts` (write operations)
+
+5. **Develop Controllers**
+  - Create controllers to handle data flow between routes
+
+## Blockchain Integration
+6. **Define Blockchain Events**
+  - Configure event listeners in `/state-transition/src/stf/v1/parser.ts`
+
+7. **Implement Event Processing**
+  - Adapt the entrypoint function in `/state-transition/src/stf/v1/index.ts` to:
+    - Identify blockchain events
+    - Trigger appropriate functions for each event type
+
