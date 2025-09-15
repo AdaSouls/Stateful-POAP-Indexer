@@ -62,8 +62,6 @@ async function main() {
   );
 
   // Verify the contract after deploying
-  // TODO: Get PolygonScan API key to enable verification
-  /*
   await hre.run("verify:verify", {
     address: await poap.getAddress(),
     constructorArguments: [
@@ -72,7 +70,7 @@ async function main() {
       accounts[0].address,
     ],
   });
-  */
+  
 }
 
 main();
