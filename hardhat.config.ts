@@ -10,9 +10,9 @@ import * as dotenv from 'dotenv';
 const amoy: Record<string, string> = {};
 const testnet: Record<string, string> = {};
 const mainnet: Record<string, string> = {};
-dotenv.config({ path: '../.env.amoy', processEnv: amoy });
-dotenv.config({ path: '../.env.testnet', processEnv: testnet });
-dotenv.config({ path: '../.env.mainnet', processEnv: mainnet });
+dotenv.config({ path: './.env.amoy', processEnv: amoy });
+dotenv.config({ path: './.env.testnet', processEnv: testnet });
+dotenv.config({ path: './.env.mainnet', processEnv: mainnet });
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -48,7 +48,7 @@ const config: HardhatUserConfig = {
     amoy: {
       url: amoy.CHAIN_URI ?? '',
       chainId: 80002,
-      gasPrice:  30000000000,
+      gasPrice: 30000000000,
       accounts: amoy.DEPLOYER_PRIVATE_KEY == null ? [] : [amoy.DEPLOYER_PRIVATE_KEY],
     },
     production: {
@@ -57,6 +57,11 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
+    apiKey: {
+      "milkomeda-c1-devnet": "NO_API_KEY_PROVIDED",
+      "milkomeda-c1-mainnet": "NO_API_KEY_PROVIDED",
+      "amoy": "YOUR_OKLINK_API_KEY_HERE",
+    },
     customChains: [
       {
         network: "milkomeda-c1-devnet",
@@ -75,19 +80,14 @@ const config: HardhatUserConfig = {
         }
       },
       {
-        network: "polygonAmoy",
+        network: "amoy",
         chainId: 80002,
         urls: {
-          apiURL: "https://www.oklink.com/api/explorer/v1/contract/verify/async/api/polygonAmoy",
-          browserURL: "https://www.oklink.com/polygonAmoy"
-        },
-      }
-    ],
-    apiKey: {
-      "milkomeda-c1-devnet": "NO_API_KEY_PROVIDED",
-      "milkomeda-c1-mainnet": "NO_API_KEY_PROVIDED",    
-      "polygonAmoy": "11ebf820-748f-49da-a1d0-36cf8d5f8893",
-    }
+          apiURL: "https://www.oklink.com/api/v5/explorer/contract/verify-source-code-plugin/AMOY_TESTNET",
+          browserURL: "https://www.oklink.com"
+        }
+      },
+    ]
   },
   dependencyCompiler: {
     paths: [
