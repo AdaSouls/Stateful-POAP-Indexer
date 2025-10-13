@@ -6,13 +6,13 @@ import { buildBackendQuery } from "@paima/sdk/mw-core";
 
 
 export function backendQueryCreateEventPoapRelation(
-  poapUuid: string,
-  eventUuid: string
+  eventId: number,
+  tokenId: number
 ): string {
   const endpoint = "create_event_poap_relation";
   const options = {
-    poapUuid,
-    eventUuid,
+    eventId,
+    tokenId,
   };
   return buildBackendQuery(endpoint, options);
 }

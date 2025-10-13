@@ -1,55 +1,19 @@
 /** Types generated for queries found in "src/select.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
-export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
-
-/** 'GetAllEventPoaps' parameters type */
-export type IGetAllEventPoapsParams = void;
-
-/** 'GetAllEventPoaps' return type */
-export interface IGetAllEventPoapsResult {
-  createdAt: Date | null;
-  eventUuid: string;
-  poapUuid: string;
-  relationUuid: string;
-  updatedAt: Date | null;
-}
-
-/** 'GetAllEventPoaps' query type */
-export interface IGetAllEventPoapsQuery {
-  params: IGetAllEventPoapsParams;
-  result: IGetAllEventPoapsResult;
-}
-
-const getAllEventPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT \"relationUuid\",\n  \"poapUuid\",\n  \"eventUuid\",\n  \"createdAt\",\n  \"updatedAt\"\nFROM eventpoaps"};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT "relationUuid",
- *   "poapUuid",
- *   "eventUuid",
- *   "createdAt",
- *   "updatedAt"
- * FROM eventpoaps
- * ```
- */
-export const getAllEventPoaps = new PreparedQuery<IGetAllEventPoapsParams,IGetAllEventPoapsResult>(getAllEventPoapsIR);
-
-
 /** 'GetAllIssuers' parameters type */
 export type IGetAllIssuersParams = void;
 
 /** 'GetAllIssuers' return type */
 export interface IGetAllIssuersResult {
-  address: string;
   createdAt: Date | null;
-  email: string;
-  issuerIdInContract: number;
+  email: string | null;
+  issuerAddress: string;
+  issuerId: number;
   issuerUuid: string;
-  name: string;
-  organization: string;
+  organization: string | null;
   updatedAt: Date | null;
+  username: string | null;
 }
 
 /** 'GetAllIssuers' query type */
@@ -58,442 +22,50 @@ export interface IGetAllIssuersQuery {
   result: IGetAllIssuersResult;
 }
 
-const getAllIssuersIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *\nFROM issuers"};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT *
- * FROM issuers
- * ```
- */
-export const getAllIssuers = new PreparedQuery<IGetAllIssuersParams,IGetAllIssuersResult>(getAllIssuersIR);
-
-
-/** 'GetAllEvents' parameters type */
-export type IGetAllEventsParams = void;
-
-/** 'GetAllEvents' return type */
-export interface IGetAllEventsResult {
-  account: string | null;
-  amountOfAttendees: number | null;
-  approved: string;
-  city: string | null;
-  country: string | null;
-  createdAt: Date | null;
-  description: string;
-  email: string;
-  endDate: Date | null;
-  eventIdInContract: number;
-  eventTemplateId: string | null;
-  eventType: string;
-  eventUrl: string | null;
-  eventUuid: string;
-  expiryDate: Date | null;
-  image: string;
-  issuerIdInContract: number;
-  issuerUuid: string;
-  mintedPoaps: number;
-  platform: string | null;
-  poapsToBeMinted: number;
-  poapType: string;
-  privateEvent: boolean;
-  purpose: string | null;
-  requestedCodes: number;
-  secretCode: string | null;
-  startDate: Date;
-  title: string;
-  updatedAt: Date | null;
-  virtualEvent: boolean;
-  year: number | null;
-}
-
-/** 'GetAllEvents' query type */
-export interface IGetAllEventsQuery {
-  params: IGetAllEventsParams;
-  result: IGetAllEventsResult;
-}
-
-const getAllEventsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT \n  events.*,\n  issuers.\"issuerIdInContract\"\nFROM events\nJOIN issuers ON events.\"issuerUuid\" = issuers.\"issuerUuid\""};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT 
- *   events.*,
- *   issuers."issuerIdInContract"
- * FROM events
- * JOIN issuers ON events."issuerUuid" = issuers."issuerUuid"
- * ```
- */
-export const getAllEvents = new PreparedQuery<IGetAllEventsParams,IGetAllEventsResult>(getAllEventsIR);
-
-
-/** 'GetAllPoaps' parameters type */
-export type IGetAllPoapsParams = void;
-
-/** 'GetAllPoaps' return type */
-export interface IGetAllPoapsResult {
-  createdAt: Date | null;
-  events: Json | null;
-  instance: number;
-  ownerUuid: string;
-  poapUuid: string;
-  updatedAt: Date | null;
-}
-
-/** 'GetAllPoaps' query type */
-export interface IGetAllPoapsQuery {
-  params: IGetAllPoapsParams;
-  result: IGetAllPoapsResult;
-}
-
-const getAllPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT \n  p.\"poapUuid\",\n  p.\"ownerUuid\",\n  p.\"instance\",\n  p.\"createdAt\",\n  p.\"updatedAt\",\n  COALESCE(\n    json_agg(\n      jsonb_build_object(\n        'eventUuid', e.\"eventUuid\",\n        'eventIdInContract', e.\"eventIdInContract\",\n        'title', e.\"title\",\n        'description', e.\"description\",\n        'city', e.\"city\",\n        'country', e.\"country\",\n        'startDate', e.\"startDate\",\n        'endDate', e.\"endDate\",\n        'expiryDate', e.\"expiryDate\",\n        'year', e.\"year\",\n        'eventUrl', e.\"eventUrl\",\n        'virtualEvent', e.\"virtualEvent\",\n        'image', e.\"image\",\n        'secretCode', e.\"secretCode\",\n        'eventTemplateId', e.\"eventTemplateId\",\n        'email', e.\"email\",\n        'requestedCodes', e.\"requestedCodes\",\n        'privateEvent', e.\"privateEvent\",\n        'purpose', e.\"purpose\",\n        'platform', e.\"platform\",\n        'eventType', e.\"eventType\",\n        'amountOfAttendees', e.\"amountOfAttendees\",\n        'account', e.\"account\",\n        'poapType', e.\"poapType\",\n        'poapsToBeMinted', e.\"poapsToBeMinted\",\n        'mintedPoaps', e.\"mintedPoaps\",\n        'approved', e.\"approved\",\n        'createdAt', e.\"createdAt\",\n        'updatedAt', e.\"updatedAt\",\n        'issuerUuid', i.\"issuerUuid\",\n        'issuerIdInContract', i.\"issuerIdInContract\"\n      )\n    ) FILTER (WHERE e.\"eventUuid\" IS NOT NULL),\n    '[]'\n  ) AS events\nFROM poaps p\nLEFT JOIN eventpoaps ep ON ep.\"poapUuid\" = p.\"poapUuid\"\nLEFT JOIN events e ON e.\"eventUuid\" = ep.\"eventUuid\"\nLEFT JOIN issuers i ON i.\"issuerUuid\" = e.\"issuerUuid\"\nGROUP BY p.\"poapUuid\", p.\"ownerUuid\", p.\"instance\", p.\"createdAt\", p.\"updatedAt\""};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT 
- *   p."poapUuid",
- *   p."ownerUuid",
- *   p."instance",
- *   p."createdAt",
- *   p."updatedAt",
- *   COALESCE(
- *     json_agg(
- *       jsonb_build_object(
- *         'eventUuid', e."eventUuid",
- *         'eventIdInContract', e."eventIdInContract",
- *         'title', e."title",
- *         'description', e."description",
- *         'city', e."city",
- *         'country', e."country",
- *         'startDate', e."startDate",
- *         'endDate', e."endDate",
- *         'expiryDate', e."expiryDate",
- *         'year', e."year",
- *         'eventUrl', e."eventUrl",
- *         'virtualEvent', e."virtualEvent",
- *         'image', e."image",
- *         'secretCode', e."secretCode",
- *         'eventTemplateId', e."eventTemplateId",
- *         'email', e."email",
- *         'requestedCodes', e."requestedCodes",
- *         'privateEvent', e."privateEvent",
- *         'purpose', e."purpose",
- *         'platform', e."platform",
- *         'eventType', e."eventType",
- *         'amountOfAttendees', e."amountOfAttendees",
- *         'account', e."account",
- *         'poapType', e."poapType",
- *         'poapsToBeMinted', e."poapsToBeMinted",
- *         'mintedPoaps', e."mintedPoaps",
- *         'approved', e."approved",
- *         'createdAt', e."createdAt",
- *         'updatedAt', e."updatedAt",
- *         'issuerUuid', i."issuerUuid",
- *         'issuerIdInContract', i."issuerIdInContract"
- *       )
- *     ) FILTER (WHERE e."eventUuid" IS NOT NULL),
- *     '[]'
- *   ) AS events
- * FROM poaps p
- * LEFT JOIN eventpoaps ep ON ep."poapUuid" = p."poapUuid"
- * LEFT JOIN events e ON e."eventUuid" = ep."eventUuid"
- * LEFT JOIN issuers i ON i."issuerUuid" = e."issuerUuid"
- * GROUP BY p."poapUuid", p."ownerUuid", p."instance", p."createdAt", p."updatedAt"
- * ```
- */
-export const getAllPoaps = new PreparedQuery<IGetAllPoapsParams,IGetAllPoapsResult>(getAllPoapsIR);
-
-
-/** 'GetLastEvent' parameters type */
-export type IGetLastEventParams = void;
-
-/** 'GetLastEvent' return type */
-export interface IGetLastEventResult {
-  account: string | null;
-  amountOfAttendees: number | null;
-  approved: string;
-  city: string | null;
-  country: string | null;
-  createdAt: Date | null;
-  description: string;
-  email: string;
-  endDate: Date | null;
-  eventIdInContract: number;
-  eventTemplateId: string | null;
-  eventType: string;
-  eventUrl: string | null;
-  eventUuid: string;
-  expiryDate: Date | null;
-  image: string;
-  issuerUuid: string;
-  mintedPoaps: number;
-  platform: string | null;
-  poapsToBeMinted: number;
-  poapType: string;
-  privateEvent: boolean;
-  purpose: string | null;
-  requestedCodes: number;
-  secretCode: string | null;
-  startDate: Date;
-  title: string;
-  updatedAt: Date | null;
-  virtualEvent: boolean;
-  year: number | null;
-}
-
-/** 'GetLastEvent' query type */
-export interface IGetLastEventQuery {
-  params: IGetLastEventParams;
-  result: IGetLastEventResult;
-}
-
-const getLastEventIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *\nFROM events\nWHERE \"eventUuid\" = (\n  SELECT \"eventUuid\"\n  FROM events\n  ORDER BY \"createdAt\" DESC\n  LIMIT 1\n)"};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT *
- * FROM events
- * WHERE "eventUuid" = (
- *   SELECT "eventUuid"
- *   FROM events
- *   ORDER BY "createdAt" DESC
- *   LIMIT 1
- * )
- * ```
- */
-export const getLastEvent = new PreparedQuery<IGetLastEventParams,IGetLastEventResult>(getLastEventIR);
-
-
-/** 'GetAllOwners' parameters type */
-export type IGetAllOwnersParams = void;
-
-/** 'GetAllOwners' return type */
-export interface IGetAllOwnersResult {
-  address: string | null;
-  createdAt: Date | null;
-  email: string | null;
-  ownerUuid: string;
-  updatedAt: Date | null;
-}
-
-/** 'GetAllOwners' query type */
-export interface IGetAllOwnersQuery {
-  params: IGetAllOwnersParams;
-  result: IGetAllOwnersResult;
-}
-
-const getAllOwnersIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *\nFROM owners"};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT *
- * FROM owners
- * ```
- */
-export const getAllOwners = new PreparedQuery<IGetAllOwnersParams,IGetAllOwnersResult>(getAllOwnersIR);
-
-
-/** 'GetEventPoapByEventUuid' parameters type */
-export interface IGetEventPoapByEventUuidParams {
-  eventUuid?: string | null | void;
-}
-
-/** 'GetEventPoapByEventUuid' return type */
-export interface IGetEventPoapByEventUuidResult {
-  createdAt: Date | null;
-  eventUuid: string;
-  poapUuid: string;
-  relationUuid: string;
-  updatedAt: Date | null;
-}
-
-/** 'GetEventPoapByEventUuid' query type */
-export interface IGetEventPoapByEventUuidQuery {
-  params: IGetEventPoapByEventUuidParams;
-  result: IGetEventPoapByEventUuidResult;
-}
-
-const getEventPoapByEventUuidIR: any = {"usedParamSet":{"eventUuid":true},"params":[{"name":"eventUuid","required":false,"transform":{"type":"scalar"},"locs":[{"a":119,"b":128}]}],"statement":"SELECT \"relationUuid\",\n  \"poapUuid\",\n  \"eventUuid\",\n  \"createdAt\",\n  \"updatedAt\"\nFROM \"eventpoaps\"\nWHERE \"eventUuid\" = :eventUuid"};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT "relationUuid",
- *   "poapUuid",
- *   "eventUuid",
- *   "createdAt",
- *   "updatedAt"
- * FROM "eventpoaps"
- * WHERE "eventUuid" = :eventUuid
- * ```
- */
-export const getEventPoapByEventUuid = new PreparedQuery<IGetEventPoapByEventUuidParams,IGetEventPoapByEventUuidResult>(getEventPoapByEventUuidIR);
-
-
-/** 'GetAllOwnersAndPoaps' parameters type */
-export type IGetAllOwnersAndPoapsParams = void;
-
-/** 'GetAllOwnersAndPoaps' return type */
-export interface IGetAllOwnersAndPoapsResult {
-  address: string | null;
-  createdAt: Date | null;
-  email: string | null;
-  ownerUuid: string;
-  "Poap.createdAt": Date | null;
-  "Poap.instance": number;
-  "Poap.poapUuid": string;
-  "Poap.updatedAt": Date | null;
-  updatedAt: Date | null;
-}
-
-/** 'GetAllOwnersAndPoaps' query type */
-export interface IGetAllOwnersAndPoapsQuery {
-  params: IGetAllOwnersAndPoapsParams;
-  result: IGetAllOwnersAndPoapsResult;
-}
-
-const getAllOwnersAndPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT \n  \"Owner\".\"ownerUuid\", \n  \"Owner\".\"address\", \n  \"Owner\".\"email\", \n  \"Owner\".\"createdAt\", \n  \"Owner\".\"updatedAt\", \n  \"Poap\".\"poapUuid\" AS \"Poap.poapUuid\", \n  \"Poap\".\"instance\" AS \"Poap.instance\", \n  \"Poap\".\"createdAt\" AS \"Poap.createdAt\", \n  \"Poap\".\"updatedAt\" AS \"Poap.updatedAt\"\nFROM \"owners\" AS \"Owner\"\nLEFT OUTER JOIN \"poaps\" AS \"Poap\" \nON \"Owner\".\"ownerUuid\" = \"Poap\".\"ownerUuid\""};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT 
- *   "Owner"."ownerUuid", 
- *   "Owner"."address", 
- *   "Owner"."email", 
- *   "Owner"."createdAt", 
- *   "Owner"."updatedAt", 
- *   "Poap"."poapUuid" AS "Poap.poapUuid", 
- *   "Poap"."instance" AS "Poap.instance", 
- *   "Poap"."createdAt" AS "Poap.createdAt", 
- *   "Poap"."updatedAt" AS "Poap.updatedAt"
- * FROM "owners" AS "Owner"
- * LEFT OUTER JOIN "poaps" AS "Poap" 
- * ON "Owner"."ownerUuid" = "Poap"."ownerUuid"
- * ```
- */
-export const getAllOwnersAndPoaps = new PreparedQuery<IGetAllOwnersAndPoapsParams,IGetAllOwnersAndPoapsResult>(getAllOwnersAndPoapsIR);
-
-
-/** 'GetOwnerPoaps' parameters type */
-export interface IGetOwnerPoapsParams {
-  ownerAddress?: string | null | void;
-}
-
-/** 'GetOwnerPoaps' return type */
-export interface IGetOwnerPoapsResult {
-  createdAt: Date | null;
-  events: Json | null;
-  instance: number;
-  ownerUuid: string;
-  poapUuid: string;
-  updatedAt: Date | null;
-}
-
-/** 'GetOwnerPoaps' query type */
-export interface IGetOwnerPoapsQuery {
-  params: IGetOwnerPoapsParams;
-  result: IGetOwnerPoapsResult;
-}
-
-const getOwnerPoapsIR: any = {"usedParamSet":{"ownerAddress":true},"params":[{"name":"ownerAddress","required":false,"transform":{"type":"scalar"},"locs":[{"a":1619,"b":1631}]}],"statement":"SELECT \n  p.\"poapUuid\",\n  p.\"ownerUuid\",\n  p.\"instance\",\n  p.\"createdAt\",\n  p.\"updatedAt\",\n  COALESCE(\n    json_agg(\n      jsonb_build_object(\n        'eventUuid', e.\"eventUuid\",\n        'eventIdInContract', e.\"eventIdInContract\",\n        'title', e.\"title\",\n        'description', e.\"description\",\n        'city', e.\"city\",\n        'country', e.\"country\",\n        'startDate', e.\"startDate\",\n        'endDate', e.\"endDate\",\n        'expiryDate', e.\"expiryDate\",\n        'year', e.\"year\",\n        'eventUrl', e.\"eventUrl\",\n        'virtualEvent', e.\"virtualEvent\",\n        'image', e.\"image\",\n        'secretCode', e.\"secretCode\",\n        'eventTemplateId', e.\"eventTemplateId\",\n        'email', e.\"email\",\n        'requestedCodes', e.\"requestedCodes\",\n        'privateEvent', e.\"privateEvent\",\n        'purpose', e.\"purpose\",\n        'platform', e.\"platform\",\n        'eventType', e.\"eventType\",\n        'amountOfAttendees', e.\"amountOfAttendees\",\n        'account', e.\"account\",\n        'poapType', e.\"poapType\",\n        'poapsToBeMinted', e.\"poapsToBeMinted\",\n        'mintedPoaps', e.\"mintedPoaps\",\n        'approved', e.\"approved\",\n        'createdAt', e.\"createdAt\",\n        'updatedAt', e.\"updatedAt\",\n        'issuerUuid', i.\"issuerUuid\",\n        'issuerIdInContract', i.\"issuerIdInContract\"\n      )\n    ) FILTER (WHERE e.\"eventUuid\" IS NOT NULL), '[]'\n  ) AS events\nFROM poaps p\nJOIN owners o ON o.\"ownerUuid\" = p.\"ownerUuid\"\nLEFT JOIN eventpoaps ep ON ep.\"poapUuid\" = p.\"poapUuid\"\nLEFT JOIN events e ON e.\"eventUuid\" = ep.\"eventUuid\"\nLEFT JOIN issuers i ON i.\"issuerUuid\" = e.\"issuerUuid\"\nWHERE o.\"address\" = :ownerAddress\nGROUP BY p.\"poapUuid\", p.\"ownerUuid\", p.\"instance\", p.\"createdAt\", p.\"updatedAt\""};
-
-/**
- * Query generated from SQL:
- * ```
- * SELECT 
- *   p."poapUuid",
- *   p."ownerUuid",
- *   p."instance",
- *   p."createdAt",
- *   p."updatedAt",
- *   COALESCE(
- *     json_agg(
- *       jsonb_build_object(
- *         'eventUuid', e."eventUuid",
- *         'eventIdInContract', e."eventIdInContract",
- *         'title', e."title",
- *         'description', e."description",
- *         'city', e."city",
- *         'country', e."country",
- *         'startDate', e."startDate",
- *         'endDate', e."endDate",
- *         'expiryDate', e."expiryDate",
- *         'year', e."year",
- *         'eventUrl', e."eventUrl",
- *         'virtualEvent', e."virtualEvent",
- *         'image', e."image",
- *         'secretCode', e."secretCode",
- *         'eventTemplateId', e."eventTemplateId",
- *         'email', e."email",
- *         'requestedCodes', e."requestedCodes",
- *         'privateEvent', e."privateEvent",
- *         'purpose', e."purpose",
- *         'platform', e."platform",
- *         'eventType', e."eventType",
- *         'amountOfAttendees', e."amountOfAttendees",
- *         'account', e."account",
- *         'poapType', e."poapType",
- *         'poapsToBeMinted', e."poapsToBeMinted",
- *         'mintedPoaps', e."mintedPoaps",
- *         'approved', e."approved",
- *         'createdAt', e."createdAt",
- *         'updatedAt', e."updatedAt",
- *         'issuerUuid', i."issuerUuid",
- *         'issuerIdInContract', i."issuerIdInContract"
- *       )
- *     ) FILTER (WHERE e."eventUuid" IS NOT NULL), '[]'
- *   ) AS events
- * FROM poaps p
- * JOIN owners o ON o."ownerUuid" = p."ownerUuid"
- * LEFT JOIN eventpoaps ep ON ep."poapUuid" = p."poapUuid"
- * LEFT JOIN events e ON e."eventUuid" = ep."eventUuid"
- * LEFT JOIN issuers i ON i."issuerUuid" = e."issuerUuid"
- * WHERE o."address" = :ownerAddress
- * GROUP BY p."poapUuid", p."ownerUuid", p."instance", p."createdAt", p."updatedAt"
- * ```
- */
-export const getOwnerPoaps = new PreparedQuery<IGetOwnerPoapsParams,IGetOwnerPoapsResult>(getOwnerPoapsIR);
-
-
-/** 'GetIssuerByAddress' parameters type */
-export interface IGetIssuerByAddressParams {
-  address: string;
-}
-
-/** 'GetIssuerByAddress' return type */
-export interface IGetIssuerByAddressResult {
-  address: string;
-  createdAt: Date | null;
-  email: string;
-  issuerIdInContract: number;
-  issuerUuid: string;
-  name: string;
-  organization: string;
-  updatedAt: Date | null;
-}
-
-/** 'GetIssuerByAddress' query type */
-export interface IGetIssuerByAddressQuery {
-  params: IGetIssuerByAddressParams;
-  result: IGetIssuerByAddressResult;
-}
-
-const getIssuerByAddressIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":40,"b":48}]}],"statement":"SELECT * FROM issuers\nWHERE \"address\" = :address!"};
+const getAllIssuersIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT * FROM issuers"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT * FROM issuers
- * WHERE "address" = :address!
  * ```
  */
-export const getIssuerByAddress = new PreparedQuery<IGetIssuerByAddressParams,IGetIssuerByAddressResult>(getIssuerByAddressIR);
+export const getAllIssuers = new PreparedQuery<IGetAllIssuersParams,IGetAllIssuersResult>(getAllIssuersIR);
+
+
+/** 'GetIssuerByWalletAddress' parameters type */
+export interface IGetIssuerByWalletAddressParams {
+  walletAddress: string;
+}
+
+/** 'GetIssuerByWalletAddress' return type */
+export interface IGetIssuerByWalletAddressResult {
+  createdAt: Date | null;
+  email: string | null;
+  issuerAddress: string;
+  issuerId: number;
+  issuerUuid: string;
+  organization: string | null;
+  updatedAt: Date | null;
+  username: string | null;
+}
+
+/** 'GetIssuerByWalletAddress' query type */
+export interface IGetIssuerByWalletAddressQuery {
+  params: IGetIssuerByWalletAddressParams;
+  result: IGetIssuerByWalletAddressResult;
+}
+
+const getIssuerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":46,"b":60}]}],"statement":"SELECT * FROM issuers\nWHERE \"issuerAddress\" = :walletAddress!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM issuers
+ * WHERE "issuerAddress" = :walletAddress!
+ * ```
+ */
+export const getIssuerByWalletAddress = new PreparedQuery<IGetIssuerByWalletAddressParams,IGetIssuerByWalletAddressResult>(getIssuerByWalletAddressIR);
 
 
 /** 'GetIssuerByUuid' parameters type */
@@ -503,14 +75,14 @@ export interface IGetIssuerByUuidParams {
 
 /** 'GetIssuerByUuid' return type */
 export interface IGetIssuerByUuidResult {
-  address: string;
   createdAt: Date | null;
-  email: string;
-  issuerIdInContract: number;
+  email: string | null;
+  issuerAddress: string;
+  issuerId: number;
   issuerUuid: string;
-  name: string;
-  organization: string;
+  organization: string | null;
   updatedAt: Date | null;
+  username: string | null;
 }
 
 /** 'GetIssuerByUuid' query type */
@@ -531,67 +103,191 @@ const getIssuerByUuidIR: any = {"usedParamSet":{"issuerUuid":true},"params":[{"n
 export const getIssuerByUuid = new PreparedQuery<IGetIssuerByUuidParams,IGetIssuerByUuidResult>(getIssuerByUuidIR);
 
 
-/** 'GetOwnerByAddress' parameters type */
-export interface IGetOwnerByAddressParams {
-  address: string;
+/** 'GetOwnerByWalletAddress' parameters type */
+export interface IGetOwnerByWalletAddressParams {
+  walletAddress: string;
 }
 
-/** 'GetOwnerByAddress' return type */
-export interface IGetOwnerByAddressResult {
-  address: string | null;
+/** 'GetOwnerByWalletAddress' return type */
+export interface IGetOwnerByWalletAddressResult {
   createdAt: Date | null;
   email: string | null;
-  ownerUuid: string;
+  ownerAddress: string | null;
+  ownerId: number;
   updatedAt: Date | null;
+  username: string | null;
 }
 
-/** 'GetOwnerByAddress' query type */
-export interface IGetOwnerByAddressQuery {
-  params: IGetOwnerByAddressParams;
-  result: IGetOwnerByAddressResult;
+/** 'GetOwnerByWalletAddress' query type */
+export interface IGetOwnerByWalletAddressQuery {
+  params: IGetOwnerByWalletAddressParams;
+  result: IGetOwnerByWalletAddressResult;
 }
 
-const getOwnerByAddressIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":39,"b":47}]}],"statement":"SELECT * FROM owners\nWHERE \"address\" = :address!"};
+const getOwnerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":44,"b":58}]}],"statement":"SELECT * FROM owners\nWHERE \"ownerAddress\" = :walletAddress!"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT * FROM owners
- * WHERE "address" = :address!
+ * WHERE "ownerAddress" = :walletAddress!
  * ```
  */
-export const getOwnerByAddress = new PreparedQuery<IGetOwnerByAddressParams,IGetOwnerByAddressResult>(getOwnerByAddressIR);
+export const getOwnerByWalletAddress = new PreparedQuery<IGetOwnerByWalletAddressParams,IGetOwnerByWalletAddressResult>(getOwnerByWalletAddressIR);
 
 
-/** 'GetOwnerByUuid' parameters type */
-export interface IGetOwnerByUuidParams {
-  ownerUuid: string;
-}
+/** 'GetAllEvents' parameters type */
+export type IGetAllEventsParams = void;
 
-/** 'GetOwnerByUuid' return type */
-export interface IGetOwnerByUuidResult {
-  address: string | null;
+/** 'GetAllEvents' return type */
+export interface IGetAllEventsResult {
   createdAt: Date | null;
-  email: string | null;
-  ownerUuid: string;
+  eventId: number;
+  eventUuid: string;
+  expiration: number;
+  issuerId: number;
+  maxSupply: number;
+  organiserAddress: string;
+  status: string;
   updatedAt: Date | null;
 }
 
-/** 'GetOwnerByUuid' query type */
-export interface IGetOwnerByUuidQuery {
-  params: IGetOwnerByUuidParams;
-  result: IGetOwnerByUuidResult;
+/** 'GetAllEvents' query type */
+export interface IGetAllEventsQuery {
+  params: IGetAllEventsParams;
+  result: IGetAllEventsResult;
 }
 
-const getOwnerByUuidIR: any = {"usedParamSet":{"ownerUuid":true},"params":[{"name":"ownerUuid","required":true,"transform":{"type":"scalar"},"locs":[{"a":41,"b":51}]}],"statement":"SELECT * FROM owners\nWHERE \"ownerUuid\" = :ownerUuid!"};
+const getAllEventsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT * FROM events"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM events
+ * ```
+ */
+export const getAllEvents = new PreparedQuery<IGetAllEventsParams,IGetAllEventsResult>(getAllEventsIR);
+
+
+/** 'GetAllOwners' parameters type */
+export type IGetAllOwnersParams = void;
+
+/** 'GetAllOwners' return type */
+export interface IGetAllOwnersResult {
+  createdAt: Date | null;
+  email: string | null;
+  ownerAddress: string | null;
+  ownerId: number;
+  updatedAt: Date | null;
+  username: string | null;
+}
+
+/** 'GetAllOwners' query type */
+export interface IGetAllOwnersQuery {
+  params: IGetAllOwnersParams;
+  result: IGetAllOwnersResult;
+}
+
+const getAllOwnersIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT * FROM owners"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT * FROM owners
- * WHERE "ownerUuid" = :ownerUuid!
  * ```
  */
-export const getOwnerByUuid = new PreparedQuery<IGetOwnerByUuidParams,IGetOwnerByUuidResult>(getOwnerByUuidIR);
+export const getAllOwners = new PreparedQuery<IGetAllOwnersParams,IGetAllOwnersResult>(getAllOwnersIR);
+
+
+/** 'GetAllPoaps' parameters type */
+export type IGetAllPoapsParams = void;
+
+/** 'GetAllPoaps' return type */
+export interface IGetAllPoapsResult {
+  createdAt: Date | null;
+  eventId: number;
+  issuerId: number;
+  poapUuid: string;
+  tokenId: number;
+  updatedAt: Date | null;
+}
+
+/** 'GetAllPoaps' query type */
+export interface IGetAllPoapsQuery {
+  params: IGetAllPoapsParams;
+  result: IGetAllPoapsResult;
+}
+
+const getAllPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT * FROM poaps"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM poaps
+ * ```
+ */
+export const getAllPoaps = new PreparedQuery<IGetAllPoapsParams,IGetAllPoapsResult>(getAllPoapsIR);
+
+
+/** 'GetAllEventPoaps' parameters type */
+export type IGetAllEventPoapsParams = void;
+
+/** 'GetAllEventPoaps' return type */
+export interface IGetAllEventPoapsResult {
+  createdAt: Date | null;
+  eventId: number;
+  relationUuid: string;
+  tokenId: number;
+  updatedAt: Date | null;
+}
+
+/** 'GetAllEventPoaps' query type */
+export interface IGetAllEventPoapsQuery {
+  params: IGetAllEventPoapsParams;
+  result: IGetAllEventPoapsResult;
+}
+
+const getAllEventPoapsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT * FROM eventpoaps"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM eventpoaps
+ * ```
+ */
+export const getAllEventPoaps = new PreparedQuery<IGetAllEventPoapsParams,IGetAllEventPoapsResult>(getAllEventPoapsIR);
+
+
+/** 'GetAllEventsByTokenId' parameters type */
+export interface IGetAllEventsByTokenIdParams {
+  tokenId?: number | null | void;
+}
+
+/** 'GetAllEventsByTokenId' return type */
+export interface IGetAllEventsByTokenIdResult {
+  createdAt: Date | null;
+  eventId: number;
+  relationUuid: string;
+  tokenId: number;
+  updatedAt: Date | null;
+}
+
+/** 'GetAllEventsByTokenId' query type */
+export interface IGetAllEventsByTokenIdQuery {
+  params: IGetAllEventsByTokenIdParams;
+  result: IGetAllEventsByTokenIdResult;
+}
+
+const getAllEventsByTokenIdIR: any = {"usedParamSet":{"tokenId":true},"params":[{"name":"tokenId","required":false,"transform":{"type":"scalar"},"locs":[{"a":45,"b":52}]}],"statement":"SELECT *\nFROM \"eventpoaps\"\nWHERE \"tokenId\" = :tokenId"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT *
+ * FROM "eventpoaps"
+ * WHERE "tokenId" = :tokenId
+ * ```
+ */
+export const getAllEventsByTokenId = new PreparedQuery<IGetAllEventsByTokenIdParams,IGetAllEventsByTokenIdResult>(getAllEventsByTokenIdIR);
 
 

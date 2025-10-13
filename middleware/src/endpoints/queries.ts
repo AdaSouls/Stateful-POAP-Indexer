@@ -1,12 +1,11 @@
 import type {
   GetEventsResponse,
-  OwnerPoapsResponse,
-  GetIssuerByAddressResponse,
+  GetIssuerByWalletAddressResponse,
   GetAllIssuersResponse,
   GetIssuerByUuidResponse,
   GetAllPoapsResponse,
   GetAllOwnersResponse,
-  GetOwnerByAddressResponse,
+  GetOwnerByWalletAddressResponse,
   GetOwnerByUuidResponse,
   GetAllEventPoapRelationsResponse,
 } from "@game/utils";
@@ -53,17 +52,6 @@ export async function getAllEvents(): Promise<Result<GetEventsResponse>> {
   };
 }
 
-export async function getLastEvent(): Promise<Result<OwnerPoapsResponse>> {
-  const query = backendQueryLastEvent();
-  const response = await fetch(query);
-
-  const json = (await response.json()) as OwnerPoapsResponse;
-  return {
-    success: true,
-    result: json,
-  };
-}
-
 ///////// Issuer endpoints /////////
 
 export async function getAllIssuers(): Promise<Result<GetAllIssuersResponse>> {
@@ -80,11 +68,11 @@ export async function getAllIssuers(): Promise<Result<GetAllIssuersResponse>> {
 
 export async function getIssuerByAddress(
   address: string
-): Promise<Result<GetIssuerByAddressResponse>> {
+): Promise<Result<GetIssuerByWalletAddressResponse>> {
   const query = backendQueryGetIssuerByAddress(address);
   const response = await fetch(query);
 
-  const json = (await response.json()) as GetIssuerByAddressResponse;
+  const json = (await response.json()) as GetIssuerByWalletAddressResponse;
   return {
     success: true,
     result: json,
@@ -122,11 +110,11 @@ export async function getAllOwners(): Promise<Result<GetAllOwnersResponse>> {
 
 export async function getOwnerByAddress(
   address: string
-): Promise<Result<GetOwnerByAddressResponse>> {
+): Promise<Result<GetOwnerByWalletAddressResponse>> {
   const query = backendQueryGetOwnerByAddress(address);
   const response = await fetch(query);
 
-  const json = (await response.json()) as GetOwnerByAddressResponse;
+  const json = (await response.json()) as GetOwnerByWalletAddressResponse;
   return {
     success: true,
     result: json,
@@ -148,7 +136,7 @@ export async function getOwnerByUuid(
   };
 }
 
-export async function getOwnerPoaps(
+/* export async function getOwnerPoaps(
   wallet: string
 ): Promise<Result<OwnerPoapsResponse>> {
   const query = backendQueryOwnedPoaps(wallet);
@@ -160,7 +148,7 @@ export async function getOwnerPoaps(
     success: true,
     result: json,
   };
-}
+} */
 
 ///////// Poap endpoints /////////
 
@@ -181,13 +169,12 @@ export const queryEndpoints = {
   // createEventPoapRelation,
   getAllEventPoapRelations,
   getAllEvents,
-  getLastEvent,
   getAllIssuers,
   getIssuerByAddress,
   getIssuerByUuid,
   getAllOwners,
   getOwnerByAddress,
   getOwnerByUuid,
-  getOwnerPoaps,
+  //getOwnerPoaps,
   getAllPoaps,
 };

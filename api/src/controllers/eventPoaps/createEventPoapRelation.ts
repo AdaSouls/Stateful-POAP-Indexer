@@ -1,7 +1,5 @@
 import { Controller, Route, Post, Body } from 'tsoa';
 import { requirePool, createEventPoap, ICreateEventPoapParams, ICreateEventPoapResult } from '@game/db';
-import { randomUUID } from 'crypto';
-
 
 @Route('create_event_poap_relation')
 export class CreateEventPoapRelationController extends Controller {
@@ -11,10 +9,10 @@ export class CreateEventPoapRelationController extends Controller {
 
 
     const [relation] = await createEventPoap.run(
-      {...eventPoapRelationInfo},
+      { ...eventPoapRelationInfo },
       pool
     );
-    
+
     return relation;
   }
 }

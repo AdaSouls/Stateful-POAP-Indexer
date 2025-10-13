@@ -14,7 +14,7 @@ export async function createEventPoapRelation(
   relationInfo: ICreateEventPoapParams
 ): Promise<Result<CreateEventPoapRelationResponse>> {
   // console.log("🚀 ~ relationInfo:", relationInfo)
-  const query = backendQueryCreateEventPoapRelation(relationInfo.address, relationInfo.address)
+  const query = backendQueryCreateEventPoapRelation(relationInfo.eventId, relationInfo.tokenId)
   // console.log("🚀 ~ query:", query);
   const cleanedEndpoint = query.split("?")[0];
 
@@ -89,7 +89,7 @@ export async function createIssuer(
 
 export async function createOwner(address: string, email: string | undefined): Promise<Result<CreateOwnerResponse>> {
   const query = backendQueryCreateOwner(address, email);
-    const cleanedEndpoint = query.split("?")[0];
+  const cleanedEndpoint = query.split("?")[0];
 
   const response = await fetch(cleanedEndpoint, {
     method: "POST",
@@ -110,7 +110,7 @@ export async function createOwner(address: string, email: string | undefined): P
 
 export async function updateOwner(address: string, email: string): Promise<Result<string>> {
   const query = backendQueryUpdateOwner(address, email);
-    const cleanedEndpoint = query.split("?")[0];
+  const cleanedEndpoint = query.split("?")[0];
 
   const response = await fetch(cleanedEndpoint, {
     method: "PATCH",
@@ -132,7 +132,7 @@ export async function updateOwner(address: string, email: string): Promise<Resul
 
 export async function updatePoap(poapUuid: string, ownerUuid: string): Promise<Result<string>> {
   const query = backendQueryUpdateOwner(poapUuid, ownerUuid);
-    const cleanedEndpoint = query.split("?")[0];
+  const cleanedEndpoint = query.split("?")[0];
 
   const response = await fetch(cleanedEndpoint, {
     method: "PATCH",

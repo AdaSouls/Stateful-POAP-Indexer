@@ -1,26 +1,22 @@
 /** Types generated for queries found in "src/insert.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
-export type DateOrString = Date | string;
-
 /** 'CreateIssuer' parameters type */
 export interface ICreateIssuerParams {
-  address: string;
-  email: string;
-  name: string;
-  organization: string;
+  issuerAddress: string;
+  issuerId: number;
 }
 
 /** 'CreateIssuer' return type */
 export interface ICreateIssuerResult {
-  address: string;
   createdAt: Date | null;
-  email: string;
-  issuerIdInContract: number;
+  email: string | null;
+  issuerAddress: string;
+  issuerId: number;
   issuerUuid: string;
-  name: string;
-  organization: string;
+  organization: string | null;
   updatedAt: Date | null;
+  username: string | null;
 }
 
 /** 'CreateIssuer' query type */
@@ -29,23 +25,31 @@ export interface ICreateIssuerQuery {
   result: ICreateIssuerResult;
 }
 
-const createIssuerIR: any = {"usedParamSet":{"address":true,"name":true,"email":true,"organization":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":100,"b":109}]},{"name":"name","required":true,"transform":{"type":"scalar"},"locs":[{"a":116,"b":122}]},{"name":"email","required":true,"transform":{"type":"scalar"},"locs":[{"a":129,"b":136}]},{"name":"organization","required":true,"transform":{"type":"scalar"},"locs":[{"a":143,"b":157}]}],"statement":"INSERT INTO \"issuers\" (\n    \"address\",\n    \"name\",\n    \"email\",\n    \"organization\"\n  )\nVALUES (\n    :address !,\n    :name !,\n    :email !,\n    :organization !\n  )\nRETURNING *"};
+const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":161,"b":170}]},{"name":"issuerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":175,"b":189}]}],"statement":"INSERT INTO issuers (\n  \"issuerUuid\",\n  \"issuerId\",\n  \"issuerAddress\",\n  username,\n  email,\n  organization,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :issuerAddress!,\n  NULL,\n  NULL,\n  NULL,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO "issuers" (
- *     "address",
- *     "name",
- *     "email",
- *     "organization"
- *   )
+ * INSERT INTO issuers (
+ *   "issuerUuid",
+ *   "issuerId",
+ *   "issuerAddress",
+ *   username,
+ *   email,
+ *   organization,
+ *   "createdAt",
+ *   "updatedAt"
+ * )
  * VALUES (
- *     :address !,
- *     :name !,
- *     :email !,
- *     :organization !
- *   )
+ *   DEFAULT,
+ *   :issuerId!,
+ *   :issuerAddress!,
+ *   NULL,
+ *   NULL,
+ *   NULL,
+ *   DEFAULT,
+ *   DEFAULT
+ * )
  * RETURNING *
  * ```
  */
@@ -54,64 +58,24 @@ export const createIssuer = new PreparedQuery<ICreateIssuerParams,ICreateIssuerR
 
 /** 'CreateEvent' parameters type */
 export interface ICreateEventParams {
-  account?: string | null | void;
-  amountOfAttendees?: number | null | void;
-  city?: string | null | void;
-  country?: string | null | void;
-  description: string;
-  email: string;
-  endDate: DateOrString;
-  eventTemplateId?: string | null | void;
-  eventType: string;
-  eventUrl?: string | null | void;
-  expiryDate: DateOrString;
-  image: string;
-  issuerUuid: string;
-  platform?: string | null | void;
-  poapsToBeMinted: number;
-  poapType: string;
-  privateEvent: boolean;
-  purpose?: string | null | void;
-  requestedCodes: number;
-  secretCode?: string | null | void;
-  startDate: DateOrString;
-  title: string;
-  virtualEvent: boolean;
-  year: number;
+  eventId: number;
+  eventMaxSupply: number;
+  eventMintExpiration: number;
+  eventOrganizer?: string | null | void;
+  issuerId: number;
 }
 
 /** 'CreateEvent' return type */
 export interface ICreateEventResult {
-  account: string | null;
-  amountOfAttendees: number | null;
-  approved: string;
-  city: string | null;
-  country: string | null;
   createdAt: Date | null;
-  description: string;
-  email: string;
-  endDate: Date | null;
-  eventIdInContract: number;
-  eventTemplateId: string | null;
-  eventType: string;
-  eventUrl: string | null;
+  eventId: number;
   eventUuid: string;
-  expiryDate: Date | null;
-  image: string;
-  issuerUuid: string;
-  mintedPoaps: number;
-  platform: string | null;
-  poapsToBeMinted: number;
-  poapType: string;
-  privateEvent: boolean;
-  purpose: string | null;
-  requestedCodes: number;
-  secretCode: string | null;
-  startDate: Date;
-  title: string;
+  expiration: number;
+  issuerId: number;
+  maxSupply: number;
+  organiserAddress: string;
+  status: string;
   updatedAt: Date | null;
-  virtualEvent: boolean;
-  year: number | null;
 }
 
 /** 'CreateEvent' query type */
@@ -120,94 +84,103 @@ export interface ICreateEventQuery {
   result: ICreateEventResult;
 }
 
-const createEventIR: any = {"usedParamSet":{"title":true,"description":true,"city":true,"country":true,"startDate":true,"endDate":true,"expiryDate":true,"year":true,"eventUrl":true,"virtualEvent":true,"image":true,"secretCode":true,"eventTemplateId":true,"email":true,"requestedCodes":true,"privateEvent":true,"purpose":true,"platform":true,"eventType":true,"amountOfAttendees":true,"account":true,"poapType":true,"poapsToBeMinted":true,"issuerUuid":true},"params":[{"name":"title","required":true,"transform":{"type":"scalar"},"locs":[{"a":587,"b":594}]},{"name":"description","required":true,"transform":{"type":"scalar"},"locs":[{"a":601,"b":614}]},{"name":"city","required":false,"transform":{"type":"scalar"},"locs":[{"a":621,"b":625}]},{"name":"country","required":false,"transform":{"type":"scalar"},"locs":[{"a":632,"b":639}]},{"name":"startDate","required":true,"transform":{"type":"scalar"},"locs":[{"a":646,"b":657}]},{"name":"endDate","required":true,"transform":{"type":"scalar"},"locs":[{"a":664,"b":673}]},{"name":"expiryDate","required":true,"transform":{"type":"scalar"},"locs":[{"a":680,"b":692}]},{"name":"year","required":true,"transform":{"type":"scalar"},"locs":[{"a":699,"b":705}]},{"name":"eventUrl","required":false,"transform":{"type":"scalar"},"locs":[{"a":712,"b":720}]},{"name":"virtualEvent","required":true,"transform":{"type":"scalar"},"locs":[{"a":727,"b":741}]},{"name":"image","required":true,"transform":{"type":"scalar"},"locs":[{"a":748,"b":755}]},{"name":"secretCode","required":false,"transform":{"type":"scalar"},"locs":[{"a":762,"b":772}]},{"name":"eventTemplateId","required":false,"transform":{"type":"scalar"},"locs":[{"a":779,"b":794}]},{"name":"email","required":true,"transform":{"type":"scalar"},"locs":[{"a":801,"b":808}]},{"name":"requestedCodes","required":true,"transform":{"type":"scalar"},"locs":[{"a":815,"b":831}]},{"name":"privateEvent","required":true,"transform":{"type":"scalar"},"locs":[{"a":838,"b":852}]},{"name":"purpose","required":false,"transform":{"type":"scalar"},"locs":[{"a":859,"b":866}]},{"name":"platform","required":false,"transform":{"type":"scalar"},"locs":[{"a":873,"b":881}]},{"name":"eventType","required":true,"transform":{"type":"scalar"},"locs":[{"a":888,"b":899}]},{"name":"amountOfAttendees","required":false,"transform":{"type":"scalar"},"locs":[{"a":906,"b":923}]},{"name":"account","required":false,"transform":{"type":"scalar"},"locs":[{"a":930,"b":937}]},{"name":"poapType","required":true,"transform":{"type":"scalar"},"locs":[{"a":944,"b":954}]},{"name":"poapsToBeMinted","required":true,"transform":{"type":"scalar"},"locs":[{"a":961,"b":978}]},{"name":"issuerUuid","required":true,"transform":{"type":"scalar"},"locs":[{"a":1033,"b":1045}]}],"statement":"INSERT INTO \"events\" (\n    \"eventUuid\",\n    \"eventIdInContract\",\n    \"title\",\n    \"description\",\n    \"city\",\n    \"country\",\n    \"startDate\",\n    \"endDate\",\n    \"expiryDate\",\n    \"year\",\n    \"eventUrl\",\n    \"virtualEvent\",\n    \"image\",\n    \"secretCode\",\n    \"eventTemplateId\",\n    \"email\",\n    \"requestedCodes\",\n    \"privateEvent\",\n    \"purpose\",\n    \"platform\",\n    \"eventType\",\n    \"amountOfAttendees\",\n    \"account\",\n    \"poapType\",\n    \"poapsToBeMinted\",\n    \"mintedPoaps\",\n    \"approved\",\n    \"createdAt\",\n    \"updatedAt\",\n    \"issuerUuid\"\n  )\nVALUES (\n    DEFAULT,\n    DEFAULT,\n    :title !,\n    :description !,\n    :city,\n    :country,\n    :startDate !,\n    :endDate !,\n    :expiryDate !,\n    :year !,\n    :eventUrl,\n    :virtualEvent !,\n    :image !,\n    :secretCode,\n    :eventTemplateId,\n    :email !,\n    :requestedCodes !,\n    :privateEvent !,\n    :purpose,\n    :platform,\n    :eventType !,\n    :amountOfAttendees,\n    :account,\n    :poapType !,\n    :poapsToBeMinted !,\n    0,\n    'Pending',\n    DEFAULT,\n    DEFAULT,\n    :issuerUuid !\n  )\nRETURNING *"};
+const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"eventMaxSupply":true,"eventMintExpiration":true,"eventOrganizer":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":177,"b":186}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":191,"b":199}]},{"name":"eventMaxSupply","required":true,"transform":{"type":"scalar"},"locs":[{"a":204,"b":219}]},{"name":"eventMintExpiration","required":true,"transform":{"type":"scalar"},"locs":[{"a":224,"b":244}]},{"name":"eventOrganizer","required":false,"transform":{"type":"scalar"},"locs":[{"a":249,"b":263}]}],"statement":"INSERT INTO events (\n  \"eventUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"maxSupply\",\n  expiration,\n  \"organiserAddress\",\n  status,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :eventMaxSupply!,\n  :eventMintExpiration!,\n  :eventOrganizer,\n  DEFAULT,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO "events" (
- *     "eventUuid",
- *     "eventIdInContract",
- *     "title",
- *     "description",
- *     "city",
- *     "country",
- *     "startDate",
- *     "endDate",
- *     "expiryDate",
- *     "year",
- *     "eventUrl",
- *     "virtualEvent",
- *     "image",
- *     "secretCode",
- *     "eventTemplateId",
- *     "email",
- *     "requestedCodes",
- *     "privateEvent",
- *     "purpose",
- *     "platform",
- *     "eventType",
- *     "amountOfAttendees",
- *     "account",
- *     "poapType",
- *     "poapsToBeMinted",
- *     "mintedPoaps",
- *     "approved",
- *     "createdAt",
- *     "updatedAt",
- *     "issuerUuid"
- *   )
+ * INSERT INTO events (
+ *   "eventUuid",
+ *   "issuerId",
+ *   "eventId",
+ *   "maxSupply",
+ *   expiration,
+ *   "organiserAddress",
+ *   status,
+ *   "createdAt",
+ *   "updatedAt"
+ * )
  * VALUES (
- *     DEFAULT,
- *     DEFAULT,
- *     :title !,
- *     :description !,
- *     :city,
- *     :country,
- *     :startDate !,
- *     :endDate !,
- *     :expiryDate !,
- *     :year !,
- *     :eventUrl,
- *     :virtualEvent !,
- *     :image !,
- *     :secretCode,
- *     :eventTemplateId,
- *     :email !,
- *     :requestedCodes !,
- *     :privateEvent !,
- *     :purpose,
- *     :platform,
- *     :eventType !,
- *     :amountOfAttendees,
- *     :account,
- *     :poapType !,
- *     :poapsToBeMinted !,
- *     0,
- *     'Pending',
- *     DEFAULT,
- *     DEFAULT,
- *     :issuerUuid !
- *   )
+ *   DEFAULT,
+ *   :issuerId!,
+ *   :eventId!,
+ *   :eventMaxSupply!,
+ *   :eventMintExpiration!,
+ *   :eventOrganizer,
+ *   DEFAULT,
+ *   DEFAULT,
+ *   DEFAULT
+ * )
  * RETURNING *
  * ```
  */
 export const createEvent = new PreparedQuery<ICreateEventParams,ICreateEventResult>(createEventIR);
 
 
+/** 'CreateOwner' parameters type */
+export interface ICreateOwnerParams {
+  email?: string | null | void;
+  ownerAddress: string;
+  username?: string | null | void;
+}
+
+/** 'CreateOwner' return type */
+export interface ICreateOwnerResult {
+  createdAt: Date | null;
+  email: string | null;
+  ownerAddress: string | null;
+  ownerId: number;
+  updatedAt: Date | null;
+  username: string | null;
+}
+
+/** 'CreateOwner' query type */
+export interface ICreateOwnerQuery {
+  params: ICreateOwnerParams;
+  result: ICreateOwnerResult;
+}
+
+const createOwnerIR: any = {"usedParamSet":{"username":true,"email":true,"ownerAddress":true},"params":[{"name":"username","required":false,"transform":{"type":"scalar"},"locs":[{"a":128,"b":136}]},{"name":"email","required":false,"transform":{"type":"scalar"},"locs":[{"a":141,"b":146}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":151,"b":164}]}],"statement":"INSERT INTO \"owners\" (\n  \"ownerId\",\n  username,\n  email,\n  \"ownerAddress\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :username,\n  :email,\n  :ownerAddress!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * INSERT INTO "owners" (
+ *   "ownerId",
+ *   username,
+ *   email,
+ *   "ownerAddress",
+ *   "createdAt",
+ *   "updatedAt"
+ * )
+ * VALUES (
+ *   DEFAULT,
+ *   :username,
+ *   :email,
+ *   :ownerAddress!,
+ *   DEFAULT,
+ *   DEFAULT
+ * )
+ * RETURNING *
+ * ```
+ */
+export const createOwner = new PreparedQuery<ICreateOwnerParams,ICreateOwnerResult>(createOwnerIR);
+
+
 /** 'CreatePoap' parameters type */
 export interface ICreatePoapParams {
-  address: string;
-  eventIdInContract: number;
-  instance: number;
+  eventId: number;
+  issuerId: number;
+  tokenId: number;
 }
 
 /** 'CreatePoap' return type */
 export interface ICreatePoapResult {
   createdAt: Date | null;
-  instance: number;
-  ownerUuid: string;
+  eventId: number;
+  issuerId: number;
   poapUuid: string;
+  tokenId: number;
   updatedAt: Date | null;
 }
 
@@ -217,97 +190,45 @@ export interface ICreatePoapQuery {
   result: ICreatePoapResult;
 }
 
-const createPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContract":true,"instance":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":98}]},{"name":"eventIdInContract","required":true,"transform":{"type":"scalar"},"locs":[{"a":185,"b":204},{"a":672,"b":690}]},{"name":"instance","required":true,"transform":{"type":"scalar"},"locs":[{"a":281,"b":291}]}],"statement":"WITH owner_data AS (\n  SELECT \"ownerUuid\"\n  FROM owners\n  WHERE LOWER(\"address\") = LOWER(:address !)\n),\nevent_data AS (\n  SELECT \"eventUuid\"\n  FROM events\n  WHERE \"eventIdInContract\" = :eventIdInContract !\n),\npoap_insert AS (\n  INSERT INTO poaps (\"instance\", \"ownerUuid\")\n  SELECT :instance !,\n    owner_data.\"ownerUuid\"\n  FROM owner_data\n  RETURNING *\n),\neventpoap_insert AS (\n  INSERT INTO eventpoaps (\"poapUuid\", \"eventUuid\")\n  SELECT poap_insert.\"poapUuid\",\n    event_data.\"eventUuid\"\n  FROM poap_insert,\n    event_data\n  RETURNING *\n),\nevent_update AS (\n  UPDATE events\n  SET \"mintedPoaps\" = \"mintedPoaps\" + 1,\n      \"updatedAt\" = NOW()\n  WHERE \"eventIdInContract\" = :eventIdInContract!\n  RETURNING *\n)\nSELECT *\nFROM poap_insert"};
+const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"tokenId":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":127,"b":136}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":141,"b":149}]},{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":154,"b":162}]}],"statement":"INSERT INTO poaps (\n  \"poapUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"tokenId\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :tokenId!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
  * ```
- * WITH owner_data AS (
- *   SELECT "ownerUuid"
- *   FROM owners
- *   WHERE LOWER("address") = LOWER(:address !)
- * ),
- * event_data AS (
- *   SELECT "eventUuid"
- *   FROM events
- *   WHERE "eventIdInContract" = :eventIdInContract !
- * ),
- * poap_insert AS (
- *   INSERT INTO poaps ("instance", "ownerUuid")
- *   SELECT :instance !,
- *     owner_data."ownerUuid"
- *   FROM owner_data
- *   RETURNING *
- * ),
- * eventpoap_insert AS (
- *   INSERT INTO eventpoaps ("poapUuid", "eventUuid")
- *   SELECT poap_insert."poapUuid",
- *     event_data."eventUuid"
- *   FROM poap_insert,
- *     event_data
- *   RETURNING *
- * ),
- * event_update AS (
- *   UPDATE events
- *   SET "mintedPoaps" = "mintedPoaps" + 1,
- *       "updatedAt" = NOW()
- *   WHERE "eventIdInContract" = :eventIdInContract!
- *   RETURNING *
+ * INSERT INTO poaps (
+ *   "poapUuid",
+ *   "issuerId",
+ *   "eventId",
+ *   "tokenId",
+ *   "createdAt",
+ *   "updatedAt"
  * )
- * SELECT *
- * FROM poap_insert
+ * VALUES (
+ *   DEFAULT,
+ *   :issuerId!,
+ *   :eventId!,
+ *   :tokenId!,
+ *   DEFAULT,
+ *   DEFAULT
+ * )
+ * RETURNING *
  * ```
  */
 export const createPoap = new PreparedQuery<ICreatePoapParams,ICreatePoapResult>(createPoapIR);
 
 
-/** 'CreateOwner' parameters type */
-export interface ICreateOwnerParams {
-  address: string;
-  email?: string | null | void;
-}
-
-/** 'CreateOwner' return type */
-export interface ICreateOwnerResult {
-  address: string | null;
-  createdAt: Date | null;
-  email: string | null;
-  ownerUuid: string;
-  updatedAt: Date | null;
-}
-
-/** 'CreateOwner' query type */
-export interface ICreateOwnerQuery {
-  params: ICreateOwnerParams;
-  result: ICreateOwnerResult;
-}
-
-const createOwnerIR: any = {"usedParamSet":{"email":true,"address":true},"params":[{"name":"email","required":false,"transform":{"type":"scalar"},"locs":[{"a":47,"b":52}]},{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":55,"b":64}]}],"statement":"INSERT INTO owners(\"email\", \"address\")\nVALUES (:email, :address !)\nRETURNING *"};
-
-/**
- * Query generated from SQL:
- * ```
- * INSERT INTO owners("email", "address")
- * VALUES (:email, :address !)
- * RETURNING *
- * ```
- */
-export const createOwner = new PreparedQuery<ICreateOwnerParams,ICreateOwnerResult>(createOwnerIR);
-
-
 /** 'CreateEventPoap' parameters type */
 export interface ICreateEventPoapParams {
-  address: string;
-  eventIdInContract: number;
-  instance: number;
+  eventId: number;
+  tokenId: number;
 }
 
 /** 'CreateEventPoap' return type */
 export interface ICreateEventPoapResult {
   createdAt: Date | null;
-  eventUuid: string;
-  poapUuid: string;
+  eventId: number;
   relationUuid: string;
+  tokenId: number;
   updatedAt: Date | null;
 }
 
@@ -317,41 +238,26 @@ export interface ICreateEventPoapQuery {
   result: ICreateEventPoapResult;
 }
 
-const createEventPoapIR: any = {"usedParamSet":{"address":true,"eventIdInContract":true,"instance":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":97}]},{"name":"eventIdInContract","required":true,"transform":{"type":"scalar"},"locs":[{"a":184,"b":202},{"a":653,"b":671}]},{"name":"instance","required":true,"transform":{"type":"scalar"},"locs":[{"a":335,"b":344}]}],"statement":"WITH owner_data AS (\n  SELECT \"ownerUuid\"\n  FROM owners\n  WHERE LOWER(\"address\") = LOWER(:address!)\n),\nevent_data AS (\n  SELECT \"eventUuid\"\n  FROM events\n  WHERE \"eventIdInContract\" = :eventIdInContract!\n),\npoap_data AS (\n  SELECT p.\"poapUuid\"\n  FROM poaps p\n  JOIN owner_data o ON p.\"ownerUuid\" = o.\"ownerUuid\"\n  WHERE p.\"instance\" = :instance!\n),\neventpoap_insert AS (\n  INSERT INTO eventpoaps (\"poapUuid\", \"eventUuid\")\n  SELECT poap_data.\"poapUuid\", event_data.\"eventUuid\"\n  FROM poap_data, event_data\n  RETURNING *\n),\nevent_update AS (\n  UPDATE events\n  SET \"mintedPoaps\" = \"mintedPoaps\" + 1,\n      \"updatedAt\" = NOW()\n  WHERE \"eventIdInContract\" = :eventIdInContract!\n  RETURNING *\n)\nSELECT * FROM eventpoap_insert"};
+const createEventPoapIR: any = {"usedParamSet":{"tokenId":true,"eventId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":122,"b":130}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":135,"b":143}]}],"statement":"INSERT INTO eventpoaps (\n  \"relationUuid\",\n  \"tokenId\",\n  \"eventId\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :tokenId!,\n  :eventId!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
  * ```
- * WITH owner_data AS (
- *   SELECT "ownerUuid"
- *   FROM owners
- *   WHERE LOWER("address") = LOWER(:address!)
- * ),
- * event_data AS (
- *   SELECT "eventUuid"
- *   FROM events
- *   WHERE "eventIdInContract" = :eventIdInContract!
- * ),
- * poap_data AS (
- *   SELECT p."poapUuid"
- *   FROM poaps p
- *   JOIN owner_data o ON p."ownerUuid" = o."ownerUuid"
- *   WHERE p."instance" = :instance!
- * ),
- * eventpoap_insert AS (
- *   INSERT INTO eventpoaps ("poapUuid", "eventUuid")
- *   SELECT poap_data."poapUuid", event_data."eventUuid"
- *   FROM poap_data, event_data
- *   RETURNING *
- * ),
- * event_update AS (
- *   UPDATE events
- *   SET "mintedPoaps" = "mintedPoaps" + 1,
- *       "updatedAt" = NOW()
- *   WHERE "eventIdInContract" = :eventIdInContract!
- *   RETURNING *
+ * INSERT INTO eventpoaps (
+ *   "relationUuid",
+ *   "tokenId",
+ *   "eventId",
+ *   "createdAt",
+ *   "updatedAt"
  * )
- * SELECT * FROM eventpoap_insert
+ * VALUES (
+ *   DEFAULT,
+ *   :tokenId!,
+ *   :eventId!,
+ *   DEFAULT,
+ *   DEFAULT
+ * )
+ * RETURNING *
  * ```
  */
 export const createEventPoap = new PreparedQuery<ICreateEventPoapParams,ICreateEventPoapResult>(createEventPoapIR);

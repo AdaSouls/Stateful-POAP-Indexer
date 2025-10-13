@@ -4,24 +4,13 @@ import type {
   ICreateIssuerResult,
   ICreateOwnerResult,
   IGetAllEventPoapsResult,
-  IGetLastEventResult,
-  IGetOwnerPoapsResult,
-  IGetIssuerByAddressResult,
+  IGetIssuerByWalletAddressResult,
   IGetAllIssuersResult,
   IGetIssuerByUuidResult,
   ICreatePoapResult,
   IGetAllOwnersResult,
-  // IGetOwnerByAddressResult,
-  // IGetOwnerByUuidResult,
+  IGetOwnerByWalletAddressResult,
 } from "@game/db";
-
-interface OwnerResult {
-  address: string | null;
-  createdAt: Date | null;
-  email: string | null;
-  ownerUuid: string;
-  updatedAt: Date | null;
-}
 
 export interface InvalidInput {
   input: "invalidString";
@@ -32,9 +21,10 @@ export interface InvalidInput {
 export const poaps = ["poap", "soulbound", "consensual"] as const;
 export type PoapType = (typeof poaps)[number];
 
-export interface OwnerPoapsResponse {
+/* export interface OwnerPoapsResponse {
   poaps: IGetOwnerPoapsResult[];
-}
+} */
+
 export interface CreateEventResponse {
   event: ICreateEventResult;
 }
@@ -46,29 +36,30 @@ export interface GetEventsResponse {
   event: IGetAllEventPoapsResult[];
 }
 
-export interface LastEventResponse {
-  event: IGetLastEventResult;
-}
-
 export interface CreateOwnerResponse {
   event: ICreateOwnerResult;
 }
+
 export interface CreateIssuerResponse {
   issuer: ICreateIssuerResult;
 }
+
 export interface CreateEventPoapRelationResponse {
   event: ICreateEventPoapResult;
 }
+
 export interface GetAllEventPoapRelationsResponse {
   relations: IGetAllEventPoapsResult[];
 }
 
-export interface GetIssuerByAddressResponse {
-  issuer: IGetIssuerByAddressResult;
+export interface GetIssuerByWalletAddressResponse {
+  issuer: IGetIssuerByWalletAddressResult;
 }
+
 export interface GetAllIssuersResponse {
   issuers: IGetAllIssuersResult[];
 }
+
 export interface GetIssuerByUuidResponse {
   issuer: IGetIssuerByUuidResult;
 }
@@ -80,12 +71,14 @@ export interface MintPoapResponse {
   poap: ICreatePoapResult
 }
 
-export interface GetOwnerByAddressResponse {
-  owner: OwnerResult;
+export interface GetOwnerByWalletAddressResponse {
+  owner: IGetOwnerByWalletAddressResult;
 }
+
 export interface GetOwnerByUuidResponse {
-  owner: OwnerResult;
+  owner: IGetOwnerByWalletAddressResult;
 }
+
 export interface GetAllOwnersResponse {
   owners: IGetAllOwnersResult[];
 }

@@ -1,29 +1,19 @@
 /*
-  @name updateOwner
+  @name updateOwnerEmail
 */
 UPDATE owners
 SET
-  "email" = :email,
+  email = :email!,
   "updatedAt" = now()
 WHERE
-  "address" = :address!;
+  "ownerAddress" = :ownerAddress!;
 
 /*
-  @name updateEvent
+  @name updateEventStatus
 */
 UPDATE events
 SET
-  "approved" = :approved,
+  "status" = :status!,
   "updatedAt" = now()
 WHERE
-  "eventIdInContract" = :eventIdInContract!;
-
-/*
-  @name updatePoap
-*/
-UPDATE poaps
-SET
-  "ownerUuid" = :ownerUuid!,
-  "updatedAt" = now()
-WHERE
-  "poapUuid" = :poapUuid!;
+  "eventId" = :eventId!;

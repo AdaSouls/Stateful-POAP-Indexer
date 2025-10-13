@@ -1,75 +1,57 @@
 -- Enable UUID generation
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Owners table
-CREATE TABLE IF NOT EXISTS "owners" (
-  "ownerUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "address" VARCHAR(255) UNIQUE,
-  "email" VARCHAR(255) UNIQUE,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
-);
-
 -- Issuers table
-CREATE TABLE IF NOT EXISTS "issuers" (
+CREATE TABLE IF NOT EXISTS issuers (
   "issuerUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "issuerIdInContract" SERIAL UNIQUE,
-  "address" VARCHAR(255) NOT NULL,
-  "name" VARCHAR(255) NOT NULL,
-  "email" VARCHAR(255) NOT NULL,
-  "organization" VARCHAR(255) NOT NULL,
+  "issuerId" INTEGER UNIQUE NOT NULL,
+  "issuerAddress" VARCHAR(255) NOT NULL,
+  username VARCHAR(255),
+  email VARCHAR(255),
+  organization VARCHAR(255),
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
   "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Events table
-CREATE TABLE IF NOT EXISTS "events" (
+CREATE TABLE IF NOT EXISTS events (
   "eventUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "eventIdInContract" SERIAL NOT NULL,
-  "title" VARCHAR(255) NOT NULL,
-  "description" VARCHAR(255) NOT NULL,
-  "city" VARCHAR(255),
-  "country" VARCHAR(255),
-  "startDate" TIMESTAMP WITH TIME ZONE NOT NULL,
-  "endDate" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "expiryDate" TIMESTAMP WITH TIME ZONE,
-  "year" INTEGER,
-  "eventUrl" VARCHAR(255),
-  "virtualEvent" BOOLEAN NOT NULL,
-  "image" VARCHAR(255) NOT NULL,
-  "secretCode" VARCHAR(255),
-  "eventTemplateId" VARCHAR(255),
-  "email" VARCHAR(255) NOT NULL,
-  "requestedCodes" INTEGER NOT NULL,
-  "privateEvent" BOOLEAN NOT NULL,
-  "purpose" VARCHAR(255),
-  "platform" VARCHAR(255),
-  "eventType" VARCHAR(255) NOT NULL DEFAULT 'Unknown',
-  "amountOfAttendees" INTEGER,
-  "account" VARCHAR(255),
-  "poapType" VARCHAR(255) NOT NULL,
-  "poapsToBeMinted" INTEGER NOT NULL,
-  "mintedPoaps" INTEGER NOT NULL,
-  "approved" VARCHAR(255) NOT NULL DEFAULT 'Pending',
+  "issuerId" SERIAL NOT NULL REFERENCES issuers ("issuerId") ON DELETE CASCADE ON UPDATE CASCADE,
+  "eventId" INTEGER UNIQUE NOT NULL,
+  "maxSupply" INTEGER NOT NULL,
+  expiration INTEGER NOT NULL,
+  "organiserAddress" VARCHAR(255) NOT NULL,
+  status VARCHAR(30) NOT NULL DEFAULT 'Pending',
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "issuerUuid" UUID NOT NULL REFERENCES "issuers" ("issuerUuid") ON DELETE CASCADE ON UPDATE CASCADE
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Owners table
+CREATE TABLE IF NOT EXISTS owners (
+  "ownerId" SERIAL UNIQUE NOT NULL,
+  username VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
+  "ownerAddress" VARCHAR(255) UNIQUE,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- Poaps table
-CREATE TABLE IF NOT EXISTS "poaps" (
+CREATE TABLE IF NOT EXISTS poaps (
   "poapUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "instance" INTEGER NOT NULL,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "ownerUuid" UUID NOT NULL REFERENCES "owners" ("ownerUuid") ON DELETE CASCADE ON UPDATE CASCADE
-);
-
--- EventPoaps table
-CREATE TABLE IF NOT EXISTS "eventpoaps" (
-  "relationUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "poapUuid" UUID NOT NULL REFERENCES "poaps" ("poapUuid") ON DELETE CASCADE ON UPDATE CASCADE,
-  "eventUuid" UUID NOT NULL REFERENCES "events" ("eventUuid") ON DELETE CASCADE ON UPDATE CASCADE,
+  "issuerId" INTEGER NOT NULL,
+  "eventId" INTEGER NOT NULL,
+  "tokenId" SERIAL UNIQUE NOT NULL,
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
   "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- EventPoaps join table
+CREATE TABLE IF NOT EXISTS eventpoaps (
+  "relationUuid" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "tokenId" SERIAL NOT NULL REFERENCES poaps ("tokenId") ON DELETE CASCADE ON UPDATE CASCADE,
+  "eventId" SERIAL NOT NULL REFERENCES events ("eventId") ON DELETE CASCADE ON UPDATE CASCADE,
+  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  CONSTRAINT "unique_event_poap" UNIQUE ("tokenId", "eventId")
 );

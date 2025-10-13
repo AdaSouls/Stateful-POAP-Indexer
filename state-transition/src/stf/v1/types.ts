@@ -1,4 +1,4 @@
-import type { PoapType, InvalidInput } from "@game/utils";
+import type { InvalidInput } from "@game/utils";
 import type { WalletAddress } from "@paima/sdk/utils";
 
 export interface ScheduledDataInput {
@@ -8,11 +8,8 @@ export interface ScheduledDataInput {
 export interface IssuerCreateInput {
   input: "issuerCreate";
   payload: {
-    issuerUuid: string;
-    address: WalletAddress;
-    email: string;
-    name: string;
-    organization: string;
+    issuerId: number;
+    issuerAddress: WalletAddress;
   };
 }
 
@@ -23,7 +20,7 @@ export interface EventCreateInput {
     eventId: number;
     eventMaxSupply: number;
     eventMintExpiration: number;
-    eventOrganizer: string;
+    eventOrganizer: WalletAddress;
   };
 }
 
@@ -32,8 +29,7 @@ export interface PoapMintInput {
   payload: {
     issuerId: number;
     eventId: number;
-    instance: number;
-    address: string;
+    tokenId: number;
   };
 }
 
@@ -42,18 +38,9 @@ export interface PoapUpdateInput {
   payload: {
     issuerId: number;
     eventId: number;
-    instance: number;
-    address: string;
+    tokenId: number;
   };
 }
-
-// export function isPoapMint(input: ScheduledDataInput): input is PoapMintInput {
-//   return (input as PoapMintInput).effect === 'poapMint';
-// }
-
-// export function isPoapUpdate(input: PoapUpdateInput): input is PoapUpdateInput {
-//   return (input as PoapUpdateInput).effect === "poapUpdate";
-// }
 
 export type ParsedSubmittedInput =
   | IssuerCreateInput

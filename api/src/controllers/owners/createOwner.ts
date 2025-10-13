@@ -1,7 +1,20 @@
 import { Controller, Route, Post, Body } from 'tsoa';
-import { requirePool, ICreateOwnerParams, createOwner, ICreateOwnerResult } from '@game/db';
-import { randomUUID } from 'crypto';
+import { requirePool, createOwner } from '@game/db';
 
+type ICreateOwnerParams = {
+  email?: string | null | void;
+  ownerAddress: string;
+  username?: string | null | void;
+};
+
+interface ICreateOwnerResult {
+  createdAt: Date | null;
+  email: string | null;
+  ownerAddress: string | null;
+  ownerId: number;
+  updatedAt: Date | null;
+  username: string | null;
+}
 
 @Route('create_owner')
 export class CreateOwnerController extends Controller {
@@ -10,15 +23,16 @@ export class CreateOwnerController extends Controller {
     const pool = requirePool();
 
     const ownerToCreate = {
-      address: ownerInfo.address,
-      email: ownerInfo?.email,
+      email: ownerInfo.email || null,
+      ownerAddress: ownerInfo.ownerAddress,
+      username: ownerInfo.username || null,
     }
 
     const newOwner = await createOwner.run(
-      {...ownerToCreate},
+      { ...ownerToCreate },
       pool
     );
-    
+
     return newOwner[0];
   }
 }

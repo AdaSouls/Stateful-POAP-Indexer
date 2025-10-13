@@ -6,6 +6,7 @@
     "build": "npx tsc --build tsconfig.build.json",
     "chain:start": "npx hardhat node",
     "chain:deploy": "npx hardhat run ./contracts/evm/hardhat/scripts/deployContracts.js --network ${NETWORK:-localhost}",
+    "chain:verify": "npx hardhat run ./contracts/evm/hardhat/scripts/verifyContract.js --network ${NETWORK:-localhost}",
     "compile:api": "npm run compile -w api/",
     "compile:db": "npm run compile -w db/",
     "database:up": "cd db/docker && docker compose up",

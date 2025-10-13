@@ -1,2 +1,2 @@
-import { RegisterRoutes } from './tsoa/routes.js';
+import { RegisterRoutes } from './tsoa/routes';
 export default RegisterRoutes;
