@@ -25,3 +25,15 @@ export function requirePool(): Pool {
   }
   return pool as Pool;
 }
+
+/**
+ * Function to get access to the DB pool to write.
+ * creds argument is ignored after initial (paima-engine internal) setup.
+ * @returns write DB connection
+ */
+export function requirePoolWriteAccess(): Pool {
+  if (!pool) {
+    pool = getConnection(creds, false);
+  }
+  return pool as Pool;
+}

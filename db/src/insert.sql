@@ -14,7 +14,7 @@ INSERT INTO issuers (
 VALUES (
   DEFAULT,
   :issuerId!,
-  :issuerAddress!,
+  lower(:issuerAddress!),
   NULL,
   NULL,
   NULL,
@@ -43,7 +43,7 @@ VALUES (
   :eventId!,
   :eventMaxSupply!,
   :eventMintExpiration!,
-  :eventOrganizer,
+  lower(:eventOrganizer!),
   DEFAULT,
   DEFAULT,
   DEFAULT
@@ -64,8 +64,8 @@ INSERT INTO "owners" (
 VALUES (
   DEFAULT,
   :username,
-  :email,
-  :ownerAddress!,
+  lower(:email),
+  lower(:ownerAddress!),
   DEFAULT,
   DEFAULT
 )

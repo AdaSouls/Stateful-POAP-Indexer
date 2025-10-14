@@ -56,13 +56,13 @@ export interface IGetIssuerByWalletAddressQuery {
   result: IGetIssuerByWalletAddressResult;
 }
 
-const getIssuerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":46,"b":60}]}],"statement":"SELECT * FROM issuers\nWHERE \"issuerAddress\" = :walletAddress!"};
+const getIssuerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":52,"b":66}]}],"statement":"SELECT * FROM issuers\nWHERE \"issuerAddress\" = lower(:walletAddress!)"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT * FROM issuers
- * WHERE "issuerAddress" = :walletAddress!
+ * WHERE "issuerAddress" = lower(:walletAddress!)
  * ```
  */
 export const getIssuerByWalletAddress = new PreparedQuery<IGetIssuerByWalletAddressParams,IGetIssuerByWalletAddressResult>(getIssuerByWalletAddressIR);
@@ -124,13 +124,13 @@ export interface IGetOwnerByWalletAddressQuery {
   result: IGetOwnerByWalletAddressResult;
 }
 
-const getOwnerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":44,"b":58}]}],"statement":"SELECT * FROM owners\nWHERE \"ownerAddress\" = :walletAddress!"};
+const getOwnerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":50,"b":64}]}],"statement":"SELECT * FROM owners\nWHERE \"ownerAddress\" = lower(:walletAddress!)"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT * FROM owners
- * WHERE "ownerAddress" = :walletAddress!
+ * WHERE "ownerAddress" = lower(:walletAddress!)
  * ```
  */
 export const getOwnerByWalletAddress = new PreparedQuery<IGetOwnerByWalletAddressParams,IGetOwnerByWalletAddressResult>(getOwnerByWalletAddressIR);

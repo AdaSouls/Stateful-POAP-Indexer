@@ -16,7 +16,7 @@ export interface IUpdateOwnerEmailQuery {
   result: IUpdateOwnerEmailResult;
 }
 
-const updateOwnerEmailIR: any = {"usedParamSet":{"email":true,"ownerAddress":true},"params":[{"name":"email","required":true,"transform":{"type":"scalar"},"locs":[{"a":28,"b":34}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":84,"b":97}]}],"statement":"UPDATE owners\nSET\n  email = :email!,\n  \"updatedAt\" = now()\nWHERE\n  \"ownerAddress\" = :ownerAddress!"};
+const updateOwnerEmailIR: any = {"usedParamSet":{"email":true,"ownerAddress":true},"params":[{"name":"email","required":true,"transform":{"type":"scalar"},"locs":[{"a":28,"b":34}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":90,"b":103}]}],"statement":"UPDATE owners\nSET\n  email = :email!,\n  \"updatedAt\" = now()\nWHERE\n  \"ownerAddress\" = lower(:ownerAddress!)"};
 
 /**
  * Query generated from SQL:
@@ -26,7 +26,7 @@ const updateOwnerEmailIR: any = {"usedParamSet":{"email":true,"ownerAddress":tru
  *   email = :email!,
  *   "updatedAt" = now()
  * WHERE
- *   "ownerAddress" = :ownerAddress!
+ *   "ownerAddress" = lower(:ownerAddress!)
  * ```
  */
 export const updateOwnerEmail = new PreparedQuery<IUpdateOwnerEmailParams,IUpdateOwnerEmailResult>(updateOwnerEmailIR);

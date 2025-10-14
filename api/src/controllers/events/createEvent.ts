@@ -1,18 +1,28 @@
 import { Controller, Route, Post, Body } from 'tsoa';
-import { requirePool, createEvent, ICreateEventParams, ICreateEventResult } from '@game/db';
+import { requirePoolWriteAccess, createEvent, ICreateEventParams, ICreateEventResult } from '@game/db';
+import { IErrorResponse } from "@game/utils";
 
 @Route('create_event')
 export class CreateEventController extends Controller {
   @Post()
-  public async post(@Body() eventInfo: ICreateEventParams): Promise<ICreateEventResult> {
-    console.log("🚀 ~ CreateEventController ~ post ~ eventInfo:", eventInfo)
-    const pool = requirePool();
+  public async post(@Body() eventInfo: ICreateEventParams): Promise<ICreateEventResult | IErrorResponse> {
+    const pool = requirePoolWriteAccess();
 
-    const event = await createEvent.run(
-      eventInfo,
-      pool
-    );
+    try {
+      const event = await createEvent.run(
+        eventInfo,
+        pool
+      );
 
-    return event[0] as ICreateEventResult;
+      return event[0] as ICreateEventResult;
+
+    } catch (error: any) {
+      console.error("❌ Error creating event:", error);
+      return {
+        error: 'Failed to create event',
+        details: error.message ?? error,
+      };
+    }
+
   }
 }

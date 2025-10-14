@@ -77,17 +77,15 @@ const poapMint = {
   ): {
     issuerId: number;
     eventId: number;
-    instance: number;
-    address: string;
+    tokenId: number;
   } => {
     if (!input) throw new Error("Input expected for swap_commands");
     const data: Record<string, string> = JSON.parse(input);
     const issuerId = parseInt(data.issuerId, 10);
     const eventId = parseInt(data.eventId, 10);
     const tokenId = parseInt(data.tokenId, 10);
-    const to = data.to.toLocaleLowerCase();
 
-    return { issuerId, eventId, instance: tokenId, address: to };
+    return { issuerId, eventId, tokenId };
   },
 };
 
@@ -98,17 +96,15 @@ const poapUpdate = {
   ): {
     issuerId: number;
     eventId: number;
-    instance: number;
-    address: string;
+    tokenId: number;
   } => {
     if (!input) throw new Error("Input expected for swap_commands");
     const data: Record<string, string> = JSON.parse(input);
     const issuerId = parseInt(data.issuerId, 10);
     const eventId = parseInt(data.eventId, 10);
     const tokenId = parseInt(data.tokenId, 10);
-    const to = data.to.toLocaleLowerCase();
 
-    return { issuerId, eventId, instance: tokenId, address: to };
+    return { issuerId, eventId, tokenId };
   },
 };
 

@@ -7,7 +7,249 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"ICreateEventPoapResult": {
+				"description": "'CreateEventPoap' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"relationUuid": {
+						"type": "string"
+					},
+					"tokenId": {
+						"type": "number",
+						"format": "double"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"eventId",
+					"relationUuid",
+					"tokenId",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IErrorResponse": {
+				"properties": {
+					"error": {
+						"type": "string"
+					},
+					"details": {}
+				},
+				"required": [
+					"error"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateEventPoapParams": {
+				"description": "'CreateEventPoap' parameters type",
+				"properties": {
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"tokenId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"eventId",
+					"tokenId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetAllEventPoapsResult": {
+				"description": "'GetAllEventPoaps' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"relationUuid": {
+						"type": "string"
+					},
+					"tokenId": {
+						"type": "number",
+						"format": "double"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"eventId",
+					"relationUuid",
+					"tokenId",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateEventResult": {
+				"description": "'CreateEvent' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"eventUuid": {
+						"type": "string"
+					},
+					"expiration": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"maxSupply": {
+						"type": "number",
+						"format": "double"
+					},
+					"organiserAddress": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"eventId",
+					"eventUuid",
+					"expiration",
+					"issuerId",
+					"maxSupply",
+					"organiserAddress",
+					"status",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateEventParams": {
+				"description": "'CreateEvent' parameters type",
+				"properties": {
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"eventMaxSupply": {
+						"type": "number",
+						"format": "double"
+					},
+					"eventMintExpiration": {
+						"type": "number",
+						"format": "double"
+					},
+					"eventOrganizer": {
+						"type": "string"
+					},
+					"issuerId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"eventId",
+					"eventMaxSupply",
+					"eventMintExpiration",
+					"eventOrganizer",
+					"issuerId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetAllEventsResult": {
+				"description": "'GetAllEvents' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"eventUuid": {
+						"type": "string"
+					},
+					"expiration": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"maxSupply": {
+						"type": "number",
+						"format": "double"
+					},
+					"organiserAddress": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"eventId",
+					"eventUuid",
+					"expiration",
+					"issuerId",
+					"maxSupply",
+					"organiserAddress",
+					"status",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ICreateIssuerResult": {
+				"description": "'CreateIssuer' return type",
 				"properties": {
 					"createdAt": {
 						"type": "string",
@@ -56,6 +298,7 @@
 				"additionalProperties": false
 			},
 			"ICreateIssuerParams": {
+				"description": "'CreateIssuer' parameters type",
 				"properties": {
 					"issuerAddress": {
 						"type": "string"
@@ -73,6 +316,7 @@
 				"additionalProperties": false
 			},
 			"IGetAllIssuersResult": {
+				"description": "'GetAllIssuers' return type",
 				"properties": {
 					"createdAt": {
 						"type": "string",
@@ -121,6 +365,7 @@
 				"additionalProperties": false
 			},
 			"IGetIssuerByWalletAddressResult": {
+				"description": "'GetIssuerByWalletAddress' return type",
 				"properties": {
 					"createdAt": {
 						"type": "string",
@@ -181,6 +426,7 @@
 				"additionalProperties": false
 			},
 			"IGetIssuerByUuidResult": {
+				"description": "'GetIssuerByUuid' return type",
 				"properties": {
 					"createdAt": {
 						"type": "string",
@@ -227,6 +473,276 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"ICreateOwnerResult": {
+				"description": "'CreateOwner' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string",
+						"nullable": true
+					},
+					"ownerAddress": {
+						"type": "string",
+						"nullable": true
+					},
+					"ownerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"username": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"email",
+					"ownerAddress",
+					"ownerId",
+					"updatedAt",
+					"username"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateOwnerParams": {
+				"description": "'CreateOwner' parameters type",
+				"properties": {
+					"email": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
+					},
+					"ownerAddress": {
+						"type": "string"
+					},
+					"username": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"ownerAddress"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetAllOwnersResult": {
+				"description": "'GetAllOwners' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string",
+						"nullable": true
+					},
+					"ownerAddress": {
+						"type": "string",
+						"nullable": true
+					},
+					"ownerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"username": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"email",
+					"ownerAddress",
+					"ownerId",
+					"updatedAt",
+					"username"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetOwnerByWalletAddressResult": {
+				"description": "'GetOwnerByWalletAddress' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"email": {
+						"type": "string",
+						"nullable": true
+					},
+					"ownerAddress": {
+						"type": "string",
+						"nullable": true
+					},
+					"ownerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"username": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"email",
+					"ownerAddress",
+					"ownerId",
+					"updatedAt",
+					"username"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetOwnerByWalletAddressResponse": {
+				"properties": {
+					"owner": {
+						"$ref": "#/components/schemas/IGetOwnerByWalletAddressResult"
+					}
+				},
+				"required": [
+					"owner"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreatePoapResult": {
+				"description": "'CreatePoap' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"poapUuid": {
+						"type": "string"
+					},
+					"tokenId": {
+						"type": "number",
+						"format": "double"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"eventId",
+					"issuerId",
+					"poapUuid",
+					"tokenId",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreatePoapParams": {
+				"description": "'CreatePoap' parameters type",
+				"properties": {
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"tokenId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"eventId",
+					"issuerId",
+					"tokenId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGetAllPoapsResult": {
+				"description": "'GetAllPoaps' return type",
+				"properties": {
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"eventId": {
+						"type": "number",
+						"format": "double"
+					},
+					"issuerId": {
+						"type": "number",
+						"format": "double"
+					},
+					"poapUuid": {
+						"type": "string"
+					},
+					"tokenId": {
+						"type": "number",
+						"format": "double"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					}
+				},
+				"required": [
+					"createdAt",
+					"eventId",
+					"issuerId",
+					"poapUuid",
+					"tokenId",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -241,6 +757,165 @@
 		"contact": {}
 	},
 	"paths": {
+		"/create_event_poap": {
+			"post": {
+				"operationId": "Post",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/ICreateEventPoapResult"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICreateEventPoapParams"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/get_all_event_poap": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"items": {
+												"$ref": "#/components/schemas/IGetAllEventPoapsResult"
+											},
+											"type": "array"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/get_all_event_poap_by_token_id": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"items": {
+												"$ref": "#/components/schemas/IGetAllEventPoapsResult"
+											},
+											"type": "array"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/create_event": {
+			"post": {
+				"operationId": "Post",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/ICreateEventResult"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICreateEventParams"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/get_all_events": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"items": {
+												"$ref": "#/components/schemas/IGetAllEventsResult"
+											},
+											"type": "array"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/create_issuer": {
 			"post": {
 				"operationId": "CreateIssuer",
@@ -250,7 +925,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ICreateIssuerResult"
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/ICreateIssuerResult"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
 								}
 							}
 						}
@@ -279,18 +961,17 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"issuers": {
+									"anyOf": [
+										{
 											"items": {
 												"$ref": "#/components/schemas/IGetAllIssuersResult"
 											},
 											"type": "array"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
 										}
-									},
-									"required": [
-										"issuers"
-									],
-									"type": "object"
+									]
 								}
 							}
 						}
@@ -309,7 +990,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/GetIssuerByWalletAddressResponse"
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/GetIssuerByWalletAddressResponse"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
 								}
 							}
 						}
@@ -337,7 +1025,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IGetIssuerByUuidResult"
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/IGetIssuerByUuidResult"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
 								}
 							}
 						}
@@ -354,6 +1049,171 @@
 						}
 					}
 				]
+			}
+		},
+		"/create_owner": {
+			"post": {
+				"operationId": "Post",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/ICreateOwnerResult"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICreateOwnerParams"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/get_all_owners": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"items": {
+												"$ref": "#/components/schemas/IGetAllOwnersResult"
+											},
+											"type": "array"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/get_owner_by_address": {
+			"get": {
+				"operationId": "Get",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/GetOwnerByWalletAddressResponse"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "walletAddress",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/create_poap": {
+			"post": {
+				"operationId": "Post",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/ICreatePoapResult"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICreatePoapParams"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/get_all_poaps": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"items": {
+												"$ref": "#/components/schemas/IGetAllPoapsResult"
+											},
+											"type": "array"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

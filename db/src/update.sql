@@ -6,7 +6,7 @@ SET
   email = :email!,
   "updatedAt" = now()
 WHERE
-  "ownerAddress" = :ownerAddress!;
+  "ownerAddress" = lower(:ownerAddress!);
 
 /*
   @name updateEventStatus

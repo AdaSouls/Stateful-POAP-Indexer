@@ -1,29 +1,28 @@
 import { Controller, Get, Route } from "tsoa";
-import { getAllIssuers, requirePool } from "@game/db";
-
-interface IGetAllIssuersResult {
-  createdAt: Date | null;
-  email: string | null;
-  issuerAddress: string;
-  issuerId: number;
-  issuerUuid: string;
-  organization: string | null;
-  updatedAt: Date | null;
-  username: string | null;
-}
+import { getAllIssuers, requirePool, IGetAllIssuersResult } from "@game/db";
+import { IErrorResponse } from "@game/utils";
 
 @Route("get_all_issuers")
 export class AllIssuersController extends Controller {
   @Get()
-  public async getAll(): Promise<{ issuers: IGetAllIssuersResult[] }> {
+  public async getAll(): Promise<IGetAllIssuersResult[] | IErrorResponse> {
     console.log("🚀 ~ AllIssuersController ~ getAll adentro del controller");
     const pool = requirePool();
 
-    const all = undefined;
+    try {
+      const all = undefined;
 
-    const issuers = await getAllIssuers.run(all, pool);
-    console.log("🚀 ~ AllIssuersController ~ getAll ~ issuers:", issuers)
+      const issuers = await getAllIssuers.run(all, pool);
+      console.log("🚀 ~ AllIssuersController ~ getAll ~ issuers:", issuers)
 
-    return { issuers };
+      return issuers;
+    } catch (error: any) {
+      console.error("❌ Error getting all issuers:", error);
+      return {
+        error: 'Failed to get issuers',
+        details: error.message ?? error,
+      };
+    }
+
   }
 }

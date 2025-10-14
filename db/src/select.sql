@@ -7,7 +7,7 @@ SELECT * FROM issuers;
   @name getIssuerByWalletAddress
 */
 SELECT * FROM issuers
-WHERE "issuerAddress" = :walletAddress!;
+WHERE "issuerAddress" = lower(:walletAddress!);
 
 /*
   @name getIssuerByUuid
@@ -19,7 +19,7 @@ WHERE "issuerUuid" = :issuerUuid!;
   @name getOwnerByWalletAddress
 */
 SELECT * FROM owners
-WHERE "ownerAddress" = :walletAddress!;
+WHERE "ownerAddress" = lower(:walletAddress!);
 
 /*
  @name getAllEvents

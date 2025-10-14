@@ -5,9 +5,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS issuers (
   "issuerUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
   "issuerId" INTEGER UNIQUE NOT NULL,
-  "issuerAddress" VARCHAR(255) NOT NULL,
-  username VARCHAR(255),
-  email VARCHAR(255),
+  "issuerAddress" VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(255) UNIQUE,
+  email VARCHAR(255) UNIQUE,
   organization VARCHAR(255),
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
   "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()

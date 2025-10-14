@@ -1,7 +1,7 @@
 {
   "entryFile": "src/index.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
-  "controllerPathGlobs": ["src/controllers/issuers/*.ts"],
+  "controllerPathGlobs": ["src/controllers/**/*.ts"],
   "compilerOptions": {
     "esModuleInterop": true,
     "composite": true

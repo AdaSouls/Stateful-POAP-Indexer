@@ -1,2 +1,2 @@
+export { CreatePoapController } from "./createPoap";
 export { AllPoapsController } from "./getAllPoaps";
-export { MintPoapController } from "./mintPoap";

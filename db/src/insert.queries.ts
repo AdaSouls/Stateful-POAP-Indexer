@@ -25,7 +25,7 @@ export interface ICreateIssuerQuery {
   result: ICreateIssuerResult;
 }
 
-const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":161,"b":170}]},{"name":"issuerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":175,"b":189}]}],"statement":"INSERT INTO issuers (\n  \"issuerUuid\",\n  \"issuerId\",\n  \"issuerAddress\",\n  username,\n  email,\n  organization,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :issuerAddress!,\n  NULL,\n  NULL,\n  NULL,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
+const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":161,"b":170}]},{"name":"issuerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":181,"b":195}]}],"statement":"INSERT INTO issuers (\n  \"issuerUuid\",\n  \"issuerId\",\n  \"issuerAddress\",\n  username,\n  email,\n  organization,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  lower(:issuerAddress!),\n  NULL,\n  NULL,\n  NULL,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
@@ -43,7 +43,7 @@ const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":tru
  * VALUES (
  *   DEFAULT,
  *   :issuerId!,
- *   :issuerAddress!,
+ *   lower(:issuerAddress!),
  *   NULL,
  *   NULL,
  *   NULL,
@@ -61,7 +61,7 @@ export interface ICreateEventParams {
   eventId: number;
   eventMaxSupply: number;
   eventMintExpiration: number;
-  eventOrganizer?: string | null | void;
+  eventOrganizer: string;
   issuerId: number;
 }
 
@@ -84,7 +84,7 @@ export interface ICreateEventQuery {
   result: ICreateEventResult;
 }
 
-const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"eventMaxSupply":true,"eventMintExpiration":true,"eventOrganizer":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":177,"b":186}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":191,"b":199}]},{"name":"eventMaxSupply","required":true,"transform":{"type":"scalar"},"locs":[{"a":204,"b":219}]},{"name":"eventMintExpiration","required":true,"transform":{"type":"scalar"},"locs":[{"a":224,"b":244}]},{"name":"eventOrganizer","required":false,"transform":{"type":"scalar"},"locs":[{"a":249,"b":263}]}],"statement":"INSERT INTO events (\n  \"eventUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"maxSupply\",\n  expiration,\n  \"organiserAddress\",\n  status,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :eventMaxSupply!,\n  :eventMintExpiration!,\n  :eventOrganizer,\n  DEFAULT,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
+const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"eventMaxSupply":true,"eventMintExpiration":true,"eventOrganizer":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":177,"b":186}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":191,"b":199}]},{"name":"eventMaxSupply","required":true,"transform":{"type":"scalar"},"locs":[{"a":204,"b":219}]},{"name":"eventMintExpiration","required":true,"transform":{"type":"scalar"},"locs":[{"a":224,"b":244}]},{"name":"eventOrganizer","required":true,"transform":{"type":"scalar"},"locs":[{"a":255,"b":270}]}],"statement":"INSERT INTO events (\n  \"eventUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"maxSupply\",\n  expiration,\n  \"organiserAddress\",\n  status,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :eventMaxSupply!,\n  :eventMintExpiration!,\n  lower(:eventOrganizer!),\n  DEFAULT,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
@@ -106,7 +106,7 @@ const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"even
  *   :eventId!,
  *   :eventMaxSupply!,
  *   :eventMintExpiration!,
- *   :eventOrganizer,
+ *   lower(:eventOrganizer!),
  *   DEFAULT,
  *   DEFAULT,
  *   DEFAULT
@@ -140,7 +140,7 @@ export interface ICreateOwnerQuery {
   result: ICreateOwnerResult;
 }
 
-const createOwnerIR: any = {"usedParamSet":{"username":true,"email":true,"ownerAddress":true},"params":[{"name":"username","required":false,"transform":{"type":"scalar"},"locs":[{"a":128,"b":136}]},{"name":"email","required":false,"transform":{"type":"scalar"},"locs":[{"a":141,"b":146}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":151,"b":164}]}],"statement":"INSERT INTO \"owners\" (\n  \"ownerId\",\n  username,\n  email,\n  \"ownerAddress\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :username,\n  :email,\n  :ownerAddress!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
+const createOwnerIR: any = {"usedParamSet":{"username":true,"email":true,"ownerAddress":true},"params":[{"name":"username","required":false,"transform":{"type":"scalar"},"locs":[{"a":128,"b":136}]},{"name":"email","required":false,"transform":{"type":"scalar"},"locs":[{"a":147,"b":152}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":164,"b":177}]}],"statement":"INSERT INTO \"owners\" (\n  \"ownerId\",\n  username,\n  email,\n  \"ownerAddress\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :username,\n  lower(:email),\n  lower(:ownerAddress!),\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
@@ -156,8 +156,8 @@ const createOwnerIR: any = {"usedParamSet":{"username":true,"email":true,"ownerA
  * VALUES (
  *   DEFAULT,
  *   :username,
- *   :email,
- *   :ownerAddress!,
+ *   lower(:email),
+ *   lower(:ownerAddress!),
  *   DEFAULT,
  *   DEFAULT
  * )
