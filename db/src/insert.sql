@@ -15,9 +15,9 @@ VALUES (
   DEFAULT,
   :issuerId!,
   lower(:issuerAddress!),
-  NULL,
-  NULL,
-  NULL,
+  :username,
+  :email,
+  :organization,
   DEFAULT,
   DEFAULT
 )
@@ -79,6 +79,7 @@ INSERT INTO poaps (
   "issuerId",
   "eventId",
   "tokenId",
+  "ownerAddress",
   "createdAt",
   "updatedAt"
 )
@@ -87,6 +88,7 @@ VALUES (
   :issuerId!,
   :eventId!,
   :tokenId!,
+  :ownerAddress!,
   DEFAULT,
   DEFAULT
 )

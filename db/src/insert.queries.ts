@@ -3,8 +3,11 @@ import { PreparedQuery } from '@pgtyped/runtime';
 
 /** 'CreateIssuer' parameters type */
 export interface ICreateIssuerParams {
+  email?: string | null | void;
   issuerAddress: string;
   issuerId: number;
+  organization?: string | null | void;
+  username?: string | null | void;
 }
 
 /** 'CreateIssuer' return type */
@@ -25,7 +28,7 @@ export interface ICreateIssuerQuery {
   result: ICreateIssuerResult;
 }
 
-const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":161,"b":170}]},{"name":"issuerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":181,"b":195}]}],"statement":"INSERT INTO issuers (\n  \"issuerUuid\",\n  \"issuerId\",\n  \"issuerAddress\",\n  username,\n  email,\n  organization,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  lower(:issuerAddress!),\n  NULL,\n  NULL,\n  NULL,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
+const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":true,"username":true,"email":true,"organization":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":161,"b":170}]},{"name":"issuerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":181,"b":195}]},{"name":"username","required":false,"transform":{"type":"scalar"},"locs":[{"a":201,"b":209}]},{"name":"email","required":false,"transform":{"type":"scalar"},"locs":[{"a":214,"b":219}]},{"name":"organization","required":false,"transform":{"type":"scalar"},"locs":[{"a":224,"b":236}]}],"statement":"INSERT INTO issuers (\n  \"issuerUuid\",\n  \"issuerId\",\n  \"issuerAddress\",\n  username,\n  email,\n  organization,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  lower(:issuerAddress!),\n  :username,\n  :email,\n  :organization,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
@@ -44,9 +47,9 @@ const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":tru
  *   DEFAULT,
  *   :issuerId!,
  *   lower(:issuerAddress!),
- *   NULL,
- *   NULL,
- *   NULL,
+ *   :username,
+ *   :email,
+ *   :organization,
  *   DEFAULT,
  *   DEFAULT
  * )
@@ -171,6 +174,7 @@ export const createOwner = new PreparedQuery<ICreateOwnerParams,ICreateOwnerResu
 export interface ICreatePoapParams {
   eventId: number;
   issuerId: number;
+  ownerAddress: string;
   tokenId: number;
 }
 
@@ -179,6 +183,7 @@ export interface ICreatePoapResult {
   createdAt: Date | null;
   eventId: number;
   issuerId: number;
+  ownerAddress: string;
   poapUuid: string;
   tokenId: number;
   updatedAt: Date | null;
@@ -190,7 +195,7 @@ export interface ICreatePoapQuery {
   result: ICreatePoapResult;
 }
 
-const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"tokenId":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":127,"b":136}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":141,"b":149}]},{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":154,"b":162}]}],"statement":"INSERT INTO poaps (\n  \"poapUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"tokenId\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :tokenId!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
+const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"tokenId":true,"ownerAddress":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":145,"b":154}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":159,"b":167}]},{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":172,"b":180}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":185,"b":198}]}],"statement":"INSERT INTO poaps (\n  \"poapUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"tokenId\",\n  \"ownerAddress\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :tokenId!,\n  :ownerAddress!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
@@ -200,6 +205,7 @@ const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"token
  *   "issuerId",
  *   "eventId",
  *   "tokenId",
+ *   "ownerAddress",
  *   "createdAt",
  *   "updatedAt"
  * )
@@ -208,6 +214,7 @@ const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"token
  *   :issuerId!,
  *   :eventId!,
  *   :tokenId!,
+ *   :ownerAddress!,
  *   DEFAULT,
  *   DEFAULT
  * )

@@ -207,6 +207,7 @@ export interface IGetAllPoapsResult {
   createdAt: Date | null;
   eventId: number;
   issuerId: number;
+  ownerAddress: string;
   poapUuid: string;
   tokenId: number;
   updatedAt: Date | null;
@@ -289,5 +290,112 @@ const getAllEventsByTokenIdIR: any = {"usedParamSet":{"tokenId":true},"params":[
  * ```
  */
 export const getAllEventsByTokenId = new PreparedQuery<IGetAllEventsByTokenIdParams,IGetAllEventsByTokenIdResult>(getAllEventsByTokenIdIR);
+
+
+/** 'GetPoapsByOwnerAddress' parameters type */
+export interface IGetPoapsByOwnerAddressParams {
+  ownerAddress: string;
+}
+
+/** 'GetPoapsByOwnerAddress' return type */
+export interface IGetPoapsByOwnerAddressResult {
+  createdAt: Date | null;
+  eventId: number;
+  issuerId: number;
+  maxSupply: number;
+  organiserAddress: string;
+  ownerAddress: string;
+  poapUuid: string;
+  status: string;
+  tokenId: number;
+  updatedAt: Date | null;
+}
+
+/** 'GetPoapsByOwnerAddress' query type */
+export interface IGetPoapsByOwnerAddressQuery {
+  params: IGetPoapsByOwnerAddressParams;
+  result: IGetPoapsByOwnerAddressResult;
+}
+
+const getPoapsByOwnerAddressIR: any = {"usedParamSet":{"ownerAddress":true},"params":[{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":154,"b":167}]}],"statement":"SELECT p.*, e.\"maxSupply\", e.\"organiserAddress\", e.status\nFROM poaps p\n  LEFT JOIN events e ON p.\"eventId\" = e.\"eventId\"\n  WHERE p.\"ownerAddress\" = lower(:ownerAddress!)"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT p.*, e."maxSupply", e."organiserAddress", e.status
+ * FROM poaps p
+ *   LEFT JOIN events e ON p."eventId" = e."eventId"
+ *   WHERE p."ownerAddress" = lower(:ownerAddress!)
+ * ```
+ */
+export const getPoapsByOwnerAddress = new PreparedQuery<IGetPoapsByOwnerAddressParams,IGetPoapsByOwnerAddressResult>(getPoapsByOwnerAddressIR);
+
+
+/** 'GetEventByEventId' parameters type */
+export interface IGetEventByEventIdParams {
+  eventId: number;
+}
+
+/** 'GetEventByEventId' return type */
+export interface IGetEventByEventIdResult {
+  createdAt: Date | null;
+  eventId: number;
+  eventUuid: string;
+  expiration: number;
+  issuerId: number;
+  maxSupply: number;
+  organiserAddress: string;
+  status: string;
+  updatedAt: Date | null;
+}
+
+/** 'GetEventByEventId' query type */
+export interface IGetEventByEventIdQuery {
+  params: IGetEventByEventIdParams;
+  result: IGetEventByEventIdResult;
+}
+
+const getEventByEventIdIR: any = {"usedParamSet":{"eventId":true},"params":[{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":39,"b":47}]}],"statement":"SELECT * FROM events WHERE \"eventId\" = :eventId!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM events WHERE "eventId" = :eventId!
+ * ```
+ */
+export const getEventByEventId = new PreparedQuery<IGetEventByEventIdParams,IGetEventByEventIdResult>(getEventByEventIdIR);
+
+
+/** 'GetPoapByTokenId' parameters type */
+export interface IGetPoapByTokenIdParams {
+  tokenId: number;
+}
+
+/** 'GetPoapByTokenId' return type */
+export interface IGetPoapByTokenIdResult {
+  createdAt: Date | null;
+  eventId: number;
+  issuerId: number;
+  ownerAddress: string;
+  poapUuid: string;
+  tokenId: number;
+  updatedAt: Date | null;
+}
+
+/** 'GetPoapByTokenId' query type */
+export interface IGetPoapByTokenIdQuery {
+  params: IGetPoapByTokenIdParams;
+  result: IGetPoapByTokenIdResult;
+}
+
+const getPoapByTokenIdIR: any = {"usedParamSet":{"tokenId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":38,"b":46}]}],"statement":"SELECT * FROM poaps WHERE \"tokenId\" = :tokenId!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM poaps WHERE "tokenId" = :tokenId!
+ * ```
+ */
+export const getPoapByTokenId = new PreparedQuery<IGetPoapByTokenIdParams,IGetPoapByTokenIdResult>(getPoapByTokenIdIR);
 
 
