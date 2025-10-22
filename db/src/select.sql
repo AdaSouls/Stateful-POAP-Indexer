@@ -47,3 +47,21 @@ SELECT * FROM eventpoaps;
 SELECT *
 FROM "eventpoaps"
 WHERE "tokenId" = :tokenId;
+
+/*
+  @name getPoapsByOwnerAddress
+*/
+SELECT p.*, e."maxSupply", e."organiserAddress", e.status
+FROM poaps p
+  LEFT JOIN events e ON p."eventId" = e."eventId"
+  WHERE p."ownerAddress" = lower(:ownerAddress!);
+
+/*
+  @name getEventByEventId
+*/
+SELECT * FROM events WHERE "eventId" = :eventId!;
+
+/*
+  @name getPoapByTokenId
+*/
+SELECT * FROM poaps WHERE "tokenId" = :tokenId!;
