@@ -30,6 +30,10 @@ import { GetOwnerByWalletAddressController } from './../controllers/owners/getOw
 import { CreatePoapController } from './../controllers/poaps/createPoap';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AllPoapsController } from './../controllers/poaps/getAllPoaps';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { GetOwnerPoapsController } from './../controllers/poaps/getOwnerPoaps';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { BlockchainSyncController } from './../controllers/blockchain/syncController';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -138,11 +142,13 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ICreateIssuerParams": {
+    "ICreateIssuerRequest": {
         "dataType": "refObject",
         "properties": {
-            "issuerAddress": {"dataType":"string","required":true},
-            "issuerId": {"dataType":"double","required":true},
+            "address": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
+            "organization": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -263,6 +269,7 @@ const models: TsoaRoute.Models = {
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "eventId": {"dataType":"double","required":true},
             "issuerId": {"dataType":"double","required":true},
+            "ownerAddress": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
             "tokenId": {"dataType":"double","required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
@@ -275,6 +282,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "eventId": {"dataType":"double","required":true},
             "issuerId": {"dataType":"double","required":true},
+            "ownerAddress": {"dataType":"string","required":true},
             "tokenId": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
@@ -286,6 +294,7 @@ const models: TsoaRoute.Models = {
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "eventId": {"dataType":"double","required":true},
             "issuerId": {"dataType":"double","required":true},
+            "ownerAddress": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
             "tokenId": {"dataType":"double","required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
@@ -456,7 +465,7 @@ export function RegisterRoutes(app: Router) {
 
             async function CreateIssuerController_createIssuer(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    issuerInfo: {"in":"body","name":"issuerInfo","required":true,"ref":"ICreateIssuerParams"},
+                    issuerInfo: {"in":"body","name":"issuerInfo","required":true,"ref":"ICreateIssuerRequest"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -706,6 +715,123 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getAll',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/owner_poaps',
+            ...(fetchMiddlewares<RequestHandler>(GetOwnerPoapsController)),
+            ...(fetchMiddlewares<RequestHandler>(GetOwnerPoapsController.prototype.get)),
+
+            async function GetOwnerPoapsController_get(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    walletAddress: {"in":"query","name":"walletAddress","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new GetOwnerPoapsController();
+
+              await templateService.apiHandler({
+                methodName: 'get',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/blockchain/start-sync',
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController)),
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController.prototype.startSync)),
+
+            async function BlockchainSyncController_startSync(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new BlockchainSyncController();
+
+              await templateService.apiHandler({
+                methodName: 'startSync',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/blockchain/stop-sync',
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController)),
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController.prototype.stopSync)),
+
+            async function BlockchainSyncController_stopSync(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new BlockchainSyncController();
+
+              await templateService.apiHandler({
+                methodName: 'stopSync',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/blockchain/sync-status',
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController)),
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController.prototype.getSyncStatus)),
+
+            async function BlockchainSyncController_getSyncStatus(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new BlockchainSyncController();
+
+              await templateService.apiHandler({
+                methodName: 'getSyncStatus',
                 controller,
                 response,
                 next,
