@@ -53,6 +53,7 @@ export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
     input.payload.issuerId,
     input.payload.eventId,
     input.payload.tokenId,
+    input.payload.ownerAddress,
   );
   return [poapCreateQuery];
 };
@@ -65,6 +66,7 @@ export const poapUpdate = async (
     input.payload.issuerId,
     input.payload.eventId,
     input.payload.tokenId,
+    input.payload.ownerAddress,
   );
   return [poapUpdateQuery];
 };

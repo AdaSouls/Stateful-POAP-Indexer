@@ -30,6 +30,7 @@ export interface PoapMintInput {
     issuerId: number;
     eventId: number;
     tokenId: number;
+    ownerAddress: WalletAddress;
   };
 }
 
@@ -39,6 +40,7 @@ export interface PoapUpdateInput {
     issuerId: number;
     eventId: number;
     tokenId: number;
+    ownerAddress: WalletAddress;
   };
 }
 

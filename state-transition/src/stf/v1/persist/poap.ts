@@ -51,11 +51,13 @@ export function persistPoapCreate(
   issuerId: number,
   eventId: number,
   tokenId: number,
+  ownerAddress: WalletAddress,
 ): SQLUpdate {
   const params: ICreatePoapParams = {
     issuerId,
     eventId,
     tokenId,
+    ownerAddress,
   };
   return [createPoap, params];
 }
@@ -63,12 +65,14 @@ export function persistPoapCreate(
 export function persistPoapUpdateRelation(
   issuerId: number,
   eventId: number,
-  tokenId: number
+  tokenId: number,
+  ownerAddress: WalletAddress,
 ): SQLUpdate {
   const params: ICreatePoapParams = {
     issuerId,
     eventId,
     tokenId,
+    ownerAddress,
   };
   return [createEventPoap, params];
 }
