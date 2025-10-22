@@ -297,20 +297,26 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ICreateIssuerParams": {
-				"description": "'CreateIssuer' parameters type",
+			"ICreateIssuerRequest": {
 				"properties": {
-					"issuerAddress": {
+					"address": {
 						"type": "string"
 					},
-					"issuerId": {
-						"type": "number",
-						"format": "double"
+					"email": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"organization": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"issuerAddress",
-					"issuerId"
+					"address",
+					"email",
+					"name",
+					"organization"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -656,6 +662,9 @@
 						"type": "number",
 						"format": "double"
 					},
+					"ownerAddress": {
+						"type": "string"
+					},
 					"poapUuid": {
 						"type": "string"
 					},
@@ -673,6 +682,7 @@
 					"createdAt",
 					"eventId",
 					"issuerId",
+					"ownerAddress",
 					"poapUuid",
 					"tokenId",
 					"updatedAt"
@@ -691,6 +701,9 @@
 						"type": "number",
 						"format": "double"
 					},
+					"ownerAddress": {
+						"type": "string"
+					},
 					"tokenId": {
 						"type": "number",
 						"format": "double"
@@ -699,6 +712,7 @@
 				"required": [
 					"eventId",
 					"issuerId",
+					"ownerAddress",
 					"tokenId"
 				],
 				"type": "object",
@@ -720,6 +734,9 @@
 						"type": "number",
 						"format": "double"
 					},
+					"ownerAddress": {
+						"type": "string"
+					},
 					"poapUuid": {
 						"type": "string"
 					},
@@ -737,6 +754,7 @@
 					"createdAt",
 					"eventId",
 					"issuerId",
+					"ownerAddress",
 					"poapUuid",
 					"tokenId",
 					"updatedAt"
@@ -945,7 +963,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/ICreateIssuerParams"
+								"$ref": "#/components/schemas/ICreateIssuerRequest"
 							}
 						}
 					}
@@ -1202,6 +1220,169 @@
 												"$ref": "#/components/schemas/IGetAllPoapsResult"
 											},
 											"type": "array"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/owner_poaps": {
+			"get": {
+				"operationId": "Get",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"poaps": {
+													"items": {},
+													"type": "array"
+												}
+											},
+											"required": [
+												"poaps"
+											],
+											"type": "object"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "walletAddress",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/blockchain/start-sync": {
+			"post": {
+				"operationId": "StartSync",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"message": {
+													"type": "string"
+												},
+												"success": {
+													"type": "boolean"
+												}
+											},
+											"required": [
+												"message",
+												"success"
+											],
+											"type": "object"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/blockchain/stop-sync": {
+			"post": {
+				"operationId": "StopSync",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"message": {
+													"type": "string"
+												},
+												"success": {
+													"type": "boolean"
+												}
+											},
+											"required": [
+												"message",
+												"success"
+											],
+											"type": "object"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/blockchain/sync-status": {
+			"get": {
+				"operationId": "GetSyncStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"properties": {
+												"message": {
+													"type": "string"
+												},
+												"lastProcessedBlock": {
+													"type": "number",
+													"format": "double"
+												},
+												"isListening": {
+													"type": "boolean"
+												}
+											},
+											"required": [
+												"message",
+												"lastProcessedBlock",
+												"isListening"
+											],
+											"type": "object"
 										},
 										{
 											"$ref": "#/components/schemas/IErrorResponse"
