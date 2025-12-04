@@ -1,6 +1,8 @@
 /** Types generated for queries found in "src/update.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
+export type DateOrString = Date | string;
+
 /** 'UpdateOwnerEmail' parameters type */
 export interface IUpdateOwnerEmailParams {
   email: string;
@@ -61,5 +63,44 @@ const updateEventStatusIR: any = {"usedParamSet":{"status":true,"eventId":true},
  * ```
  */
 export const updateEventStatus = new PreparedQuery<IUpdateEventStatusParams,IUpdateEventStatusResult>(updateEventStatusIR);
+
+
+/** 'UpdateEventMetadata' parameters type */
+export interface IUpdateEventMetadataParams {
+  description?: string | null | void;
+  eventEndDate?: DateOrString | null | void;
+  eventId: number;
+  eventStartDate?: DateOrString | null | void;
+  imageUrl?: string | null | void;
+  title?: string | null | void;
+}
+
+/** 'UpdateEventMetadata' return type */
+export type IUpdateEventMetadataResult = void;
+
+/** 'UpdateEventMetadata' query type */
+export interface IUpdateEventMetadataQuery {
+  params: IUpdateEventMetadataParams;
+  result: IUpdateEventMetadataResult;
+}
+
+const updateEventMetadataIR: any = {"usedParamSet":{"title":true,"description":true,"imageUrl":true,"eventStartDate":true,"eventEndDate":true,"eventId":true},"params":[{"name":"title","required":false,"transform":{"type":"scalar"},"locs":[{"a":28,"b":33}]},{"name":"description","required":false,"transform":{"type":"scalar"},"locs":[{"a":52,"b":63}]},{"name":"imageUrl","required":false,"transform":{"type":"scalar"},"locs":[{"a":81,"b":89}]},{"name":"eventStartDate","required":false,"transform":{"type":"scalar"},"locs":[{"a":113,"b":127}]},{"name":"eventEndDate","required":false,"transform":{"type":"scalar"},"locs":[{"a":149,"b":161}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":206,"b":214}]}],"statement":"UPDATE events\nSET\n  title = :title,\n  description = :description,\n  \"imageUrl\" = :imageUrl,\n  \"eventStartDate\" = :eventStartDate,\n  \"eventEndDate\" = :eventEndDate,\n  \"updatedAt\" = now()\nWHERE\n  \"eventId\" = :eventId!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * UPDATE events
+ * SET
+ *   title = :title,
+ *   description = :description,
+ *   "imageUrl" = :imageUrl,
+ *   "eventStartDate" = :eventStartDate,
+ *   "eventEndDate" = :eventEndDate,
+ *   "updatedAt" = now()
+ * WHERE
+ *   "eventId" = :eventId!
+ * ```
+ */
+export const updateEventMetadata = new PreparedQuery<IUpdateEventMetadataParams,IUpdateEventMetadataResult>(updateEventMetadataIR);
 
 

@@ -142,13 +142,23 @@ export type IGetAllEventsParams = void;
 /** 'GetAllEvents' return type */
 export interface IGetAllEventsResult {
   createdAt: Date | null;
+  /** Detailed description of the event */
+  description: string | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
   eventId: number;
+  /** When the actual event starts (different from mint expiration) */
+  eventStartDate: Date | null;
   eventUuid: string;
   expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
   issuerId: number;
   maxSupply: number;
   organiserAddress: string;
   status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
   updatedAt: Date | null;
 }
 
@@ -339,13 +349,23 @@ export interface IGetEventByEventIdParams {
 /** 'GetEventByEventId' return type */
 export interface IGetEventByEventIdResult {
   createdAt: Date | null;
+  /** Detailed description of the event */
+  description: string | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
   eventId: number;
+  /** When the actual event starts (different from mint expiration) */
+  eventStartDate: Date | null;
   eventUuid: string;
   expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
   issuerId: number;
   maxSupply: number;
   organiserAddress: string;
   status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
   updatedAt: Date | null;
 }
 

@@ -17,3 +17,17 @@ SET
   "updatedAt" = now()
 WHERE
   "eventId" = :eventId!;
+
+/*
+  @name updateEventMetadata
+*/
+UPDATE events
+SET
+  title = :title,
+  description = :description,
+  "imageUrl" = :imageUrl,
+  "eventStartDate" = :eventStartDate,
+  "eventEndDate" = :eventEndDate,
+  "updatedAt" = now()
+WHERE
+  "eventId" = :eventId!;

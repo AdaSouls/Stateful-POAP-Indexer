@@ -34,6 +34,11 @@ INSERT INTO events (
   expiration,
   "organiserAddress",
   status,
+  title,
+  description,
+  "imageUrl",
+  "eventStartDate",
+  "eventEndDate",
   "createdAt",
   "updatedAt"
 )
@@ -45,6 +50,11 @@ VALUES (
   :eventMintExpiration!,
   lower(:eventOrganizer!),
   DEFAULT,
+  :title,
+  :description,
+  :imageUrl,
+  :eventStartDate,
+  :eventEndDate,
   DEFAULT,
   DEFAULT
 )

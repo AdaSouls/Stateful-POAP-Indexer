@@ -1,6 +1,8 @@
 /** Types generated for queries found in "src/insert.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
+export type DateOrString = Date | string;
+
 /** 'CreateIssuer' parameters type */
 export interface ICreateIssuerParams {
   email?: string | null | void;
@@ -61,23 +63,38 @@ export const createIssuer = new PreparedQuery<ICreateIssuerParams,ICreateIssuerR
 
 /** 'CreateEvent' parameters type */
 export interface ICreateEventParams {
+  description?: string | null | void;
+  eventEndDate?: DateOrString | null | void;
   eventId: number;
   eventMaxSupply: number;
   eventMintExpiration: number;
   eventOrganizer: string;
+  eventStartDate?: DateOrString | null | void;
+  imageUrl?: string | null | void;
   issuerId: number;
+  title?: string | null | void;
 }
 
 /** 'CreateEvent' return type */
 export interface ICreateEventResult {
   createdAt: Date | null;
+  /** Detailed description of the event */
+  description: string | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
   eventId: number;
+  /** When the actual event starts (different from mint expiration) */
+  eventStartDate: Date | null;
   eventUuid: string;
   expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
   issuerId: number;
   maxSupply: number;
   organiserAddress: string;
   status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
   updatedAt: Date | null;
 }
 
@@ -87,7 +104,7 @@ export interface ICreateEventQuery {
   result: ICreateEventResult;
 }
 
-const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"eventMaxSupply":true,"eventMintExpiration":true,"eventOrganizer":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":177,"b":186}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":191,"b":199}]},{"name":"eventMaxSupply","required":true,"transform":{"type":"scalar"},"locs":[{"a":204,"b":219}]},{"name":"eventMintExpiration","required":true,"transform":{"type":"scalar"},"locs":[{"a":224,"b":244}]},{"name":"eventOrganizer","required":true,"transform":{"type":"scalar"},"locs":[{"a":255,"b":270}]}],"statement":"INSERT INTO events (\n  \"eventUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"maxSupply\",\n  expiration,\n  \"organiserAddress\",\n  status,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :eventMaxSupply!,\n  :eventMintExpiration!,\n  lower(:eventOrganizer!),\n  DEFAULT,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
+const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"eventMaxSupply":true,"eventMintExpiration":true,"eventOrganizer":true,"title":true,"description":true,"imageUrl":true,"eventStartDate":true,"eventEndDate":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":253,"b":262}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":267,"b":275}]},{"name":"eventMaxSupply","required":true,"transform":{"type":"scalar"},"locs":[{"a":280,"b":295}]},{"name":"eventMintExpiration","required":true,"transform":{"type":"scalar"},"locs":[{"a":300,"b":320}]},{"name":"eventOrganizer","required":true,"transform":{"type":"scalar"},"locs":[{"a":331,"b":346}]},{"name":"title","required":false,"transform":{"type":"scalar"},"locs":[{"a":363,"b":368}]},{"name":"description","required":false,"transform":{"type":"scalar"},"locs":[{"a":373,"b":384}]},{"name":"imageUrl","required":false,"transform":{"type":"scalar"},"locs":[{"a":389,"b":397}]},{"name":"eventStartDate","required":false,"transform":{"type":"scalar"},"locs":[{"a":402,"b":416}]},{"name":"eventEndDate","required":false,"transform":{"type":"scalar"},"locs":[{"a":421,"b":433}]}],"statement":"INSERT INTO events (\n  \"eventUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"maxSupply\",\n  expiration,\n  \"organiserAddress\",\n  status,\n  title,\n  description,\n  \"imageUrl\",\n  \"eventStartDate\",\n  \"eventEndDate\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :eventMaxSupply!,\n  :eventMintExpiration!,\n  lower(:eventOrganizer!),\n  DEFAULT,\n  :title,\n  :description,\n  :imageUrl,\n  :eventStartDate,\n  :eventEndDate,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
@@ -100,6 +117,11 @@ const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"even
  *   expiration,
  *   "organiserAddress",
  *   status,
+ *   title,
+ *   description,
+ *   "imageUrl",
+ *   "eventStartDate",
+ *   "eventEndDate",
  *   "createdAt",
  *   "updatedAt"
  * )
@@ -111,6 +133,11 @@ const createEventIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"even
  *   :eventMintExpiration!,
  *   lower(:eventOrganizer!),
  *   DEFAULT,
+ *   :title,
+ *   :description,
+ *   :imageUrl,
+ *   :eventStartDate,
+ *   :eventEndDate,
  *   DEFAULT,
  *   DEFAULT
  * )
