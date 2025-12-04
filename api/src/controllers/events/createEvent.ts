@@ -2,6 +2,13 @@ import { Controller, Route, Post, Body } from 'tsoa';
 import { requirePoolWriteAccess, createEvent, ICreateEventParams, ICreateEventResult } from '@game/db';
 import { IErrorResponse } from "@game/utils";
 
+/**
+ * Controller for creating POAP events.
+ * 
+ * Accepts both on-chain data (required) and off-chain metadata (optional):
+ * - On-chain: issuerId, eventId, eventMaxSupply, eventMintExpiration, eventOrganizer
+ * - Off-chain: title, description, imageUrl, eventStartDate, eventEndDate
+ */
 @Route('create_event')
 export class CreateEventController extends Controller {
   @Post()
@@ -9,6 +16,8 @@ export class CreateEventController extends Controller {
     const pool = requirePoolWriteAccess();
 
     try {
+      // ICreateEventParams includes optional off-chain fields:
+      // title, description, imageUrl, eventStartDate, eventEndDate
       const event = await createEvent.run(
         eventInfo,
         pool

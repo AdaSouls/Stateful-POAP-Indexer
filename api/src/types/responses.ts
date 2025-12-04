@@ -24,6 +24,12 @@ export interface ICreateEventResult {
     organiserAddress: string;
     status: string;
     updatedAt: Date | null;
+    // Off-chain data fields
+    title: string | null;
+    description: string | null;
+    imageUrl: string | null;
+    eventStartDate: Date | null;
+    eventEndDate: Date | null;
 }
 
 export interface ICreateOwnerResult {
