@@ -99,14 +99,19 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ICreateEventParams": {
+    "ICreateEventRequest": {
         "dataType": "refObject",
         "properties": {
+            "issuerId": {"dataType":"double","required":true},
             "eventId": {"dataType":"double","required":true},
             "eventMaxSupply": {"dataType":"double","required":true},
             "eventMintExpiration": {"dataType":"double","required":true},
             "eventOrganizer": {"dataType":"string","required":true},
-            "issuerId": {"dataType":"double","required":true},
+            "title": {"dataType":"string"},
+            "description": {"dataType":"string"},
+            "imageUrl": {"dataType":"string"},
+            "eventStartDate": {"dataType":"string"},
+            "eventEndDate": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -418,7 +423,7 @@ export function RegisterRoutes(app: Router) {
 
             async function CreateEventController_post(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    eventInfo: {"in":"body","name":"eventInfo","required":true,"ref":"ICreateEventParams"},
+                    eventInfo: {"in":"body","name":"eventInfo","required":true,"ref":"ICreateEventRequest"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

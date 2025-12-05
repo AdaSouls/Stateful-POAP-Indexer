@@ -162,35 +162,60 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ICreateEventParams": {
-				"description": "'CreateEvent' parameters type",
+			"ICreateEventRequest": {
+				"description": "TSOA-compatible interface for creating events\nIncludes all required and optional fields",
 				"properties": {
+					"issuerId": {
+						"type": "number",
+						"format": "double",
+						"description": "Issuer ID (required)"
+					},
 					"eventId": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Event ID (required)"
 					},
 					"eventMaxSupply": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Maximum supply of POAPs for this event (required)"
 					},
 					"eventMintExpiration": {
 						"type": "number",
-						"format": "double"
+						"format": "double",
+						"description": "Mint expiration timestamp in seconds, 0 for indefinite (required)"
 					},
 					"eventOrganizer": {
-						"type": "string"
+						"type": "string",
+						"description": "Organizer wallet address (required)"
 					},
-					"issuerId": {
-						"type": "number",
-						"format": "double"
+					"title": {
+						"type": "string",
+						"description": "Event title/name (optional)"
+					},
+					"description": {
+						"type": "string",
+						"description": "Event description (optional)"
+					},
+					"imageUrl": {
+						"type": "string",
+						"description": "URL to event image/banner (optional)"
+					},
+					"eventStartDate": {
+						"type": "string",
+						"description": "Event start date/time in ISO format (optional)"
+					},
+					"eventEndDate": {
+						"type": "string",
+						"description": "Event end date/time in ISO format (optional)"
 					}
 				},
 				"required": [
+					"issuerId",
 					"eventId",
 					"eventMaxSupply",
 					"eventMintExpiration",
-					"eventOrganizer",
-					"issuerId"
+					"eventOrganizer"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1002,7 +1027,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/ICreateEventParams"
+								"$ref": "#/components/schemas/ICreateEventRequest"
 							}
 						}
 					}
