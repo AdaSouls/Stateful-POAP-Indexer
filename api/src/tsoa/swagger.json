@@ -761,6 +761,110 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"HealthStatus": {
+				"properties": {
+					"status": {
+						"type": "string",
+						"enum": [
+							"healthy",
+							"unhealthy",
+							"degraded"
+						]
+					},
+					"indexing": {
+						"properties": {
+							"reorgsDetected": {
+								"type": "number",
+								"format": "double"
+							},
+							"uptime": {
+								"type": "number",
+								"format": "double"
+							},
+							"errorRate": {
+								"type": "number",
+								"format": "double"
+							},
+							"eventsProcessed": {
+								"type": "number",
+								"format": "double"
+							},
+							"lag": {
+								"type": "number",
+								"format": "double"
+							},
+							"currentChainBlock": {
+								"type": "number",
+								"format": "double"
+							},
+							"lastProcessedBlock": {
+								"type": "number",
+								"format": "double"
+							},
+							"isRunning": {
+								"type": "boolean"
+							}
+						},
+						"required": [
+							"reorgsDetected",
+							"uptime",
+							"errorRate",
+							"eventsProcessed",
+							"lag",
+							"currentChainBlock",
+							"lastProcessedBlock",
+							"isRunning"
+						],
+						"type": "object"
+					},
+					"database": {
+						"properties": {
+							"latency": {
+								"type": "number",
+								"format": "double"
+							},
+							"connected": {
+								"type": "boolean"
+							}
+						},
+						"required": [
+							"connected"
+						],
+						"type": "object"
+					},
+					"blockchain": {
+						"properties": {
+							"blockNumber": {
+								"type": "number",
+								"format": "double"
+							},
+							"chainId": {
+								"type": "number",
+								"format": "double"
+							},
+							"connected": {
+								"type": "boolean"
+							}
+						},
+						"required": [
+							"connected"
+						],
+						"type": "object"
+					},
+					"timestamp": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"indexing",
+					"database",
+					"blockchain",
+					"timestamp"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -1384,6 +1488,56 @@
 											],
 											"type": "object"
 										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/blockchain/health": {
+			"get": {
+				"operationId": "GetHealth",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/HealthStatus"
+										},
+										{
+											"$ref": "#/components/schemas/IErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/blockchain/metrics": {
+			"get": {
+				"operationId": "GetMetrics",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{},
 										{
 											"$ref": "#/components/schemas/IErrorResponse"
 										}

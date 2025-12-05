@@ -302,6 +302,18 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "HealthStatus": {
+        "dataType": "refObject",
+        "properties": {
+            "status": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["healthy"]},{"dataType":"enum","enums":["unhealthy"]},{"dataType":"enum","enums":["degraded"]}],"required":true},
+            "indexing": {"dataType":"nestedObjectLiteral","nestedProperties":{"reorgsDetected":{"dataType":"double","required":true},"uptime":{"dataType":"double","required":true},"errorRate":{"dataType":"double","required":true},"eventsProcessed":{"dataType":"double","required":true},"lag":{"dataType":"double","required":true},"currentChainBlock":{"dataType":"double","required":true},"lastProcessedBlock":{"dataType":"double","required":true},"isRunning":{"dataType":"boolean","required":true}},"required":true},
+            "database": {"dataType":"nestedObjectLiteral","nestedProperties":{"latency":{"dataType":"double"},"connected":{"dataType":"boolean","required":true}},"required":true},
+            "blockchain": {"dataType":"nestedObjectLiteral","nestedProperties":{"blockNumber":{"dataType":"double"},"chainId":{"dataType":"double"},"connected":{"dataType":"boolean","required":true}},"required":true},
+            "timestamp": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {"noImplicitAdditionalProperties":"throw-on-extras","bodyCoercion":true});
 
@@ -832,6 +844,64 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getSyncStatus',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/blockchain/health',
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController)),
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController.prototype.getHealth)),
+
+            async function BlockchainSyncController_getHealth(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new BlockchainSyncController();
+
+              await templateService.apiHandler({
+                methodName: 'getHealth',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/blockchain/metrics',
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController)),
+            ...(fetchMiddlewares<RequestHandler>(BlockchainSyncController.prototype.getMetrics)),
+
+            async function BlockchainSyncController_getMetrics(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new BlockchainSyncController();
+
+              await templateService.apiHandler({
+                methodName: 'getMetrics',
                 controller,
                 response,
                 next,
