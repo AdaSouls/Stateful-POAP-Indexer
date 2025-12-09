@@ -798,7 +798,7 @@ export class BlockchainSyncService {
         await createEvent.run(eventData, client);
 
         // Store block hash for reorg detection
-        await this.storeBlockHash(event.blockNumber, block.hash, client);
+        await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);
 
         // Update event with blockchain metadata (if columns exist)
         try {
@@ -907,7 +907,7 @@ export class BlockchainSyncService {
         await createPoap.run(poapData, client);
 
         // Store block hash for reorg detection
-        await this.storeBlockHash(event.blockNumber, block.hash, client);
+        await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);
 
         // Update POAP with blockchain metadata (if columns exist)
         try {
