@@ -1,7 +1,7 @@
 /** Types generated for queries found in "src/update.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
-export type DateOrString = Date | string;
+type DateOrString = Date | string;
 
 /** 'UpdateOwnerEmail' parameters type */
 export interface IUpdateOwnerEmailParams {
