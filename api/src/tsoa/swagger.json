@@ -117,9 +117,26 @@
 						"format": "date-time",
 						"nullable": true
 					},
+					"description": {
+						"type": "string",
+						"nullable": true,
+						"description": "Detailed description of the event"
+					},
+					"eventEndDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true,
+						"description": "When the actual event ends (different from mint expiration)"
+					},
 					"eventId": {
 						"type": "number",
 						"format": "double"
+					},
+					"eventStartDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true,
+						"description": "When the actual event starts (different from mint expiration)"
 					},
 					"eventUuid": {
 						"type": "string"
@@ -127,6 +144,11 @@
 					"expiration": {
 						"type": "number",
 						"format": "double"
+					},
+					"imageUrl": {
+						"type": "string",
+						"nullable": true,
+						"description": "URL to the event image/banner"
 					},
 					"issuerId": {
 						"type": "number",
@@ -142,6 +164,11 @@
 					"status": {
 						"type": "string"
 					},
+					"title": {
+						"type": "string",
+						"nullable": true,
+						"description": "Event title/name for display purposes"
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time",
@@ -150,13 +177,18 @@
 				},
 				"required": [
 					"createdAt",
+					"description",
+					"eventEndDate",
 					"eventId",
+					"eventStartDate",
 					"eventUuid",
 					"expiration",
+					"imageUrl",
 					"issuerId",
 					"maxSupply",
 					"organiserAddress",
 					"status",
+					"title",
 					"updatedAt"
 				],
 				"type": "object",
@@ -228,9 +260,26 @@
 						"format": "date-time",
 						"nullable": true
 					},
+					"description": {
+						"type": "string",
+						"nullable": true,
+						"description": "Detailed description of the event"
+					},
+					"eventEndDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true,
+						"description": "When the actual event ends (different from mint expiration)"
+					},
 					"eventId": {
 						"type": "number",
 						"format": "double"
+					},
+					"eventStartDate": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true,
+						"description": "When the actual event starts (different from mint expiration)"
 					},
 					"eventUuid": {
 						"type": "string"
@@ -238,6 +287,11 @@
 					"expiration": {
 						"type": "number",
 						"format": "double"
+					},
+					"imageUrl": {
+						"type": "string",
+						"nullable": true,
+						"description": "URL to the event image/banner"
 					},
 					"issuerId": {
 						"type": "number",
@@ -253,6 +307,11 @@
 					"status": {
 						"type": "string"
 					},
+					"title": {
+						"type": "string",
+						"nullable": true,
+						"description": "Event title/name for display purposes"
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time",
@@ -261,13 +320,18 @@
 				},
 				"required": [
 					"createdAt",
+					"description",
+					"eventEndDate",
 					"eventId",
+					"eventStartDate",
 					"eventUuid",
 					"expiration",
+					"imageUrl",
 					"issuerId",
 					"maxSupply",
 					"organiserAddress",
 					"status",
+					"title",
 					"updatedAt"
 				],
 				"type": "object",

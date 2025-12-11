@@ -10,7 +10,7 @@ export class AllPoapsController extends Controller {
 
     try {
       const poaps = await getAllPoaps.run(undefined, pool);
-      console.log("🚀 ~ PoapsController ~ getAll ~ poaps:", poaps);
+      // console.log("🚀 ~ PoapsController ~ getAll ~ poaps:", poaps);
 
       return poaps;
     } catch (error: any) {

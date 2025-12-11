@@ -10,7 +10,7 @@ export class AllEventsController extends Controller {
 
     try {
       const events = await getAllEvents.run(undefined, pool);
-      console.log("🚀 ~ EventsController ~ getAll ~ events:", events);
+      // console.log("🚀 ~ EventsController ~ getAll ~ events:", events);
       return events;
     } catch (error: any) {
       console.error("❌ Error getting all events:", error);
