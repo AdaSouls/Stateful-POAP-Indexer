@@ -86,6 +86,7 @@ const models: TsoaRoute.Models = {
     "ICreateEventResult": {
         "dataType": "refObject",
         "properties": {
+            "block_number": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "description": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "eventEndDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
@@ -99,6 +100,7 @@ const models: TsoaRoute.Models = {
             "organiserAddress": {"dataType":"string","required":true},
             "status": {"dataType":"string","required":true},
             "title": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "transaction_hash": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
@@ -124,6 +126,7 @@ const models: TsoaRoute.Models = {
     "IGetAllEventsResult": {
         "dataType": "refObject",
         "properties": {
+            "block_number": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "description": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "eventEndDate": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
@@ -137,6 +140,7 @@ const models: TsoaRoute.Models = {
             "organiserAddress": {"dataType":"string","required":true},
             "status": {"dataType":"string","required":true},
             "title": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "transaction_hash": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
@@ -281,12 +285,14 @@ const models: TsoaRoute.Models = {
     "ICreatePoapResult": {
         "dataType": "refObject",
         "properties": {
+            "block_number": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "eventId": {"dataType":"double","required":true},
             "issuerId": {"dataType":"double","required":true},
             "ownerAddress": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
             "tokenId": {"dataType":"double","required":true},
+            "transaction_hash": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,
@@ -306,12 +312,14 @@ const models: TsoaRoute.Models = {
     "IGetAllPoapsResult": {
         "dataType": "refObject",
         "properties": {
+            "block_number": {"dataType":"union","subSchemas":[{"dataType":"double"},{"dataType":"enum","enums":[null]}],"required":true},
             "createdAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
             "eventId": {"dataType":"double","required":true},
             "issuerId": {"dataType":"double","required":true},
             "ownerAddress": {"dataType":"string","required":true},
             "poapUuid": {"dataType":"string","required":true},
             "tokenId": {"dataType":"double","required":true},
+            "transaction_hash": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
             "updatedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}],"required":true},
         },
         "additionalProperties": false,

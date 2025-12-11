@@ -112,6 +112,12 @@
 			"ICreateEventResult": {
 				"description": "'CreateEvent' return type",
 				"properties": {
+					"block_number": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Block number where the event was created"
+					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time",
@@ -169,6 +175,11 @@
 						"nullable": true,
 						"description": "Event title/name for display purposes"
 					},
+					"transaction_hash": {
+						"type": "string",
+						"nullable": true,
+						"description": "Transaction hash of the event creation"
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time",
@@ -176,6 +187,7 @@
 					}
 				},
 				"required": [
+					"block_number",
 					"createdAt",
 					"description",
 					"eventEndDate",
@@ -189,6 +201,7 @@
 					"organiserAddress",
 					"status",
 					"title",
+					"transaction_hash",
 					"updatedAt"
 				],
 				"type": "object",
@@ -255,6 +268,12 @@
 			"IGetAllEventsResult": {
 				"description": "'GetAllEvents' return type",
 				"properties": {
+					"block_number": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Block number where the event was created"
+					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time",
@@ -312,6 +331,11 @@
 						"nullable": true,
 						"description": "Event title/name for display purposes"
 					},
+					"transaction_hash": {
+						"type": "string",
+						"nullable": true,
+						"description": "Transaction hash of the event creation"
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time",
@@ -319,6 +343,7 @@
 					}
 				},
 				"required": [
+					"block_number",
 					"createdAt",
 					"description",
 					"eventEndDate",
@@ -332,6 +357,7 @@
 					"organiserAddress",
 					"status",
 					"title",
+					"transaction_hash",
 					"updatedAt"
 				],
 				"type": "object",
@@ -738,6 +764,12 @@
 			"ICreatePoapResult": {
 				"description": "'CreatePoap' return type",
 				"properties": {
+					"block_number": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Block number where the POAP was minted"
+					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time",
@@ -761,6 +793,11 @@
 						"type": "number",
 						"format": "double"
 					},
+					"transaction_hash": {
+						"type": "string",
+						"nullable": true,
+						"description": "Transaction hash of the POAP mint"
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time",
@@ -768,12 +805,14 @@
 					}
 				},
 				"required": [
+					"block_number",
 					"createdAt",
 					"eventId",
 					"issuerId",
 					"ownerAddress",
 					"poapUuid",
 					"tokenId",
+					"transaction_hash",
 					"updatedAt"
 				],
 				"type": "object",
@@ -810,6 +849,12 @@
 			"IGetAllPoapsResult": {
 				"description": "'GetAllPoaps' return type",
 				"properties": {
+					"block_number": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Block number where the POAP was minted"
+					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time",
@@ -833,6 +878,11 @@
 						"type": "number",
 						"format": "double"
 					},
+					"transaction_hash": {
+						"type": "string",
+						"nullable": true,
+						"description": "Transaction hash of the POAP mint"
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time",
@@ -840,12 +890,14 @@
 					}
 				},
 				"required": [
+					"block_number",
 					"createdAt",
 					"eventId",
 					"issuerId",
 					"ownerAddress",
 					"poapUuid",
 					"tokenId",
+					"transaction_hash",
 					"updatedAt"
 				],
 				"type": "object",
