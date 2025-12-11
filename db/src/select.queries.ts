@@ -141,6 +141,8 @@ export type IGetAllEventsParams = void;
 
 /** 'GetAllEvents' return type */
 export interface IGetAllEventsResult {
+  /** Block number where the event was created */
+  block_number: number | null;
   createdAt: Date | null;
   /** Detailed description of the event */
   description: string | null;
@@ -159,6 +161,8 @@ export interface IGetAllEventsResult {
   status: string;
   /** Event title/name for display purposes */
   title: string | null;
+  /** Transaction hash of the event creation */
+  transaction_hash: string | null;
   updatedAt: Date | null;
 }
 
@@ -214,12 +218,16 @@ export type IGetAllPoapsParams = void;
 
 /** 'GetAllPoaps' return type */
 export interface IGetAllPoapsResult {
+  /** Block number where the POAP was minted */
+  block_number: number | null;
   createdAt: Date | null;
   eventId: number;
   issuerId: number;
   ownerAddress: string;
   poapUuid: string;
   tokenId: number;
+  /** Transaction hash of the POAP mint */
+  transaction_hash: string | null;
   updatedAt: Date | null;
 }
 
@@ -309,6 +317,8 @@ export interface IGetPoapsByOwnerAddressParams {
 
 /** 'GetPoapsByOwnerAddress' return type */
 export interface IGetPoapsByOwnerAddressResult {
+  /** Block number where the POAP was minted */
+  block_number: number | null;
   createdAt: Date | null;
   eventId: number;
   issuerId: number;
@@ -318,6 +328,8 @@ export interface IGetPoapsByOwnerAddressResult {
   poapUuid: string;
   status: string;
   tokenId: number;
+  /** Transaction hash of the POAP mint */
+  transaction_hash: string | null;
   updatedAt: Date | null;
 }
 
@@ -348,6 +360,8 @@ export interface IGetEventByEventIdParams {
 
 /** 'GetEventByEventId' return type */
 export interface IGetEventByEventIdResult {
+  /** Block number where the event was created */
+  block_number: number | null;
   createdAt: Date | null;
   /** Detailed description of the event */
   description: string | null;
@@ -366,6 +380,8 @@ export interface IGetEventByEventIdResult {
   status: string;
   /** Event title/name for display purposes */
   title: string | null;
+  /** Transaction hash of the event creation */
+  transaction_hash: string | null;
   updatedAt: Date | null;
 }
 
@@ -393,12 +409,16 @@ export interface IGetPoapByTokenIdParams {
 
 /** 'GetPoapByTokenId' return type */
 export interface IGetPoapByTokenIdResult {
+  /** Block number where the POAP was minted */
+  block_number: number | null;
   createdAt: Date | null;
   eventId: number;
   issuerId: number;
   ownerAddress: string;
   poapUuid: string;
   tokenId: number;
+  /** Transaction hash of the POAP mint */
+  transaction_hash: string | null;
   updatedAt: Date | null;
 }
 
