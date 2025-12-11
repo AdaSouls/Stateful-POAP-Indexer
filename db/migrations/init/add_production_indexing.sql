@@ -24,7 +24,7 @@ ADD COLUMN IF NOT EXISTS transaction_hash VARCHAR(66);
 -- Indexes for events table
 CREATE INDEX IF NOT EXISTS idx_events_event_id ON events("eventId");
 CREATE INDEX IF NOT EXISTS idx_events_issuer_id ON events("issuerId");
-CREATE INDEX IF NOT EXISTS idx_events_block_number ON events("blockNumber");
+CREATE INDEX IF NOT EXISTS idx_events_block_number ON events(block_number);
 CREATE INDEX IF NOT EXISTS idx_events_transaction_hash ON events("transaction_hash");
 CREATE INDEX IF NOT EXISTS idx_events_issuer_status ON events("issuerId", "status");
 
@@ -33,7 +33,7 @@ CREATE INDEX IF NOT EXISTS idx_poaps_token_id ON poaps("tokenId");
 CREATE INDEX IF NOT EXISTS idx_poaps_event_id ON poaps("eventId");
 CREATE INDEX IF NOT EXISTS idx_poaps_owner_address ON poaps("ownerAddress");
 CREATE INDEX IF NOT EXISTS idx_poaps_issuer_id ON poaps("issuerId");
-CREATE INDEX IF NOT EXISTS idx_poaps_block_number ON poaps("blockNumber");
+CREATE INDEX IF NOT EXISTS idx_poaps_block_number ON poaps(block_number);
 CREATE INDEX IF NOT EXISTS idx_poaps_transaction_hash ON poaps("transaction_hash");
 
 -- Composite indexes for common queries

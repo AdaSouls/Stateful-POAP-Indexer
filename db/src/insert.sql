@@ -21,6 +21,7 @@ VALUES (
   DEFAULT,
   DEFAULT
 )
+ON CONFLICT ("issuerId") DO NOTHING
 RETURNING *;
 
 /* 
@@ -58,6 +59,7 @@ VALUES (
   DEFAULT,
   DEFAULT
 )
+ON CONFLICT ("eventId") DO NOTHING
 RETURNING *;
 
 /* 
@@ -79,6 +81,7 @@ VALUES (
   DEFAULT,
   DEFAULT
 )
+ON CONFLICT ("ownerAddress") DO NOTHING
 RETURNING *;
 
 /* 
@@ -102,6 +105,7 @@ VALUES (
   DEFAULT,
   DEFAULT
 )
+ON CONFLICT ("tokenId") DO NOTHING
 RETURNING *;
 
 /* 
@@ -121,4 +125,5 @@ VALUES (
   DEFAULT,
   DEFAULT
 )
+ON CONFLICT ("tokenId", "eventId") DO NOTHING
 RETURNING *;
