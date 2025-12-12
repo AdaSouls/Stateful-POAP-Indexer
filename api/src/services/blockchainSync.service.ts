@@ -847,7 +847,31 @@ export class BlockchainSyncService {
         // Check if event already exists
         const existingEvent = await getEventByEventId.run({ eventId: eventIdNumber }, client);
         if (existingEvent.length > 0) {
-          console.log(`ℹ️ Event ${eventIdNumber} already exists in database`);
+          const eventRecord = existingEvent[0];
+          
+          // Update blockchain metadata if missing (for off-chain created events)
+          if (!eventRecord.block_number || !eventRecord.transaction_hash) {
+            try {
+              await client.query(
+                `UPDATE events 
+                 SET block_number = COALESCE(block_number, $1), 
+                     transaction_hash = COALESCE(transaction_hash, $2) 
+                 WHERE "eventId" = $3 
+                   AND (block_number IS NULL OR transaction_hash IS NULL)`,
+                [event.blockNumber, event.transactionHash, eventIdNumber]
+              );
+              
+              // Store block hash for reorg detection
+              await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);
+              
+              console.log(`✅ Updated blockchain metadata for existing event ${eventIdNumber}`);
+            } catch (error) {
+              // Columns might not exist yet - ignore
+              console.warn('Could not update event metadata (columns may not exist):', error);
+            }
+          } else {
+            console.log(`ℹ️ Event ${eventIdNumber} already exists with blockchain metadata`);
+          }
           return;
         }
 
@@ -957,7 +981,31 @@ export class BlockchainSyncService {
         // Check if POAP already exists
         const existingPoap = await getPoapByTokenId.run({ tokenId: tokenIdNumber }, client);
         if (existingPoap.length > 0) {
-          console.log(`ℹ️ POAP ${tokenIdNumber} already exists in database`);
+          const poapRecord = existingPoap[0];
+          
+          // Update blockchain metadata if missing (for off-chain created POAPs)
+          if (!poapRecord.block_number || !poapRecord.transaction_hash) {
+            try {
+              await client.query(
+                `UPDATE poaps 
+                 SET block_number = COALESCE(block_number, $1), 
+                     transaction_hash = COALESCE(transaction_hash, $2) 
+                 WHERE "tokenId" = $3 
+                   AND (block_number IS NULL OR transaction_hash IS NULL)`,
+                [event.blockNumber, event.transactionHash, tokenIdNumber]
+              );
+              
+              // Store block hash for reorg detection
+              await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);
+              
+              console.log(`✅ Updated blockchain metadata for existing POAP ${tokenIdNumber}`);
+            } catch (error) {
+              // Columns might not exist yet - ignore
+              console.warn('Could not update POAP metadata (columns may not exist):', error);
+            }
+          } else {
+            console.log(`ℹ️ POAP ${tokenIdNumber} already exists with blockchain metadata`);
+          }
           return;
         }
 
