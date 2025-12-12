@@ -1,5 +1,5 @@
 import { Controller, Route, Post, Body } from 'tsoa';
-import { requirePoolWriteAccess, createEvent, ICreateEventParams, ICreateEventResult } from '@game/db';
+import { requirePoolWriteAccess, createEvent, ICreateEventParams, ICreateEventResult, getEventByEventId, updateEventMetadata } from '@game/db';
 import { IErrorResponse } from "@game/utils";
 
 /**
@@ -62,6 +62,39 @@ export class CreateEventController extends Controller {
         pool
       );
 
+      // If event already exists (ON CONFLICT DO NOTHING returns empty array), update off-chain data
+      if (!event || event.length === 0 || !event[0]) {
+        // Update off-chain metadata for existing event
+        await updateEventMetadata.run(
+          {
+            eventId: eventInfo.eventId,
+            title: eventInfo.title || null,
+            description: eventInfo.description || null,
+            imageUrl: eventInfo.imageUrl || null,
+            eventStartDate: eventInfo.eventStartDate || null,
+            eventEndDate: eventInfo.eventEndDate || null,
+          },
+          pool
+        );
+        
+        // Fetch and return the updated event
+        const existingEvent = await getEventByEventId.run(
+          { eventId: eventInfo.eventId },
+          pool
+        );
+        
+        if (existingEvent && existingEvent.length > 0) {
+          return existingEvent[0] as ICreateEventResult;
+        } else {
+          // This shouldn't happen, but handle it gracefully
+          return {
+            error: 'Failed to create or update event',
+            details: 'Event not found after update attempt',
+          };
+        }
+      }
+
+      // Return newly created event
       return event[0] as ICreateEventResult;
 
     } catch (error: any) {
