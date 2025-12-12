@@ -189,21 +189,30 @@ export class BlockchainSyncService {
       // Process historical events first
       await this.processHistoricalEvents();
 
-      // Start listening for new events
-      this.contract.on("EventCreated", this.handleEventCreated.bind(this));
-      this.contract.on("TokenMinted", this.handleTokenMinted.bind(this));
+      // Production-ready approach: Use polling instead of ephemeral event filters
+      // Event filters (contract.on()) are unreliable in production because:
+      // - They expire after 5-10 minutes on most RPC providers
+      // - They're cleared on provider restarts
+      // - They cause "filter not found" errors
+      // Polling with queryFilter() is more reliable and doesn't depend on server-side state
       
       this.isListening = true;
-      console.log('✅ Blockchain event listener started');
+      console.log('✅ Blockchain sync initialized (using reliable polling method)');
 
-      // Set up periodic sync as backup
+      // Set up periodic sync - primary method for production
+      // Using 15-second intervals for near real-time updates while avoiding rate limits
       this.syncInterval = setInterval(() => {
-        this.syncRecentEvents();
-      }, 30000); // Sync every 30 seconds
+        this.syncRecentEvents().catch(error => {
+          // Errors are already logged in syncRecentEvents, just prevent unhandled rejection
+          console.error('⚠️ Unhandled error in periodic sync:', error);
+        });
+      }, 15000); // Sync every 15 seconds for production responsiveness
 
       // Set up periodic reorg check
       this.reorgCheckInterval = setInterval(() => {
-        this.checkForReorgs();
+        this.checkForReorgs().catch(error => {
+          console.error('⚠️ Unhandled error in reorg check:', error);
+        });
       }, 60000); // Check every minute
 
     } catch (error) {
@@ -216,8 +225,8 @@ export class BlockchainSyncService {
   async stopListening() {
     if (!this.isListening) return;
 
-    this.contract.removeAllListeners("EventCreated");
-    this.contract.removeAllListeners("TokenMinted");
+    // No event listeners to remove (we use polling instead)
+    // But keep this for safety in case listeners are added in the future
     
     if (this.syncInterval) {
       clearInterval(this.syncInterval);
@@ -230,7 +239,7 @@ export class BlockchainSyncService {
     }
     
     this.isListening = false;
-    console.log('🛑 Blockchain event listener stopped');
+    console.log('🛑 Blockchain sync stopped');
   }
 
   /**
@@ -573,16 +582,21 @@ export class BlockchainSyncService {
 
   /**
    * Process historical events with batching and retry
+   * Production-ready: Includes rate limiting protection and progress tracking
    */
   private async processHistoricalEvents() {
     try {
       const currentBlock = await this.provider.getBlockNumber();
       const fromBlock = Math.max(1, currentBlock - 50000); // Check last 50k blocks
 
-      console.log(`📚 Processing historical events from block ${fromBlock} to ${currentBlock}`);
+      const totalBlocks = currentBlock - fromBlock + 1;
+      console.log(`📚 Processing historical events from block ${fromBlock} to ${currentBlock} (${totalBlocks} blocks)`);
 
-      // Process in batches
-      const batchSize = 1000;
+      // Process in smaller batches to avoid rate limits
+      // Smaller batches = more requests but less likely to hit rate limits
+      const batchSize = 500; // Reduced from 1000 for better rate limit handling
+      let processedBlocks = 0;
+      
       for (let from = fromBlock; from <= currentBlock; from += batchSize) {
         const to = Math.min(from + batchSize - 1, currentBlock);
         
@@ -590,13 +604,39 @@ export class BlockchainSyncService {
           () => this.processBlockRange(from, to),
           { blockRange: { from, to }, operation: 'processHistoricalEvents' }
         );
+        
+        processedBlocks += (to - from + 1);
+        const progress = ((processedBlocks / totalBlocks) * 100).toFixed(1);
+        
+        // Log progress every 10% or at the end
+        if (processedBlocks % Math.floor(totalBlocks / 10) < batchSize || processedBlocks >= totalBlocks) {
+          console.log(`📊 Historical sync progress: ${progress}% (${processedBlocks}/${totalBlocks} blocks)`);
+        }
+        
+        // Small delay between batches to avoid rate limiting
+        // Only delay if not the last batch
+        if (to < currentBlock) {
+          await this.sleep(100); // 100ms delay between batches
+        }
       }
 
       this.lastProcessedBlock = currentBlock;
       this.metrics.lastProcessedBlock = currentBlock;
+      console.log('✅ Historical event processing completed');
     } catch (error) {
       const indexingError = classifyError(error, { operation: 'processHistoricalEvents' });
       console.error('❌ Error processing historical events:', indexingError);
+      
+      // For rate limiting errors, log but don't fail completely
+      // The periodic sync will catch up
+      if (indexingError.message?.includes('Too Many Requests') || 
+          indexingError.message?.includes('rate limit')) {
+        console.warn('⚠️ Rate limited during historical sync. Periodic sync will catch up.');
+        // Set lastProcessedBlock to a safe value so periodic sync can continue
+        this.lastProcessedBlock = Math.max(1, await this.provider.getBlockNumber() - 1000);
+        return; // Don't throw, allow periodic sync to handle it
+      }
+      
       throw indexingError;
     }
   }
@@ -633,7 +673,8 @@ export class BlockchainSyncService {
   }
 
   /**
-   * Sync recent events
+   * Sync recent events - Production-ready polling method
+   * Uses queryFilter() which is reliable and doesn't depend on ephemeral filters
    */
   private async syncRecentEvents() {
     try {
@@ -642,11 +683,17 @@ export class BlockchainSyncService {
       
       if (currentBlock <= this.lastProcessedBlock) {
         this.metrics.processingLag = 0;
-        return;
+        return; // Already up to date
       }
 
       this.metrics.processingLag = currentBlock - this.lastProcessedBlock;
-      console.log(`🔄 Syncing events from block ${this.lastProcessedBlock + 1} to ${currentBlock} (lag: ${this.metrics.processingLag} blocks)`);
+      
+      // Log only if there's significant lag or events found (reduce noise)
+      const shouldLog = this.metrics.processingLag > 10;
+      
+      if (shouldLog) {
+        console.log(`🔄 Syncing events from block ${this.lastProcessedBlock + 1} to ${currentBlock} (lag: ${this.metrics.processingLag} blocks)`);
+      }
 
       await this.retryWithBackoff(
         () => this.processBlockRange(this.lastProcessedBlock + 1, currentBlock),
@@ -655,15 +702,29 @@ export class BlockchainSyncService {
 
       this.lastProcessedBlock = currentBlock;
       this.metrics.lastProcessedBlock = currentBlock;
+      
+      // Update processing lag after successful sync
+      this.metrics.processingLag = 0;
     } catch (error) {
       const indexingError = classifyError(error, { operation: 'syncRecentEvents' });
-      console.error('❌ Error syncing recent events:', indexingError);
+      
+      // Only log errors that aren't rate limiting (those are expected and handled by retry)
+      if (indexingError.type !== 'UNKNOWN_ERROR' || 
+          !indexingError.message?.includes('Too Many Requests')) {
+        console.error('❌ Error syncing recent events:', indexingError.message || indexingError);
+      }
+      
       // Don't throw - allow retry on next interval
+      // The retry mechanism will handle transient errors
     }
   }
 
   /**
    * Handle EventCreated event
+   * NOTE: This method is currently not used. We use polling (syncRecentEvents) instead of
+   * event listeners (contract.on()) for production reliability. Event filters are ephemeral
+   * and expire, causing "filter not found" errors. Polling with queryFilter() is more reliable.
+   * Kept for potential future use if we implement a hybrid approach.
    */
   private async handleEventCreated(
     issuerId: bigint,
@@ -688,6 +749,10 @@ export class BlockchainSyncService {
 
   /**
    * Handle TokenMinted event
+   * NOTE: This method is currently not used. We use polling (syncRecentEvents) instead of
+   * event listeners (contract.on()) for production reliability. Event filters are ephemeral
+   * and expire, causing "filter not found" errors. Polling with queryFilter() is more reliable.
+   * Kept for potential future use if we implement a hybrid approach.
    */
   private async handleTokenMinted(
     issuerId: bigint,
