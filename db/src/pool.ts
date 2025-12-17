@@ -10,6 +10,11 @@ export const creds = {
   password: process.env.DB_PW,
   database: process.env.DB_NAME,
   port: parseInt(process.env.DB_PORT || '5432', 10),
+  // Add pool limits
+  max: parseInt(process.env.DB_POOL_MAX || '20', 10),
+  min: parseInt(process.env.DB_POOL_MIN || '2', 10),
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 };
 
 let pool: Pool | null;
