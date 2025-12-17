@@ -218,7 +218,7 @@
 					"eventId": {
 						"type": "number",
 						"format": "double",
-						"description": "Event ID (required)"
+						"description": "Event ID (optional - will be auto-generated if not provided)"
 					},
 					"eventMaxSupply": {
 						"type": "number",
@@ -257,7 +257,6 @@
 				},
 				"required": [
 					"issuerId",
-					"eventId",
 					"eventMaxSupply",
 					"eventMintExpiration",
 					"eventOrganizer"

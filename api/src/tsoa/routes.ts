@@ -110,7 +110,7 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "issuerId": {"dataType":"double","required":true},
-            "eventId": {"dataType":"double","required":true},
+            "eventId": {"dataType":"double"},
             "eventMaxSupply": {"dataType":"double","required":true},
             "eventMintExpiration": {"dataType":"double","required":true},
             "eventOrganizer": {"dataType":"string","required":true},
