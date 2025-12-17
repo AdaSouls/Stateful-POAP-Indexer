@@ -9,8 +9,8 @@ import { IErrorResponse } from "@game/utils";
 export interface ICreateEventRequest {
   /** Issuer ID (required) */
   issuerId: number;
-  /** Event ID (required) */
-  eventId: number;
+  /** Event ID (optional - will be auto-generated if not provided) */
+  eventId?: number;
   /** Maximum supply of POAPs for this event (required) */
   eventMaxSupply: number;
   /** Mint expiration timestamp in seconds, 0 for indefinite (required) */
@@ -33,7 +33,8 @@ export interface ICreateEventRequest {
  * Controller for creating POAP events.
  * 
  * Accepts both on-chain data (required) and off-chain metadata (optional):
- * - On-chain: issuerId, eventId, eventMaxSupply, eventMintExpiration, eventOrganizer
+ * - On-chain: issuerId, eventMaxSupply, eventMintExpiration, eventOrganizer
+ * - On-chain (optional): eventId (auto-generated if not provided)
  * - Off-chain: title, description, imageUrl, eventStartDate, eventEndDate
  */
 @Route('create_event')
@@ -43,10 +44,21 @@ export class CreateEventController extends Controller {
     const pool = requirePoolWriteAccess();
 
     try {
+      // If eventId is not provided, generate it using the sequence
+      let finalEventId: number;
+      if (!eventInfo.eventId) {
+        const result = await pool.query('SELECT nextval(\'events_eventId_seq\') as "eventId"');
+        finalEventId = parseInt(result.rows[0].eventId, 10);
+        console.log(`✅ Auto-generated eventId: ${finalEventId}`);
+      } else {
+        finalEventId = eventInfo.eventId;
+        console.log(`✅ Using provided eventId: ${finalEventId}`);
+      }
+
       // Convert ICreateEventRequest to ICreateEventParams for database
       const eventParams: ICreateEventParams = {
         issuerId: eventInfo.issuerId,
-        eventId: eventInfo.eventId,
+        eventId: finalEventId,
         eventMaxSupply: eventInfo.eventMaxSupply,
         eventMintExpiration: eventInfo.eventMintExpiration,
         eventOrganizer: eventInfo.eventOrganizer,
@@ -67,7 +79,7 @@ export class CreateEventController extends Controller {
         // Update off-chain metadata for existing event
         await updateEventMetadata.run(
           {
-            eventId: eventInfo.eventId,
+            eventId: finalEventId,
             title: eventInfo.title || null,
             description: eventInfo.description || null,
             imageUrl: eventInfo.imageUrl || null,
@@ -79,7 +91,7 @@ export class CreateEventController extends Controller {
         
         // Fetch and return the updated event
         const existingEvent = await getEventByEventId.run(
-          { eventId: eventInfo.eventId },
+          { eventId: finalEventId },
           pool
         );
         
