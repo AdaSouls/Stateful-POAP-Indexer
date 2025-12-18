@@ -14,8 +14,8 @@ export class AllEventsController extends Controller {
   public async getAll(
     /** Filter by organizer wallet address */
     @Query() organiserAddress?: string,
-    /** Filter by issuer ID */
-    @Query() issuerId?: number,
+    /** Filter by event ID */
+    @Query() eventId?: number,
     /** Filter by event status (e.g., 'Pending', 'Active', 'Completed') */
     @Query() status?: string,
     /** Filter by expiration status: 'true' for expired, 'false' for active */
@@ -37,7 +37,7 @@ export class AllEventsController extends Controller {
       }
 
       // Check if any filters are provided
-      const hasFilters = organiserAddress || issuerId !== undefined || status || 
+      const hasFilters = organiserAddress || eventId !== undefined || status || 
                         expiredBool !== null || titleSearch || sortBy || order;
 
       // If no filters/sort params provided, use simple getAllEvents
@@ -49,7 +49,7 @@ export class AllEventsController extends Controller {
       // Use filtered query
       const filterParams = {
         organiserAddress: organiserAddress || null,
-        issuerId: issuerId !== undefined ? issuerId : null,
+        eventId: eventId !== undefined ? eventId : null,
         status: status || null,
         expired: expiredBool,
         titleSearch: titleSearch || null,

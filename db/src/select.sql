@@ -32,7 +32,7 @@ SELECT * FROM events;
 SELECT * FROM events
 WHERE 
   (:organiserAddress::text IS NULL OR "organiserAddress" = lower(:organiserAddress))
-  AND (:issuerId::integer IS NULL OR "issuerId" = :issuerId)
+  AND (:eventId::integer IS NULL OR "eventId" = :eventId)
   AND (:status::text IS NULL OR status = :status)
   AND (:expired::boolean IS NULL OR 
     CASE 

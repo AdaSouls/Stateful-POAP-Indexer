@@ -1186,9 +1186,9 @@
 						}
 					},
 					{
-						"description": "Filter by issuer ID",
+						"description": "Filter by event ID",
 						"in": "query",
-						"name": "issuerId",
+						"name": "eventId",
 						"required": false,
 						"schema": {
 							"format": "double",

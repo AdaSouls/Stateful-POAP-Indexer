@@ -474,7 +474,7 @@ export function RegisterRoutes(app: Router) {
             async function AllEventsController_getAll(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     organiserAddress: {"in":"query","name":"organiserAddress","dataType":"string"},
-                    issuerId: {"in":"query","name":"issuerId","dataType":"double"},
+                    eventId: {"in":"query","name":"eventId","dataType":"double"},
                     status: {"in":"query","name":"status","dataType":"string"},
                     expired: {"in":"query","name":"expired","dataType":"string"},
                     titleSearch: {"in":"query","name":"titleSearch","dataType":"string"},
