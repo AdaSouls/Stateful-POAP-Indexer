@@ -1,16 +1,63 @@
 import { Controller, Get, Query, Route } from "tsoa";
-import { getAllEvents, IGetAllEventsResult, requirePool } from "@game/db";
+import { 
+  getAllEvents, 
+  getEventsWithFilters,
+  IGetAllEventsResult, 
+  IGetEventsWithFiltersResult,
+  requirePool 
+} from "@game/db";
 import { IErrorResponse } from "@game/utils";
 
 @Route("get_all_events")
 export class AllEventsController extends Controller {
   @Get()
-  public async getAll(): Promise<IGetAllEventsResult[] | IErrorResponse> {
+  public async getAll(
+    /** Filter by organizer wallet address */
+    @Query() organiserAddress?: string,
+    /** Filter by issuer ID */
+    @Query() issuerId?: number,
+    /** Filter by event status (e.g., 'Pending', 'Active', 'Completed') */
+    @Query() status?: string,
+    /** Filter by expiration status: 'true' for expired, 'false' for active */
+    @Query() expired?: string,
+    /** Search events by title (partial match, case-insensitive) */
+    @Query() titleSearch?: string,
+    /** Field to sort by: 'createdAt', 'eventStartDate', 'expiration', 'title' */
+    @Query() sortBy?: string,
+    /** Sort order: 'asc' or 'desc' */
+    @Query() order?: string
+  ): Promise<IGetAllEventsResult[] | IErrorResponse> {
     const pool = requirePool();
 
     try {
-      const events = await getAllEvents.run(undefined, pool);
-      // console.log("🚀 ~ EventsController ~ getAll ~ events:", events);
+      // Convert expired string to boolean if provided
+      let expiredBool: boolean | null = null;
+      if (expired !== undefined && expired !== null && expired !== '') {
+        expiredBool = expired.toLowerCase() === 'true';
+      }
+
+      // Check if any filters are provided
+      const hasFilters = organiserAddress || issuerId !== undefined || status || 
+                        expiredBool !== null || titleSearch || sortBy || order;
+
+      // If no filters/sort params provided, use simple getAllEvents
+      if (!hasFilters) {
+        const events = await getAllEvents.run(undefined, pool);
+        return events;
+      }
+
+      // Use filtered query
+      const filterParams = {
+        organiserAddress: organiserAddress || null,
+        issuerId: issuerId !== undefined ? issuerId : null,
+        status: status || null,
+        expired: expiredBool,
+        titleSearch: titleSearch || null,
+        sortBy: sortBy || null,
+        order: order || 'desc',
+      };
+
+      const events = await getEventsWithFilters.run(filterParams, pool);
       return events;
     } catch (error: any) {
       console.error("❌ Error getting all events:", error);
