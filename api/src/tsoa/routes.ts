@@ -13,6 +13,8 @@ import { CreateEventController } from './../controllers/events/createEvent';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AllEventsController } from './../controllers/events/getAllEvents';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { GetEventsByOrganizerController } from './../controllers/events/getEventsByOrganizer';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CreateIssuerController } from './../controllers/issuers/createIssuer';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AllIssuersController } from './../controllers/issuers/getAllIssuers';
@@ -471,6 +473,13 @@ export function RegisterRoutes(app: Router) {
 
             async function AllEventsController_getAll(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    organiserAddress: {"in":"query","name":"organiserAddress","dataType":"string"},
+                    issuerId: {"in":"query","name":"issuerId","dataType":"double"},
+                    status: {"in":"query","name":"status","dataType":"string"},
+                    expired: {"in":"query","name":"expired","dataType":"string"},
+                    titleSearch: {"in":"query","name":"titleSearch","dataType":"string"},
+                    sortBy: {"in":"query","name":"sortBy","dataType":"string"},
+                    order: {"in":"query","name":"order","dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -483,6 +492,36 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getAll',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/get_events_by_organizer',
+            ...(fetchMiddlewares<RequestHandler>(GetEventsByOrganizerController)),
+            ...(fetchMiddlewares<RequestHandler>(GetEventsByOrganizerController.prototype.getEventsByOrganizer)),
+
+            async function GetEventsByOrganizerController_getEventsByOrganizer(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    address: {"in":"query","name":"address","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new GetEventsByOrganizerController();
+
+              await templateService.apiHandler({
+                methodName: 'getEventsByOrganizer',
                 controller,
                 response,
                 next,
