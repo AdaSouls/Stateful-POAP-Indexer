@@ -183,6 +183,133 @@ const getAllEventsIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT *
 export const getAllEvents = new PreparedQuery<IGetAllEventsParams,IGetAllEventsResult>(getAllEventsIR);
 
 
+/** 'GetEventsWithFilters' parameters type */
+export interface IGetEventsWithFiltersParams {
+  expired?: boolean | null | void;
+  issuerId?: number | null | void;
+  order?: string | null | void;
+  organiserAddress?: string | null | void;
+  sortBy?: string | null | void;
+  status?: string | null | void;
+  titleSearch?: string | null | void;
+}
+
+/** 'GetEventsWithFilters' return type */
+export interface IGetEventsWithFiltersResult {
+  /** Block number where the event was created */
+  block_number: number | null;
+  createdAt: Date | null;
+  /** Detailed description of the event */
+  description: string | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
+  eventId: number;
+  /** When the actual event starts (different from mint expiration) */
+  eventStartDate: Date | null;
+  eventUuid: string;
+  expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
+  issuerId: number;
+  maxSupply: number;
+  organiserAddress: string;
+  status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
+  /** Transaction hash of the event creation */
+  transaction_hash: string | null;
+  updatedAt: Date | null;
+}
+
+/** 'GetEventsWithFilters' query type */
+export interface IGetEventsWithFiltersQuery {
+  params: IGetEventsWithFiltersParams;
+  result: IGetEventsWithFiltersResult;
+}
+
+const getEventsWithFiltersIR: any = {"usedParamSet":{"organiserAddress":true,"issuerId":true,"status":true,"expired":true,"titleSearch":true,"sortBy":true,"order":true},"params":[{"name":"organiserAddress","required":false,"transform":{"type":"scalar"},"locs":[{"a":31,"b":47},{"a":93,"b":109}]},{"name":"issuerId","required":false,"transform":{"type":"scalar"},"locs":[{"a":120,"b":128},{"a":163,"b":171}]},{"name":"status","required":false,"transform":{"type":"scalar"},"locs":[{"a":181,"b":187},{"a":215,"b":221}]},{"name":"expired","required":false,"transform":{"type":"scalar"},"locs":[{"a":231,"b":238},{"a":282,"b":289},{"a":368,"b":375}]},{"name":"titleSearch","required":false,"transform":{"type":"scalar"},"locs":[{"a":495,"b":506},{"a":544,"b":555}]},{"name":"sortBy","required":false,"transform":{"type":"scalar"},"locs":[{"a":586,"b":592},{"a":676,"b":682},{"a":768,"b":774},{"a":868,"b":874},{"a":970,"b":976},{"a":1060,"b":1066},{"a":1152,"b":1158},{"a":1232,"b":1238}]},{"name":"order","required":false,"transform":{"type":"scalar"},"locs":[{"a":612,"b":617},{"a":702,"b":707},{"a":799,"b":804},{"a":899,"b":904},{"a":997,"b":1002},{"a":1087,"b":1092},{"a":1174,"b":1179},{"a":1254,"b":1259}]}],"statement":"SELECT * FROM events\nWHERE \n  (:organiserAddress::text IS NULL OR \"organiserAddress\" = lower(:organiserAddress))\n  AND (:issuerId::integer IS NULL OR \"issuerId\" = :issuerId)\n  AND (:status::text IS NULL OR status = :status)\n  AND (:expired::boolean IS NULL OR \n    CASE \n      WHEN :expired = true THEN expiration * 1000 <= EXTRACT(EPOCH FROM NOW()) * 1000\n      WHEN :expired = false THEN (expiration * 1000 > EXTRACT(EPOCH FROM NOW()) * 1000 OR expiration = 0)\n      ELSE true\n    END)\n  AND (:titleSearch::text IS NULL OR title ILIKE '%' || :titleSearch || '%')\nORDER BY\n  CASE WHEN :sortBy = 'createdAt' AND :order = 'asc' THEN \"createdAt\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'createdAt' AND :order = 'desc' THEN \"createdAt\" END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'eventStartDate' AND :order = 'asc' THEN \"eventStartDate\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'eventStartDate' AND :order = 'desc' THEN \"eventStartDate\" END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'expiration' AND :order = 'asc' THEN expiration END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'expiration' AND :order = 'desc' THEN expiration END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN title END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN title END DESC NULLS LAST,\n  \"createdAt\" DESC NULLS LAST"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM events
+ * WHERE 
+ *   (:organiserAddress::text IS NULL OR "organiserAddress" = lower(:organiserAddress))
+ *   AND (:issuerId::integer IS NULL OR "issuerId" = :issuerId)
+ *   AND (:status::text IS NULL OR status = :status)
+ *   AND (:expired::boolean IS NULL OR 
+ *     CASE 
+ *       WHEN :expired = true THEN expiration * 1000 <= EXTRACT(EPOCH FROM NOW()) * 1000
+ *       WHEN :expired = false THEN (expiration * 1000 > EXTRACT(EPOCH FROM NOW()) * 1000 OR expiration = 0)
+ *       ELSE true
+ *     END)
+ *   AND (:titleSearch::text IS NULL OR title ILIKE '%' || :titleSearch || '%')
+ * ORDER BY
+ *   CASE WHEN :sortBy = 'createdAt' AND :order = 'asc' THEN "createdAt" END ASC NULLS LAST,
+ *   CASE WHEN :sortBy = 'createdAt' AND :order = 'desc' THEN "createdAt" END DESC NULLS LAST,
+ *   CASE WHEN :sortBy = 'eventStartDate' AND :order = 'asc' THEN "eventStartDate" END ASC NULLS LAST,
+ *   CASE WHEN :sortBy = 'eventStartDate' AND :order = 'desc' THEN "eventStartDate" END DESC NULLS LAST,
+ *   CASE WHEN :sortBy = 'expiration' AND :order = 'asc' THEN expiration END ASC NULLS LAST,
+ *   CASE WHEN :sortBy = 'expiration' AND :order = 'desc' THEN expiration END DESC NULLS LAST,
+ *   CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN title END ASC NULLS LAST,
+ *   CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN title END DESC NULLS LAST,
+ *   "createdAt" DESC NULLS LAST
+ * ```
+ */
+export const getEventsWithFilters = new PreparedQuery<IGetEventsWithFiltersParams,IGetEventsWithFiltersResult>(getEventsWithFiltersIR);
+
+
+/** 'GetEventsByOrganizer' parameters type */
+export interface IGetEventsByOrganizerParams {
+  organiserAddress: string;
+}
+
+/** 'GetEventsByOrganizer' return type */
+export interface IGetEventsByOrganizerResult {
+  /** Block number where the event was created */
+  block_number: number | null;
+  createdAt: Date | null;
+  /** Detailed description of the event */
+  description: string | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
+  eventId: number;
+  /** When the actual event starts (different from mint expiration) */
+  eventStartDate: Date | null;
+  eventUuid: string;
+  expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
+  issuerId: number;
+  maxSupply: number;
+  organiserAddress: string;
+  status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
+  /** Transaction hash of the event creation */
+  transaction_hash: string | null;
+  updatedAt: Date | null;
+}
+
+/** 'GetEventsByOrganizer' query type */
+export interface IGetEventsByOrganizerQuery {
+  params: IGetEventsByOrganizerParams;
+  result: IGetEventsByOrganizerResult;
+}
+
+const getEventsByOrganizerIR: any = {"usedParamSet":{"organiserAddress":true},"params":[{"name":"organiserAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":54,"b":71}]}],"statement":"SELECT * FROM events\nWHERE \"organiserAddress\" = lower(:organiserAddress!)\nORDER BY \"createdAt\" DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM events
+ * WHERE "organiserAddress" = lower(:organiserAddress!)
+ * ORDER BY "createdAt" DESC
+ * ```
+ */
+export const getEventsByOrganizer = new PreparedQuery<IGetEventsByOrganizerParams,IGetEventsByOrganizerResult>(getEventsByOrganizerIR);
+
+
 /** 'GetAllOwners' parameters type */
 export type IGetAllOwnersParams = void;
 
