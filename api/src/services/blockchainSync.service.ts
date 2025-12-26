@@ -18,7 +18,7 @@ import {
 } from '../utils/indexingErrors';
 
 // Contract configuration
-const POAP_CONTRACT_ADDRESS = "0x7b04cD65718eA503e0A641c1D23cb57688B808F9";
+const POAP_CONTRACT_ADDRESS = "0xE2113297a478889eFc11e0DC643D16a0178c2963";
 const providerRPC = {
   name: "Amoy",
   rpc: "https://rpc-amoy.polygon.technology",
