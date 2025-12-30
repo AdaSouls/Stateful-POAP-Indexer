@@ -247,8 +247,9 @@
 						"description": "URL to event image/banner (optional)"
 					},
 					"eventStartDate": {
-						"type": "string",
-						"description": "Event start date/time in ISO format (optional)"
+						"type": "number",
+						"format": "double",
+						"description": "Event start date as Unix timestamp in seconds (optional, same type as expiration)"
 					},
 					"eventEndDate": {
 						"type": "string",

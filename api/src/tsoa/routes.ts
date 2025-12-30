@@ -119,7 +119,7 @@ const models: TsoaRoute.Models = {
             "title": {"dataType":"string"},
             "description": {"dataType":"string"},
             "imageUrl": {"dataType":"string"},
-            "eventStartDate": {"dataType":"string"},
+            "eventStartDate": {"dataType":"double"},
             "eventEndDate": {"dataType":"string"},
         },
         "additionalProperties": false,

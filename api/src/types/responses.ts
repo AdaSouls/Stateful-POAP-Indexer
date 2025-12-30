@@ -28,7 +28,7 @@ export interface ICreateEventResult {
     title: string | null;
     description: string | null;
     imageUrl: string | null;
-    eventStartDate: Date | null;
+    eventStartDate: number;
     eventEndDate: Date | null;
 }
 
