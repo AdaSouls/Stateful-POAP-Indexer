@@ -66,14 +66,14 @@ ALTER TABLE events
 ADD COLUMN IF NOT EXISTS title VARCHAR(255),
 ADD COLUMN IF NOT EXISTS description TEXT,
 ADD COLUMN IF NOT EXISTS "imageUrl" VARCHAR(500),
-ADD COLUMN IF NOT EXISTS "eventStartDate" TIMESTAMP WITH TIME ZONE,
+ADD COLUMN IF NOT EXISTS "eventStartDate" INTEGER,
 ADD COLUMN IF NOT EXISTS "eventEndDate" TIMESTAMP WITH TIME ZONE;
 
 -- Add comments for documentation
 COMMENT ON COLUMN events.title IS 'Event title/name for display purposes';
 COMMENT ON COLUMN events.description IS 'Detailed description of the event';
 COMMENT ON COLUMN events."imageUrl" IS 'URL to the event image/banner';
-COMMENT ON COLUMN events."eventStartDate" IS 'When the actual event starts (different from mint expiration)';
+COMMENT ON COLUMN events."eventStartDate" IS 'When the actual event starts (Unix timestamp in seconds, same type as expiration)';
 COMMENT ON COLUMN events."eventEndDate" IS 'When the actual event ends (different from mint expiration)';
 
 -- ============================================
@@ -136,7 +136,7 @@ ADD COLUMN IF NOT EXISTS transaction_hash VARCHAR(66);
 CREATE INDEX IF NOT EXISTS idx_events_event_id ON events("eventId");
 CREATE INDEX IF NOT EXISTS idx_events_issuer_id ON events("issuerId");
 CREATE INDEX IF NOT EXISTS idx_events_block_number ON events(block_number);
-CREATE INDEX IF NOT EXISTS idx_events_transaction_hash ON events("transaction_hash");
+CREATE INDEX IF NOT EXISTS idx_events_transaction_hash ON events(transaction_hash);
 CREATE INDEX IF NOT EXISTS idx_events_issuer_status ON events("issuerId", "status");
 
 -- Indexes for poaps table
@@ -145,7 +145,7 @@ CREATE INDEX IF NOT EXISTS idx_poaps_event_id ON poaps("eventId");
 CREATE INDEX IF NOT EXISTS idx_poaps_owner_address ON poaps("ownerAddress");
 CREATE INDEX IF NOT EXISTS idx_poaps_issuer_id ON poaps("issuerId");
 CREATE INDEX IF NOT EXISTS idx_poaps_block_number ON poaps(block_number);
-CREATE INDEX IF NOT EXISTS idx_poaps_transaction_hash ON poaps("transaction_hash");
+CREATE INDEX IF NOT EXISTS idx_poaps_transaction_hash ON poaps(transaction_hash);
 
 -- Composite indexes for common queries
 CREATE INDEX IF NOT EXISTS idx_poaps_event_owner ON poaps("eventId", "ownerAddress");
