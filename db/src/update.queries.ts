@@ -70,7 +70,7 @@ export interface IUpdateEventMetadataParams {
   description?: string | null | void;
   eventEndDate?: DateOrString | null | void;
   eventId: number;
-  eventStartDate?: DateOrString | null | void;
+  eventStartDate?: number;
   imageUrl?: string | null | void;
   title?: string | null | void;
 }

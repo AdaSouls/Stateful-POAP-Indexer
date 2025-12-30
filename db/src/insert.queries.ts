@@ -70,7 +70,7 @@ export interface ICreateEventParams {
   eventMaxSupply: number;
   eventMintExpiration: number;
   eventOrganizer: string;
-  eventStartDate?: DateOrString | null | void;
+  eventStartDate?: number;
   imageUrl?: string | null | void;
   issuerId: number;
   title?: string | null | void;

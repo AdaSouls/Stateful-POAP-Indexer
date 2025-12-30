@@ -23,8 +23,8 @@ export interface ICreateEventRequest {
   description?: string;
   /** URL to event image/banner (optional) */
   imageUrl?: string;
-  /** Event start date/time in ISO format (optional) */
-  eventStartDate?: string;
+  /** Event start date as Unix timestamp in seconds (optional, same type as expiration) */
+  eventStartDate?: number;
   /** Event end date/time in ISO format (optional) */
   eventEndDate?: string;
 }
@@ -65,7 +65,7 @@ export class CreateEventController extends Controller {
         title: eventInfo.title || null,
         description: eventInfo.description || null,
         imageUrl: eventInfo.imageUrl || null,
-        eventStartDate: eventInfo.eventStartDate || null,
+        eventStartDate: eventInfo.eventStartDate,
         eventEndDate: eventInfo.eventEndDate || null,
       };
       
@@ -83,7 +83,7 @@ export class CreateEventController extends Controller {
             title: eventInfo.title || null,
             description: eventInfo.description || null,
             imageUrl: eventInfo.imageUrl || null,
-            eventStartDate: eventInfo.eventStartDate || null,
+            eventStartDate: eventInfo.eventStartDate,
             eventEndDate: eventInfo.eventEndDate || null,
           },
           pool
