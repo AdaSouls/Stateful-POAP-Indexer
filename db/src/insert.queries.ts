@@ -87,7 +87,7 @@ export interface ICreateEventResult {
   eventEndDate: Date | null;
   eventId: number;
   /** When the actual event starts (different from mint expiration) */
-  eventStartDate: Date | null;
+  eventStartDate: number;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */

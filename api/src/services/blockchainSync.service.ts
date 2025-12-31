@@ -62,6 +62,12 @@ const POAP_CONTRACT_ABI = [
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "eventStartDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "eventMintExpiration",
         "type": "uint256"
       },
@@ -587,7 +593,7 @@ export class BlockchainSyncService {
   private async processHistoricalEvents() {
     try {
       const currentBlock = await this.provider.getBlockNumber();
-      const fromBlock = Math.max(1, currentBlock - 50000); // Check last 50k blocks
+      const fromBlock = Math.max(1, currentBlock - 5000); // Check last 10k blocks
 
       const totalBlocks = currentBlock - fromBlock + 1;
       console.log(`📚 Processing historical events from block ${fromBlock} to ${currentBlock} (${totalBlocks} blocks)`);

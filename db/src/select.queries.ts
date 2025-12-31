@@ -150,7 +150,7 @@ export interface IGetAllEventsResult {
   eventEndDate: Date | null;
   eventId: number;
   /** When the actual event starts (different from mint expiration) */
-  eventStartDate: Date | null;
+  eventStartDate: number;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
@@ -205,7 +205,7 @@ export interface IGetEventsWithFiltersResult {
   eventEndDate: Date | null;
   eventId: number;
   /** When the actual event starts (different from mint expiration) */
-  eventStartDate: Date | null;
+  eventStartDate: number;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
@@ -275,7 +275,7 @@ export interface IGetEventsByOrganizerResult {
   eventEndDate: Date | null;
   eventId: number;
   /** When the actual event starts (different from mint expiration) */
-  eventStartDate: Date | null;
+  eventStartDate: number;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
@@ -496,7 +496,7 @@ export interface IGetEventByEventIdResult {
   eventEndDate: Date | null;
   eventId: number;
   /** When the actual event starts (different from mint expiration) */
-  eventStartDate: Date | null;
+  eventStartDate: number;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
