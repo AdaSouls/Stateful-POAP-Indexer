@@ -139,10 +139,10 @@
 						"format": "double"
 					},
 					"eventStartDate": {
-						"type": "string",
-						"format": "date-time",
+						"type": "number",
+						"format": "double",
 						"nullable": true,
-						"description": "When the actual event starts (different from mint expiration)"
+						"description": "When the actual event starts (Unix timestamp in seconds, same type as expiration)"
 					},
 					"eventUuid": {
 						"type": "string"
@@ -295,10 +295,10 @@
 						"format": "double"
 					},
 					"eventStartDate": {
-						"type": "string",
-						"format": "date-time",
+						"type": "number",
+						"format": "double",
 						"nullable": true,
-						"description": "When the actual event starts (different from mint expiration)"
+						"description": "When the actual event starts (Unix timestamp in seconds, same type as expiration)"
 					},
 					"eventUuid": {
 						"type": "string"

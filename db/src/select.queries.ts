@@ -149,8 +149,8 @@ export interface IGetAllEventsResult {
   /** When the actual event ends (different from mint expiration) */
   eventEndDate: Date | null;
   eventId: number;
-  /** When the actual event starts (different from mint expiration) */
-  eventStartDate: number;
+  /** When the actual event starts (Unix timestamp in seconds, same type as expiration) */
+  eventStartDate: number | null;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
@@ -204,8 +204,8 @@ export interface IGetEventsWithFiltersResult {
   /** When the actual event ends (different from mint expiration) */
   eventEndDate: Date | null;
   eventId: number;
-  /** When the actual event starts (different from mint expiration) */
-  eventStartDate: number;
+  /** When the actual event starts (Unix timestamp in seconds, same type as expiration) */
+  eventStartDate: number | null;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
@@ -274,8 +274,8 @@ export interface IGetEventsByOrganizerResult {
   /** When the actual event ends (different from mint expiration) */
   eventEndDate: Date | null;
   eventId: number;
-  /** When the actual event starts (different from mint expiration) */
-  eventStartDate: number;
+  /** When the actual event starts (Unix timestamp in seconds, same type as expiration) */
+  eventStartDate: number | null;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
@@ -495,8 +495,8 @@ export interface IGetEventByEventIdResult {
   /** When the actual event ends (different from mint expiration) */
   eventEndDate: Date | null;
   eventId: number;
-  /** When the actual event starts (different from mint expiration) */
-  eventStartDate: number;
+  /** When the actual event starts (Unix timestamp in seconds, same type as expiration) */
+  eventStartDate: number | null;
   eventUuid: string;
   expiration: number;
   /** URL to the event image/banner */
