@@ -30,7 +30,7 @@ export interface ICreateIssuerQuery {
   result: ICreateIssuerResult;
 }
 
-const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":true,"username":true,"email":true,"organization":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":161,"b":170}]},{"name":"issuerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":181,"b":195}]},{"name":"username","required":false,"transform":{"type":"scalar"},"locs":[{"a":201,"b":209}]},{"name":"email","required":false,"transform":{"type":"scalar"},"locs":[{"a":214,"b":219}]},{"name":"organization","required":false,"transform":{"type":"scalar"},"locs":[{"a":224,"b":236}]}],"statement":"INSERT INTO issuers (\n  \"issuerUuid\",\n  \"issuerId\",\n  \"issuerAddress\",\n  username,\n  email,\n  organization,\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  lower(:issuerAddress!),\n  :username,\n  :email,\n  :organization,\n  DEFAULT,\n  DEFAULT\n)\nON CONFLICT (\"issuerId\") DO NOTHING\nRETURNING *"};
+const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":true,"username":true,"email":true,"organization":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":170,"b":179},{"a":330,"b":339}]},{"name":"issuerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":190,"b":204},{"a":381,"b":395}]},{"name":"username","required":false,"transform":{"type":"scalar"},"locs":[{"a":210,"b":218}]},{"name":"email","required":false,"transform":{"type":"scalar"},"locs":[{"a":223,"b":228}]},{"name":"organization","required":false,"transform":{"type":"scalar"},"locs":[{"a":233,"b":245}]}],"statement":"INSERT INTO issuers (\n  \"issuerUuid\",\n  \"issuerId\",\n  \"issuerAddress\",\n  username,\n  email,\n  organization,\n  \"createdAt\",\n  \"updatedAt\"\n)\nSELECT\n  uuid_generate_v4(),\n  :issuerId!,\n  lower(:issuerAddress!),\n  :username,\n  :email,\n  :organization,\n  now(),\n  now()\nWHERE NOT EXISTS (\n  SELECT 1 FROM issuers \n  WHERE \"issuerId\" = :issuerId! \n     OR lower(\"issuerAddress\") = lower(:issuerAddress!)\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
@@ -45,17 +45,20 @@ const createIssuerIR: any = {"usedParamSet":{"issuerId":true,"issuerAddress":tru
  *   "createdAt",
  *   "updatedAt"
  * )
- * VALUES (
- *   DEFAULT,
+ * SELECT
+ *   uuid_generate_v4(),
  *   :issuerId!,
  *   lower(:issuerAddress!),
  *   :username,
  *   :email,
  *   :organization,
- *   DEFAULT,
- *   DEFAULT
+ *   now(),
+ *   now()
+ * WHERE NOT EXISTS (
+ *   SELECT 1 FROM issuers 
+ *   WHERE "issuerId" = :issuerId! 
+ *      OR lower("issuerAddress") = lower(:issuerAddress!)
  * )
- * ON CONFLICT ("issuerId") DO NOTHING
  * RETURNING *
  * ```
  */
