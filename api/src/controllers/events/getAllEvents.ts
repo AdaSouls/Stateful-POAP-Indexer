@@ -7,6 +7,7 @@ import {
   requirePool 
 } from "@game/db";
 import { IErrorResponse } from "@game/utils";
+import { sanitizeEvents } from "../../utils/eventSanitizer";
 
 @Route("get_all_events")
 export class AllEventsController extends Controller {
@@ -43,7 +44,8 @@ export class AllEventsController extends Controller {
       // If no filters/sort params provided, use simple getAllEvents
       if (!hasFilters) {
         const events = await getAllEvents.run(undefined, pool);
-        return events;
+        // Remove null transaction_hash and block_number fields before sending to frontend
+        return sanitizeEvents(events) as IGetAllEventsResult[];
       }
 
       // Use filtered query
@@ -58,7 +60,8 @@ export class AllEventsController extends Controller {
       };
 
       const events = await getEventsWithFilters.run(filterParams, pool);
-      return events;
+      // Remove null transaction_hash and block_number fields before sending to frontend
+      return sanitizeEvents(events) as IGetAllEventsResult[];
     } catch (error: any) {
       console.error("❌ Error getting all events:", error);
       return {
