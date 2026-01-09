@@ -5,7 +5,7 @@ import {
   requirePool 
 } from "@game/db";
 import { IErrorResponse } from "@game/utils";
-import { sanitizeEvents } from "../../utils/eventSanitizer";
+import { filterEventsWithTransactionHash } from "../../utils/eventSanitizer";
 
 @Route("get_events_by_organizer")
 export class GetEventsByOrganizerController extends Controller {
@@ -28,8 +28,8 @@ export class GetEventsByOrganizerController extends Controller {
         pool
       );
       
-      // Remove null transaction_hash and block_number fields before sending to frontend
-      return sanitizeEvents(events) as IGetAllEventsResult[];
+      // Only return events with transaction_hash
+      return filterEventsWithTransactionHash(events) as IGetAllEventsResult[];
     } catch (error: any) {
       console.error("❌ Error getting events by organizer:", error);
       return {

@@ -1,7 +1,6 @@
 import { Controller, Route, Post, Body } from 'tsoa';
 import { requirePoolWriteAccess, createEvent, ICreateEventParams, ICreateEventResult, getEventByEventId, updateEventMetadata } from '@game/db';
 import { IErrorResponse } from "@game/utils";
-import { sanitizeEvent } from "../../utils/eventSanitizer";
 
 /**
  * TSOA-compatible interface for creating events
@@ -97,8 +96,7 @@ export class CreateEventController extends Controller {
         );
         
         if (existingEvent && existingEvent.length > 0) {
-          // Remove null transaction_hash and block_number fields before sending to frontend
-          return sanitizeEvent(existingEvent[0] as ICreateEventResult) as ICreateEventResult;
+          return existingEvent[0] as ICreateEventResult;
         } else {
           // This shouldn't happen, but handle it gracefully
           return {
@@ -108,8 +106,8 @@ export class CreateEventController extends Controller {
         }
       }
 
-      // Return newly created event (remove null transaction_hash and block_number fields)
-      return sanitizeEvent(event[0] as ICreateEventResult) as ICreateEventResult;
+      // Return newly created event (without filtering - may not have transaction_hash yet)
+      return event[0] as ICreateEventResult;
 
     } catch (error: any) {
       console.error("❌ Error creating event:", error);
