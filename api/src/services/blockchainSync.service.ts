@@ -519,7 +519,7 @@ export class BlockchainSyncService {
       );
       
       const affectedPoaps = await client.query(
-        'SELECT "tokenId", "transaction_hash" FROM poaps WHERE block_number >= $1',
+        'SELECT "tokenId", "eventId", "transaction_hash" FROM poaps WHERE block_number >= $1',
         [blockNumber]
       );
       
@@ -532,13 +532,31 @@ export class BlockchainSyncService {
         console.log(`🔄 Rolled back event ${event.eventId} from reorg`);
       }
       
-      // Rollback affected POAPs
+      // Rollback affected POAPs and decrement totalSupply for their events
       for (const poap of affectedPoaps.rows) {
+        // Get eventId before deleting the POAP
+        const eventId = poap.eventId;
+        
         await client.query(
           'DELETE FROM poaps WHERE "tokenId" = $1 AND block_number >= $2',
           [poap.tokenId, blockNumber]
         );
-        console.log(`🔄 Rolled back POAP ${poap.tokenId} from reorg`);
+        
+        // Decrement totalSupply for the event
+        try {
+          await client.query(
+            `UPDATE events 
+             SET "totalSupply" = GREATEST(COALESCE("totalSupply", 0) - 1, 0),
+                 "updatedAt" = now()
+             WHERE "eventId" = $1`,
+            [eventId]
+          );
+        } catch (error) {
+          // Column might not exist yet - ignore (backward compatibility)
+          console.warn('Could not update event totalSupply during reorg (column may not exist):', error);
+        }
+        
+        console.log(`🔄 Rolled back POAP ${poap.tokenId} from reorg and decremented totalSupply for event ${eventId}`);
       }
       
       // Delete block tracking from reorg block onwards
@@ -1024,6 +1042,20 @@ export class BlockchainSyncService {
         };
 
         await createPoap.run(poapData, client);
+
+        // Update event's totalSupply by incrementing it
+        try {
+          await client.query(
+            `UPDATE events 
+             SET "totalSupply" = COALESCE("totalSupply", 0) + 1,
+                 "updatedAt" = now()
+             WHERE "eventId" = $1`,
+            [Number(eventId)]
+          );
+        } catch (error) {
+          // Column might not exist yet - ignore (backward compatibility)
+          console.warn('Could not update event totalSupply (column may not exist):', error);
+        }
 
         // Store block hash for reorg detection
         await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);

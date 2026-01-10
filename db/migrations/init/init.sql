@@ -154,6 +154,38 @@ CREATE INDEX IF NOT EXISTS idx_poaps_issuer_event ON poaps("issuerId", "eventId"
 -- Index for block tracking
 CREATE INDEX IF NOT EXISTS idx_block_tracking_hash ON block_tracking(block_hash);
 
+-- ============================================
+-- Migration: Add totalSupply field to events table
+-- ============================================
+-- This field tracks the current number of POAPs minted for each event
+
+ALTER TABLE events
+ADD COLUMN IF NOT EXISTS "totalSupply" INTEGER DEFAULT 0;
+
+-- Add comment for documentation
+COMMENT ON COLUMN events."totalSupply" IS 'Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback)';
+
+-- ============================================
+-- Optional Initialization: Initialize totalSupply for existing events
+-- ============================================
+-- NOTE: This script is only needed if you have existing events that were created
+-- BEFORE the totalSupply column was added. For new databases or fresh starts,
+-- this is NOT necessary since totalSupply will be automatically tracked going forward.
+--
+-- If you have existing events with POAPs already minted, run this ONCE to
+-- initialize totalSupply by counting existing POAPs for each event:
+--
+-- UPDATE events 
+-- SET "totalSupply" = (
+--   SELECT COUNT(*) 
+--   FROM poaps 
+--   WHERE poaps."eventId" = events."eventId"
+-- )
+-- WHERE "totalSupply" = 0 OR "totalSupply" IS NULL;
+--
+-- This ensures that events created before the totalSupply field was added
+-- will have the correct count based on existing POAP records.
+
 -- Add comments for documentation
 COMMENT ON TABLE block_tracking IS 'Tracks processed blocks and their hashes for reorg detection';
 COMMENT ON COLUMN events.block_number IS 'Block number where the event was created';

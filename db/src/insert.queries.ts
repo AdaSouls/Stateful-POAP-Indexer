@@ -101,6 +101,8 @@ export interface ICreateEventResult {
   status: string;
   /** Event title/name for display purposes */
   title: string | null;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
   /** Transaction hash of the event creation */
   transaction_hash: string | null;
   updatedAt: Date | null;

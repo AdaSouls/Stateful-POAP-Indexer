@@ -161,6 +161,8 @@ export interface IGetAllEventsResult {
   status: string;
   /** Event title/name for display purposes */
   title: string | null;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
   /** Transaction hash of the event creation */
   transaction_hash: string | null;
   updatedAt: Date | null;
@@ -216,6 +218,8 @@ export interface IGetEventsWithFiltersResult {
   status: string;
   /** Event title/name for display purposes */
   title: string | null;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
   /** Transaction hash of the event creation */
   transaction_hash: string | null;
   updatedAt: Date | null;
@@ -286,6 +290,8 @@ export interface IGetEventsByOrganizerResult {
   status: string;
   /** Event title/name for display purposes */
   title: string | null;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
   /** Transaction hash of the event creation */
   transaction_hash: string | null;
   updatedAt: Date | null;
@@ -507,6 +513,8 @@ export interface IGetEventByEventIdResult {
   status: string;
   /** Event title/name for display purposes */
   title: string | null;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
   /** Transaction hash of the event creation */
   transaction_hash: string | null;
   updatedAt: Date | null;
