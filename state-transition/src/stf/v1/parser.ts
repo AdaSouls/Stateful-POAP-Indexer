@@ -85,7 +85,7 @@ const poapMint = {
     const issuerId = parseInt(data.issuerId, 10);
     const eventId = parseInt(data.eventId, 10);
     const tokenId = parseInt(data.tokenId, 10);
-    const ownerAddress = data.ownerAddress?.toLowerCase() || data.to?.toLowerCase() || "";
+    const ownerAddress = data.ownerAddress?.toLowerCase() || data.userAddress?.toLowerCase() || data.to?.toLowerCase() || "";
 
     return { issuerId, eventId, tokenId, ownerAddress };
   },
@@ -106,7 +106,7 @@ const poapUpdate = {
     const issuerId = parseInt(data.issuerId, 10);
     const eventId = parseInt(data.eventId, 10);
     const tokenId = parseInt(data.tokenId, 10);
-    const ownerAddress = data.ownerAddress?.toLowerCase() || data.to?.toLowerCase() || "";
+    const ownerAddress = data.ownerAddress?.toLowerCase() || data.userAddress?.toLowerCase() || data.to?.toLowerCase() || "";
 
     return { issuerId, eventId, tokenId, ownerAddress };
   },

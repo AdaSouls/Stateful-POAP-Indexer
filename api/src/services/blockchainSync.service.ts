@@ -105,7 +105,7 @@ const POAP_CONTRACT_ABI = [
       {
         "indexed": false,
         "internalType": "address",
-        "name": "to",
+        "name": "userAddress",
         "type": "address"
       }
     ],
@@ -438,11 +438,11 @@ export class BlockchainSyncService {
       );
     }
     
-    if (!args.to || typeof args.to !== 'string' || !ethers.isAddress(args.to)) {
+    if (!args.userAddress || typeof args.userAddress !== 'string' || !ethers.isAddress(args.userAddress)) {
       throw new IndexingError(
-        'Invalid owner address',
+        'Invalid user address',
         IndexingErrorType.VALIDATION_ERROR,
-        { ...context, to: args.to }
+        { ...context, userAddress: args.userAddress }
       );
     }
   }
@@ -782,14 +782,14 @@ export class BlockchainSyncService {
     issuerId: bigint,
     eventId: bigint,
     tokenId: bigint,
-    to: string,
+    userAddress: string,
     event: ethers.Log
   ) {
     console.log('🎉 New TokenMinted event detected:', {
       issuerId: issuerId.toString(),
       eventId: eventId.toString(),
       tokenId: tokenId.toString(),
-      to,
+      userAddress,
       blockNumber: event.blockNumber,
       transactionHash: event.transactionHash
     });
@@ -972,7 +972,7 @@ export class BlockchainSyncService {
         issuerId,
         eventId,
         tokenId,
-        to,
+        userAddress,
       } = decoded.args;
 
       const tokenIdNumber = Number(tokenId);
@@ -1038,7 +1038,7 @@ export class BlockchainSyncService {
           issuerId: Number(issuerId),
           eventId: Number(eventId),
           tokenId: tokenIdNumber,
-          ownerAddress: to,
+          ownerAddress: userAddress,
         };
 
         await createPoap.run(poapData, client);

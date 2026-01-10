@@ -175,6 +175,12 @@
 						"nullable": true,
 						"description": "Event title/name for display purposes"
 					},
+					"totalSupply": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback)"
+					},
 					"transaction_hash": {
 						"type": "string",
 						"nullable": true,
@@ -201,6 +207,7 @@
 					"organiserAddress",
 					"status",
 					"title",
+					"totalSupply",
 					"transaction_hash",
 					"updatedAt"
 				],
@@ -331,6 +338,12 @@
 						"nullable": true,
 						"description": "Event title/name for display purposes"
 					},
+					"totalSupply": {
+						"type": "number",
+						"format": "double",
+						"nullable": true,
+						"description": "Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback)"
+					},
 					"transaction_hash": {
 						"type": "string",
 						"nullable": true,
@@ -357,6 +370,7 @@
 					"organiserAddress",
 					"status",
 					"title",
+					"totalSupply",
 					"transaction_hash",
 					"updatedAt"
 				],
