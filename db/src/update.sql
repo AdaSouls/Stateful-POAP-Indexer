@@ -31,3 +31,13 @@ SET
   "updatedAt" = now()
 WHERE
   "eventId" = :eventId!;
+
+/*
+  @name updatePoapOwnerAddress
+*/
+UPDATE poaps
+SET
+  "ownerAddress" = lower(:ownerAddress!),
+  "updatedAt" = now()
+WHERE
+  "tokenId" = :tokenId!;

@@ -2,8 +2,9 @@ import type {
   ICreateIssuerParams,
   ICreateEventParams,
   ICreatePoapParams,
+  IUpdatePoapOwnerAddressParams,
 } from "@game/db";
-import { createIssuer, createEvent, createPoap, createEventPoap } from "@game/db";
+import { createIssuer, createEvent, createPoap, createEventPoap, updatePoapOwnerAddress } from "@game/db";
 //import { updateEvent } from "@game/db/src/update.queries";
 import type { SQLUpdate } from "@paima/node-sdk/db";
 import type { WalletAddress } from "@paima/sdk/utils";
@@ -67,12 +68,23 @@ export function persistPoapUpdateRelation(
   eventId: number,
   tokenId: number,
   ownerAddress: WalletAddress,
-): SQLUpdate {
-  const params: ICreatePoapParams = {
+): SQLUpdate[] {
+  // Update the POAP's ownerAddress
+  const updateParams: IUpdatePoapOwnerAddressParams = {
+    tokenId,
+    ownerAddress,
+  };
+  const updateQuery: SQLUpdate = [updatePoapOwnerAddress, updateParams];
+  
+  // Also create/update the event relation
+  const relationParams: ICreatePoapParams = {
     issuerId,
     eventId,
     tokenId,
     ownerAddress,
   };
-  return [createEventPoap, params];
+  const relationQuery: SQLUpdate = [createEventPoap, relationParams];
+  
+  // Return both queries
+  return [updateQuery, relationQuery];
 }

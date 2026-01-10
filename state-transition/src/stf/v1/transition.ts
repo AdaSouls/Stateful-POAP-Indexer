@@ -62,11 +62,11 @@ export const poapUpdate = async (
   input: PoapUpdateInput
 ): Promise<SQLUpdate[]> => {
   console.log("🚀 ~ input:", input)
-  const poapUpdateQuery = await persistPoapUpdateRelation(
+  const poapUpdateQueries = await persistPoapUpdateRelation(
     input.payload.issuerId,
     input.payload.eventId,
     input.payload.tokenId,
     input.payload.ownerAddress,
   );
-  return [poapUpdateQuery];
+  return poapUpdateQueries;
 };

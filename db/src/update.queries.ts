@@ -104,3 +104,34 @@ const updateEventMetadataIR: any = {"usedParamSet":{"title":true,"description":t
 export const updateEventMetadata = new PreparedQuery<IUpdateEventMetadataParams,IUpdateEventMetadataResult>(updateEventMetadataIR);
 
 
+/** 'UpdatePoapOwnerAddress' parameters type */
+export interface IUpdatePoapOwnerAddressParams {
+  ownerAddress: string;
+  tokenId: number;
+}
+
+/** 'UpdatePoapOwnerAddress' return type */
+export type IUpdatePoapOwnerAddressResult = void;
+
+/** 'UpdatePoapOwnerAddress' query type */
+export interface IUpdatePoapOwnerAddressQuery {
+  params: IUpdatePoapOwnerAddressParams;
+  result: IUpdatePoapOwnerAddressResult;
+}
+
+const updatePoapOwnerAddressIR: any = {"usedParamSet":{"ownerAddress":true,"tokenId":true},"params":[{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":42,"b":55}]},{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":101,"b":109}]}],"statement":"UPDATE poaps\nSET\n  \"ownerAddress\" = lower(:ownerAddress!),\n  \"updatedAt\" = now()\nWHERE\n  \"tokenId\" = :tokenId!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * UPDATE poaps
+ * SET
+ *   "ownerAddress" = lower(:ownerAddress!),
+ *   "updatedAt" = now()
+ * WHERE
+ *   "tokenId" = :tokenId!
+ * ```
+ */
+export const updatePoapOwnerAddress = new PreparedQuery<IUpdatePoapOwnerAddressParams,IUpdatePoapOwnerAddressResult>(updatePoapOwnerAddressIR);
+
+
