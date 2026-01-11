@@ -41,3 +41,13 @@ SET
   "updatedAt" = now()
 WHERE
   "tokenId" = :tokenId!;
+
+/*
+  @name incrementEventTotalSupply
+*/
+UPDATE events
+SET
+  "totalSupply" = COALESCE("totalSupply", 0) + 1,
+  "updatedAt" = now()
+WHERE
+  "eventId" = :eventId!;

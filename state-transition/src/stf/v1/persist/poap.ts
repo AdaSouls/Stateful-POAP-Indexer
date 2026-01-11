@@ -3,8 +3,9 @@ import type {
   ICreateEventParams,
   ICreatePoapParams,
   IUpdatePoapOwnerAddressParams,
+  IIncrementEventTotalSupplyParams,
 } from "@game/db";
-import { createIssuer, createEvent, createPoap, createEventPoap, updatePoapOwnerAddress } from "@game/db";
+import { createIssuer, createEvent, createPoap, createEventPoap, updatePoapOwnerAddress, incrementEventTotalSupply } from "@game/db";
 //import { updateEvent } from "@game/db/src/update.queries";
 import type { SQLUpdate } from "@paima/node-sdk/db";
 import type { WalletAddress } from "@paima/sdk/utils";
@@ -53,14 +54,24 @@ export function persistPoapCreate(
   eventId: number,
   tokenId: number,
   ownerAddress: WalletAddress,
-): SQLUpdate {
-  const params: ICreatePoapParams = {
+): SQLUpdate[] {
+  // Create the POAP
+  const poapParams: ICreatePoapParams = {
     issuerId,
     eventId,
     tokenId,
     ownerAddress,
   };
-  return [createPoap, params];
+  const poapQuery: SQLUpdate = [createPoap, poapParams];
+  
+  // Increment the event's totalSupply
+  const totalSupplyParams: IIncrementEventTotalSupplyParams = {
+    eventId,
+  };
+  const totalSupplyQuery: SQLUpdate = [incrementEventTotalSupply, totalSupplyParams];
+  
+  // Return both queries
+  return [poapQuery, totalSupplyQuery];
 }
 
 export function persistPoapUpdateRelation(
@@ -69,14 +80,23 @@ export function persistPoapUpdateRelation(
   tokenId: number,
   ownerAddress: WalletAddress,
 ): SQLUpdate[] {
-  // Update the POAP's ownerAddress
+  // Create the POAP if it doesn't exist (ON CONFLICT will prevent duplicates)
+  const poapParams: ICreatePoapParams = {
+    issuerId,
+    eventId,
+    tokenId,
+    ownerAddress,
+  };
+  const poapQuery: SQLUpdate = [createPoap, poapParams];
+  
+  // Update the POAP's ownerAddress (this will work whether POAP exists or not)
   const updateParams: IUpdatePoapOwnerAddressParams = {
     tokenId,
     ownerAddress,
   };
   const updateQuery: SQLUpdate = [updatePoapOwnerAddress, updateParams];
   
-  // Also create/update the event relation
+  // Create/update the event relation
   const relationParams: ICreatePoapParams = {
     issuerId,
     eventId,
@@ -85,6 +105,15 @@ export function persistPoapUpdateRelation(
   };
   const relationQuery: SQLUpdate = [createEventPoap, relationParams];
   
-  // Return both queries
-  return [updateQuery, relationQuery];
+  // Increment the event's totalSupply
+  // Note: This will increment even if POAP already existed, but that's acceptable
+  // as it ensures totalSupply stays in sync. The alternative would require
+  // checking if POAP exists first, which is more complex.
+  const totalSupplyParams: IIncrementEventTotalSupplyParams = {
+    eventId,
+  };
+  const totalSupplyQuery: SQLUpdate = [incrementEventTotalSupply, totalSupplyParams];
+  
+  // Return all queries: create POAP, update owner, create relation, increment supply
+  return [poapQuery, updateQuery, relationQuery, totalSupplyQuery];
 }

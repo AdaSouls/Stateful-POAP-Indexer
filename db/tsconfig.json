@@ -3,13 +3,17 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build",
+    "composite": true,
+    "module": "ESNext",
+    "declaration": true,
+    "declarationMap": true,
     "paths": {
       "@src/*": [
         "./src/*"
-      ],
+      ]
     }
   },
   "include": [
     "src/**/*"
-  ],
+  ]
 }

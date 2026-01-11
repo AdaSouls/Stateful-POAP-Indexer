@@ -1003,6 +1003,8 @@ export class BlockchainSyncService {
       // Process in transaction
       await this.withTransaction(async (client) => {
         // Check if POAP already exists
+        // NOTE: If POAP already exists (created via state transition), we skip totalSupply increment
+        // to avoid double-counting. totalSupply is incremented in the state transition function.
         const existingPoap = await getPoapByTokenId.run({ tokenId: tokenIdNumber }, client);
         if (existingPoap.length > 0) {
           const poapRecord = existingPoap[0];
@@ -1030,6 +1032,7 @@ export class BlockchainSyncService {
           } else {
             console.log(`ℹ️ POAP ${tokenIdNumber} already exists with blockchain metadata`);
           }
+          // Return early - don't increment totalSupply to avoid double-counting
           return;
         }
 

@@ -135,3 +135,33 @@ const updatePoapOwnerAddressIR: any = {"usedParamSet":{"ownerAddress":true,"toke
 export const updatePoapOwnerAddress = new PreparedQuery<IUpdatePoapOwnerAddressParams,IUpdatePoapOwnerAddressResult>(updatePoapOwnerAddressIR);
 
 
+/** 'IncrementEventTotalSupply' parameters type */
+export interface IIncrementEventTotalSupplyParams {
+  eventId: number;
+}
+
+/** 'IncrementEventTotalSupply' return type */
+export type IIncrementEventTotalSupplyResult = void;
+
+/** 'IncrementEventTotalSupply' query type */
+export interface IIncrementEventTotalSupplyQuery {
+  params: IIncrementEventTotalSupplyParams;
+  result: IIncrementEventTotalSupplyResult;
+}
+
+const incrementEventTotalSupplyIR: any = {"usedParamSet":{"eventId":true},"params":[{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":110,"b":118}]}],"statement":"UPDATE events\nSET\n  \"totalSupply\" = COALESCE(\"totalSupply\", 0) + 1,\n  \"updatedAt\" = now()\nWHERE\n  \"eventId\" = :eventId!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * UPDATE events
+ * SET
+ *   "totalSupply" = COALESCE("totalSupply", 0) + 1,
+ *   "updatedAt" = now()
+ * WHERE
+ *   "eventId" = :eventId!
+ * ```
+ */
+export const incrementEventTotalSupply = new PreparedQuery<IIncrementEventTotalSupplyParams,IIncrementEventTotalSupplyResult>(incrementEventTotalSupplyIR);
+
+
