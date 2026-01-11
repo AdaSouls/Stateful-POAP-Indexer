@@ -15,15 +15,29 @@ export class AllEventsController extends Controller {
   public async getAll(
     /** Filter by organizer wallet address */
     @Query() organiserAddress?: string,
-    /** Filter by event ID */
-    @Query() eventId?: number,
-    /** Filter by event status (e.g., 'Pending', 'Active', 'Completed') */
-    @Query() status?: string,
-    /** Filter by expiration status: 'true' for expired, 'false' for active */
-    @Query() expired?: string,
+    /** Search events by event ID (partial match, case-insensitive) */
+    @Query() eventIdSearch?: string,
     /** Search events by title (partial match, case-insensitive) */
     @Query() titleSearch?: string,
-    /** Field to sort by: 'createdAt', 'eventStartDate', 'expiration', 'title' */
+    /** Filter by calculated status: 'pending', 'active', 'expired', 'completed' */
+    @Query() calculatedStatus?: string,
+    /** Filter by minimum event start date (Unix timestamp in seconds) */
+    @Query() eventStartDateMin?: number,
+    /** Filter by maximum event start date (Unix timestamp in seconds) */
+    @Query() eventStartDateMax?: number,
+    /** Filter by minimum expiration date (Unix timestamp in seconds) */
+    @Query() expirationMin?: number,
+    /** Filter by maximum expiration date (Unix timestamp in seconds) */
+    @Query() expirationMax?: number,
+    /** Filter by minimum max supply */
+    @Query() maxSupplyMin?: number,
+    /** Filter by maximum max supply */
+    @Query() maxSupplyMax?: number,
+    /** Filter by minimum total supply */
+    @Query() totalSupplyMin?: number,
+    /** Filter by maximum total supply */
+    @Query() totalSupplyMax?: number,
+    /** Field to sort by: 'createdAt', 'eventStartDate', 'expiration', 'title', 'maxSupply', 'totalSupply' */
     @Query() sortBy?: string,
     /** Sort order: 'asc' or 'desc' */
     @Query() order?: string
@@ -31,15 +45,13 @@ export class AllEventsController extends Controller {
     const pool = requirePool();
 
     try {
-      // Convert expired string to boolean if provided
-      let expiredBool: boolean | null = null;
-      if (expired !== undefined && expired !== null && expired !== '') {
-        expiredBool = expired.toLowerCase() === 'true';
-      }
-
       // Check if any filters are provided
-      const hasFilters = organiserAddress || eventId !== undefined || status || 
-                        expiredBool !== null || titleSearch || sortBy || order;
+      const hasFilters = organiserAddress || eventIdSearch || titleSearch || 
+                        calculatedStatus || eventStartDateMin !== undefined || 
+                        eventStartDateMax !== undefined || expirationMin !== undefined || 
+                        expirationMax !== undefined || maxSupplyMin !== undefined || 
+                        maxSupplyMax !== undefined || totalSupplyMin !== undefined || 
+                        totalSupplyMax !== undefined || sortBy || order;
 
       // If no filters/sort params provided, use simple getAllEvents
       if (!hasFilters) {
@@ -51,10 +63,17 @@ export class AllEventsController extends Controller {
       // Use filtered query
       const filterParams = {
         organiserAddress: organiserAddress || null,
-        eventId: eventId !== undefined ? eventId : null,
-        status: status || null,
-        expired: expiredBool,
+        eventIdSearch: eventIdSearch || null,
         titleSearch: titleSearch || null,
+        calculatedStatus: calculatedStatus || null,
+        eventStartDateMin: eventStartDateMin !== undefined ? eventStartDateMin : null,
+        eventStartDateMax: eventStartDateMax !== undefined ? eventStartDateMax : null,
+        expirationMin: expirationMin !== undefined ? expirationMin : null,
+        expirationMax: expirationMax !== undefined ? expirationMax : null,
+        maxSupplyMin: maxSupplyMin !== undefined ? maxSupplyMin : null,
+        maxSupplyMax: maxSupplyMax !== undefined ? maxSupplyMax : null,
+        totalSupplyMin: totalSupplyMin !== undefined ? totalSupplyMin : null,
+        totalSupplyMax: totalSupplyMax !== undefined ? totalSupplyMax : null,
         sortBy: sortBy || null,
         order: order || 'desc',
       };

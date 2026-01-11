@@ -1201,28 +1201,9 @@
 						}
 					},
 					{
-						"description": "Filter by event ID",
+						"description": "Search events by event ID (partial match, case-insensitive)",
 						"in": "query",
-						"name": "eventId",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					},
-					{
-						"description": "Filter by event status (e.g., 'Pending', 'Active', 'Completed')",
-						"in": "query",
-						"name": "status",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"description": "Filter by expiration status: 'true' for expired, 'false' for active",
-						"in": "query",
-						"name": "expired",
+						"name": "eventIdSearch",
 						"required": false,
 						"schema": {
 							"type": "string"
@@ -1238,7 +1219,96 @@
 						}
 					},
 					{
-						"description": "Field to sort by: 'createdAt', 'eventStartDate', 'expiration', 'title'",
+						"description": "Filter by calculated status: 'pending', 'active', 'expired', 'completed'",
+						"in": "query",
+						"name": "calculatedStatus",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Filter by minimum event start date (Unix timestamp in seconds)",
+						"in": "query",
+						"name": "eventStartDateMin",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Filter by maximum event start date (Unix timestamp in seconds)",
+						"in": "query",
+						"name": "eventStartDateMax",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Filter by minimum expiration date (Unix timestamp in seconds)",
+						"in": "query",
+						"name": "expirationMin",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Filter by maximum expiration date (Unix timestamp in seconds)",
+						"in": "query",
+						"name": "expirationMax",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Filter by minimum max supply",
+						"in": "query",
+						"name": "maxSupplyMin",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Filter by maximum max supply",
+						"in": "query",
+						"name": "maxSupplyMax",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Filter by minimum total supply",
+						"in": "query",
+						"name": "totalSupplyMin",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Filter by maximum total supply",
+						"in": "query",
+						"name": "totalSupplyMax",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Field to sort by: 'createdAt', 'eventStartDate', 'expiration', 'title', 'maxSupply', 'totalSupply'",
 						"in": "query",
 						"name": "sortBy",
 						"required": false,

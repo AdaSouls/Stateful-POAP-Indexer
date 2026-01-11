@@ -476,10 +476,17 @@ export function RegisterRoutes(app: Router) {
             async function AllEventsController_getAll(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     organiserAddress: {"in":"query","name":"organiserAddress","dataType":"string"},
-                    eventId: {"in":"query","name":"eventId","dataType":"double"},
-                    status: {"in":"query","name":"status","dataType":"string"},
-                    expired: {"in":"query","name":"expired","dataType":"string"},
+                    eventIdSearch: {"in":"query","name":"eventIdSearch","dataType":"string"},
                     titleSearch: {"in":"query","name":"titleSearch","dataType":"string"},
+                    calculatedStatus: {"in":"query","name":"calculatedStatus","dataType":"string"},
+                    eventStartDateMin: {"in":"query","name":"eventStartDateMin","dataType":"double"},
+                    eventStartDateMax: {"in":"query","name":"eventStartDateMax","dataType":"double"},
+                    expirationMin: {"in":"query","name":"expirationMin","dataType":"double"},
+                    expirationMax: {"in":"query","name":"expirationMax","dataType":"double"},
+                    maxSupplyMin: {"in":"query","name":"maxSupplyMin","dataType":"double"},
+                    maxSupplyMax: {"in":"query","name":"maxSupplyMax","dataType":"double"},
+                    totalSupplyMin: {"in":"query","name":"totalSupplyMin","dataType":"double"},
+                    totalSupplyMax: {"in":"query","name":"totalSupplyMax","dataType":"double"},
                     sortBy: {"in":"query","name":"sortBy","dataType":"string"},
                     order: {"in":"query","name":"order","dataType":"string"},
             };

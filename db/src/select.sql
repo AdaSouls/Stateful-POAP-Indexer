@@ -32,15 +32,44 @@ SELECT * FROM events;
 SELECT * FROM events
 WHERE 
   (:organiserAddress::text IS NULL OR "organiserAddress" = lower(:organiserAddress))
-  AND (:eventId::integer IS NULL OR "eventId" = :eventId)
-  AND (:status::text IS NULL OR status = :status)
-  AND (:expired::boolean IS NULL OR 
-    CASE 
-      WHEN :expired = true THEN expiration * 1000 <= EXTRACT(EPOCH FROM NOW()) * 1000
-      WHEN :expired = false THEN (expiration * 1000 > EXTRACT(EPOCH FROM NOW()) * 1000 OR expiration = 0)
-      ELSE true
-    END)
+  AND (:eventIdSearch::text IS NULL OR CAST("eventId" AS TEXT) ILIKE '%' || :eventIdSearch || '%')
   AND (:titleSearch::text IS NULL OR title ILIKE '%' || :titleSearch || '%')
+  -- Event Start Date filters
+  AND (:eventStartDateMin::bigint IS NULL OR "eventStartDate" IS NULL OR "eventStartDate" >= :eventStartDateMin)
+  AND (:eventStartDateMax::bigint IS NULL OR "eventStartDate" IS NULL OR "eventStartDate" <= :eventStartDateMax)
+  -- Expiration filters (expiration = 0 means indefinite/never expires)
+  AND (:expirationMin::bigint IS NULL OR expiration = 0 OR expiration >= :expirationMin)
+  AND (:expirationMax::bigint IS NULL OR expiration = 0 OR expiration <= :expirationMax)
+  -- Max Supply filters
+  AND (:maxSupplyMin::integer IS NULL OR "maxSupply" >= :maxSupplyMin)
+  AND (:maxSupplyMax::integer IS NULL OR "maxSupply" <= :maxSupplyMax)
+  -- Total Supply filters
+  AND (:totalSupplyMin::integer IS NULL OR "totalSupply" IS NULL OR "totalSupply" >= :totalSupplyMin)
+  AND (:totalSupplyMax::integer IS NULL OR "totalSupply" IS NULL OR "totalSupply" <= :totalSupplyMax)
+  -- Calculated Status filter (pending, active, expired, completed)
+  AND (
+    :calculatedStatus::text IS NULL OR
+    CASE :calculatedStatus
+      -- Pending: eventStartDate exists and is in the future
+      WHEN 'pending' THEN 
+        "eventStartDate" IS NOT NULL 
+        AND "eventStartDate" > EXTRACT(EPOCH FROM NOW())
+      -- Active: started and not expired
+      WHEN 'active' THEN 
+        ("eventStartDate" IS NULL OR "eventStartDate" <= EXTRACT(EPOCH FROM NOW()))
+        AND (expiration = 0 OR expiration > EXTRACT(EPOCH FROM NOW()))
+      -- Expired: expiration > 0 and expiration <= now
+      WHEN 'expired' THEN 
+        expiration > 0 
+        AND expiration <= EXTRACT(EPOCH FROM NOW())
+      -- Completed: totalSupply >= maxSupply
+      WHEN 'completed' THEN 
+        "totalSupply" IS NOT NULL 
+        AND "maxSupply" IS NOT NULL 
+        AND "totalSupply" >= "maxSupply"
+      ELSE true
+    END
+  )
 ORDER BY
   CASE WHEN :sortBy = 'createdAt' AND :order = 'asc' THEN "createdAt" END ASC NULLS LAST,
   CASE WHEN :sortBy = 'createdAt' AND :order = 'desc' THEN "createdAt" END DESC NULLS LAST,
@@ -50,6 +79,10 @@ ORDER BY
   CASE WHEN :sortBy = 'expiration' AND :order = 'desc' THEN expiration END DESC NULLS LAST,
   CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN title END ASC NULLS LAST,
   CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN title END DESC NULLS LAST,
+  CASE WHEN :sortBy = 'maxSupply' AND :order = 'asc' THEN "maxSupply" END ASC NULLS LAST,
+  CASE WHEN :sortBy = 'maxSupply' AND :order = 'desc' THEN "maxSupply" END DESC NULLS LAST,
+  CASE WHEN :sortBy = 'totalSupply' AND :order = 'asc' THEN "totalSupply" END ASC NULLS LAST,
+  CASE WHEN :sortBy = 'totalSupply' AND :order = 'desc' THEN "totalSupply" END DESC NULLS LAST,
   "createdAt" DESC NULLS LAST;
 
 /*

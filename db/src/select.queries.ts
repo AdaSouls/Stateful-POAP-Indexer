@@ -1,6 +1,8 @@
 /** Types generated for queries found in "src/select.sql" */
 import { PreparedQuery } from '@pgtyped/runtime';
 
+export type NumberOrString = number | string;
+
 /** 'GetAllIssuers' parameters type */
 export type IGetAllIssuersParams = void;
 
@@ -187,13 +189,20 @@ export const getAllEvents = new PreparedQuery<IGetAllEventsParams,IGetAllEventsR
 
 /** 'GetEventsWithFilters' parameters type */
 export interface IGetEventsWithFiltersParams {
-  eventId?: number | null | void;
-  expired?: boolean | null | void;
+  calculatedStatus?: string | null | void;
+  eventIdSearch?: string | null | void;
+  eventStartDateMax?: NumberOrString | null | void;
+  eventStartDateMin?: NumberOrString | null | void;
+  expirationMax?: NumberOrString | null | void;
+  expirationMin?: NumberOrString | null | void;
+  maxSupplyMax?: number | null | void;
+  maxSupplyMin?: number | null | void;
   order?: string | null | void;
   organiserAddress?: string | null | void;
   sortBy?: string | null | void;
-  status?: string | null | void;
   titleSearch?: string | null | void;
+  totalSupplyMax?: number | null | void;
+  totalSupplyMin?: number | null | void;
 }
 
 /** 'GetEventsWithFilters' return type */
@@ -231,7 +240,7 @@ export interface IGetEventsWithFiltersQuery {
   result: IGetEventsWithFiltersResult;
 }
 
-const getEventsWithFiltersIR: any = {"usedParamSet":{"organiserAddress":true,"eventId":true,"status":true,"expired":true,"titleSearch":true,"sortBy":true,"order":true},"params":[{"name":"organiserAddress","required":false,"transform":{"type":"scalar"},"locs":[{"a":31,"b":47},{"a":93,"b":109}]},{"name":"eventId","required":false,"transform":{"type":"scalar"},"locs":[{"a":120,"b":127},{"a":161,"b":168}]},{"name":"status","required":false,"transform":{"type":"scalar"},"locs":[{"a":178,"b":184},{"a":212,"b":218}]},{"name":"expired","required":false,"transform":{"type":"scalar"},"locs":[{"a":228,"b":235},{"a":279,"b":286},{"a":365,"b":372}]},{"name":"titleSearch","required":false,"transform":{"type":"scalar"},"locs":[{"a":492,"b":503},{"a":541,"b":552}]},{"name":"sortBy","required":false,"transform":{"type":"scalar"},"locs":[{"a":583,"b":589},{"a":673,"b":679},{"a":765,"b":771},{"a":865,"b":871},{"a":967,"b":973},{"a":1057,"b":1063},{"a":1149,"b":1155},{"a":1229,"b":1235}]},{"name":"order","required":false,"transform":{"type":"scalar"},"locs":[{"a":609,"b":614},{"a":699,"b":704},{"a":796,"b":801},{"a":896,"b":901},{"a":994,"b":999},{"a":1084,"b":1089},{"a":1171,"b":1176},{"a":1251,"b":1256}]}],"statement":"SELECT * FROM events\nWHERE \n  (:organiserAddress::text IS NULL OR \"organiserAddress\" = lower(:organiserAddress))\n  AND (:eventId::integer IS NULL OR \"eventId\" = :eventId)\n  AND (:status::text IS NULL OR status = :status)\n  AND (:expired::boolean IS NULL OR \n    CASE \n      WHEN :expired = true THEN expiration * 1000 <= EXTRACT(EPOCH FROM NOW()) * 1000\n      WHEN :expired = false THEN (expiration * 1000 > EXTRACT(EPOCH FROM NOW()) * 1000 OR expiration = 0)\n      ELSE true\n    END)\n  AND (:titleSearch::text IS NULL OR title ILIKE '%' || :titleSearch || '%')\nORDER BY\n  CASE WHEN :sortBy = 'createdAt' AND :order = 'asc' THEN \"createdAt\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'createdAt' AND :order = 'desc' THEN \"createdAt\" END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'eventStartDate' AND :order = 'asc' THEN \"eventStartDate\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'eventStartDate' AND :order = 'desc' THEN \"eventStartDate\" END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'expiration' AND :order = 'asc' THEN expiration END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'expiration' AND :order = 'desc' THEN expiration END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN title END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN title END DESC NULLS LAST,\n  \"createdAt\" DESC NULLS LAST"};
+const getEventsWithFiltersIR: any = {"usedParamSet":{"organiserAddress":true,"eventIdSearch":true,"titleSearch":true,"eventStartDateMin":true,"eventStartDateMax":true,"expirationMin":true,"expirationMax":true,"maxSupplyMin":true,"maxSupplyMax":true,"totalSupplyMin":true,"totalSupplyMax":true,"calculatedStatus":true,"sortBy":true,"order":true},"params":[{"name":"organiserAddress","required":false,"transform":{"type":"scalar"},"locs":[{"a":31,"b":47},{"a":93,"b":109}]},{"name":"eventIdSearch","required":false,"transform":{"type":"scalar"},"locs":[{"a":120,"b":133},{"a":189,"b":202}]},{"name":"titleSearch","required":false,"transform":{"type":"scalar"},"locs":[{"a":219,"b":230},{"a":268,"b":279}]},{"name":"eventStartDateMin","required":false,"transform":{"type":"scalar"},"locs":[{"a":326,"b":343},{"a":412,"b":429}]},{"name":"eventStartDateMax","required":false,"transform":{"type":"scalar"},"locs":[{"a":439,"b":456},{"a":525,"b":542}]},{"name":"expirationMin","required":false,"transform":{"type":"scalar"},"locs":[{"a":624,"b":637},{"a":690,"b":703}]},{"name":"expirationMax","required":false,"transform":{"type":"scalar"},"locs":[{"a":713,"b":726},{"a":779,"b":792}]},{"name":"maxSupplyMin","required":false,"transform":{"type":"scalar"},"locs":[{"a":826,"b":838},{"a":875,"b":887}]},{"name":"maxSupplyMax","required":false,"transform":{"type":"scalar"},"locs":[{"a":897,"b":909},{"a":946,"b":958}]},{"name":"totalSupplyMin","required":false,"transform":{"type":"scalar"},"locs":[{"a":994,"b":1008},{"a":1072,"b":1086}]},{"name":"totalSupplyMax","required":false,"transform":{"type":"scalar"},"locs":[{"a":1096,"b":1110},{"a":1174,"b":1188}]},{"name":"calculatedStatus","required":false,"transform":{"type":"scalar"},"locs":[{"a":1271,"b":1287},{"a":1315,"b":1331}]},{"name":"sortBy","required":false,"transform":{"type":"scalar"},"locs":[{"a":2132,"b":2138},{"a":2222,"b":2228},{"a":2314,"b":2320},{"a":2414,"b":2420},{"a":2516,"b":2522},{"a":2606,"b":2612},{"a":2698,"b":2704},{"a":2778,"b":2784},{"a":2860,"b":2866},{"a":2950,"b":2956},{"a":3042,"b":3048},{"a":3136,"b":3142}]},{"name":"order","required":false,"transform":{"type":"scalar"},"locs":[{"a":2158,"b":2163},{"a":2248,"b":2253},{"a":2345,"b":2350},{"a":2445,"b":2450},{"a":2543,"b":2548},{"a":2633,"b":2638},{"a":2720,"b":2725},{"a":2800,"b":2805},{"a":2886,"b":2891},{"a":2976,"b":2981},{"a":3070,"b":3075},{"a":3164,"b":3169}]}],"statement":"SELECT * FROM events\nWHERE \n  (:organiserAddress::text IS NULL OR \"organiserAddress\" = lower(:organiserAddress))\n  AND (:eventIdSearch::text IS NULL OR CAST(\"eventId\" AS TEXT) ILIKE '%' || :eventIdSearch || '%')\n  AND (:titleSearch::text IS NULL OR title ILIKE '%' || :titleSearch || '%')\n  -- Event Start Date filters\n  AND (:eventStartDateMin::bigint IS NULL OR \"eventStartDate\" IS NULL OR \"eventStartDate\" >= :eventStartDateMin)\n  AND (:eventStartDateMax::bigint IS NULL OR \"eventStartDate\" IS NULL OR \"eventStartDate\" <= :eventStartDateMax)\n  -- Expiration filters (expiration = 0 means indefinite/never expires)\n  AND (:expirationMin::bigint IS NULL OR expiration = 0 OR expiration >= :expirationMin)\n  AND (:expirationMax::bigint IS NULL OR expiration = 0 OR expiration <= :expirationMax)\n  -- Max Supply filters\n  AND (:maxSupplyMin::integer IS NULL OR \"maxSupply\" >= :maxSupplyMin)\n  AND (:maxSupplyMax::integer IS NULL OR \"maxSupply\" <= :maxSupplyMax)\n  -- Total Supply filters\n  AND (:totalSupplyMin::integer IS NULL OR \"totalSupply\" IS NULL OR \"totalSupply\" >= :totalSupplyMin)\n  AND (:totalSupplyMax::integer IS NULL OR \"totalSupply\" IS NULL OR \"totalSupply\" <= :totalSupplyMax)\n  -- Calculated Status filter (pending, active, expired, completed)\n  AND (\n    :calculatedStatus::text IS NULL OR\n    CASE :calculatedStatus\n      -- Pending: eventStartDate exists and is in the future\n      WHEN 'pending' THEN \n        \"eventStartDate\" IS NOT NULL \n        AND \"eventStartDate\" > EXTRACT(EPOCH FROM NOW())\n      -- Active: started and not expired\n      WHEN 'active' THEN \n        (\"eventStartDate\" IS NULL OR \"eventStartDate\" <= EXTRACT(EPOCH FROM NOW()))\n        AND (expiration = 0 OR expiration > EXTRACT(EPOCH FROM NOW()))\n      -- Expired: expiration > 0 and expiration <= now\n      WHEN 'expired' THEN \n        expiration > 0 \n        AND expiration <= EXTRACT(EPOCH FROM NOW())\n      -- Completed: totalSupply >= maxSupply\n      WHEN 'completed' THEN \n        \"totalSupply\" IS NOT NULL \n        AND \"maxSupply\" IS NOT NULL \n        AND \"totalSupply\" >= \"maxSupply\"\n      ELSE true\n    END\n  )\nORDER BY\n  CASE WHEN :sortBy = 'createdAt' AND :order = 'asc' THEN \"createdAt\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'createdAt' AND :order = 'desc' THEN \"createdAt\" END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'eventStartDate' AND :order = 'asc' THEN \"eventStartDate\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'eventStartDate' AND :order = 'desc' THEN \"eventStartDate\" END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'expiration' AND :order = 'asc' THEN expiration END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'expiration' AND :order = 'desc' THEN expiration END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN title END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN title END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'maxSupply' AND :order = 'asc' THEN \"maxSupply\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'maxSupply' AND :order = 'desc' THEN \"maxSupply\" END DESC NULLS LAST,\n  CASE WHEN :sortBy = 'totalSupply' AND :order = 'asc' THEN \"totalSupply\" END ASC NULLS LAST,\n  CASE WHEN :sortBy = 'totalSupply' AND :order = 'desc' THEN \"totalSupply\" END DESC NULLS LAST,\n  \"createdAt\" DESC NULLS LAST"};
 
 /**
  * Query generated from SQL:
@@ -239,15 +248,44 @@ const getEventsWithFiltersIR: any = {"usedParamSet":{"organiserAddress":true,"ev
  * SELECT * FROM events
  * WHERE 
  *   (:organiserAddress::text IS NULL OR "organiserAddress" = lower(:organiserAddress))
- *   AND (:eventId::integer IS NULL OR "eventId" = :eventId)
- *   AND (:status::text IS NULL OR status = :status)
- *   AND (:expired::boolean IS NULL OR 
- *     CASE 
- *       WHEN :expired = true THEN expiration * 1000 <= EXTRACT(EPOCH FROM NOW()) * 1000
- *       WHEN :expired = false THEN (expiration * 1000 > EXTRACT(EPOCH FROM NOW()) * 1000 OR expiration = 0)
- *       ELSE true
- *     END)
+ *   AND (:eventIdSearch::text IS NULL OR CAST("eventId" AS TEXT) ILIKE '%' || :eventIdSearch || '%')
  *   AND (:titleSearch::text IS NULL OR title ILIKE '%' || :titleSearch || '%')
+ *   -- Event Start Date filters
+ *   AND (:eventStartDateMin::bigint IS NULL OR "eventStartDate" IS NULL OR "eventStartDate" >= :eventStartDateMin)
+ *   AND (:eventStartDateMax::bigint IS NULL OR "eventStartDate" IS NULL OR "eventStartDate" <= :eventStartDateMax)
+ *   -- Expiration filters (expiration = 0 means indefinite/never expires)
+ *   AND (:expirationMin::bigint IS NULL OR expiration = 0 OR expiration >= :expirationMin)
+ *   AND (:expirationMax::bigint IS NULL OR expiration = 0 OR expiration <= :expirationMax)
+ *   -- Max Supply filters
+ *   AND (:maxSupplyMin::integer IS NULL OR "maxSupply" >= :maxSupplyMin)
+ *   AND (:maxSupplyMax::integer IS NULL OR "maxSupply" <= :maxSupplyMax)
+ *   -- Total Supply filters
+ *   AND (:totalSupplyMin::integer IS NULL OR "totalSupply" IS NULL OR "totalSupply" >= :totalSupplyMin)
+ *   AND (:totalSupplyMax::integer IS NULL OR "totalSupply" IS NULL OR "totalSupply" <= :totalSupplyMax)
+ *   -- Calculated Status filter (pending, active, expired, completed)
+ *   AND (
+ *     :calculatedStatus::text IS NULL OR
+ *     CASE :calculatedStatus
+ *       -- Pending: eventStartDate exists and is in the future
+ *       WHEN 'pending' THEN 
+ *         "eventStartDate" IS NOT NULL 
+ *         AND "eventStartDate" > EXTRACT(EPOCH FROM NOW())
+ *       -- Active: started and not expired
+ *       WHEN 'active' THEN 
+ *         ("eventStartDate" IS NULL OR "eventStartDate" <= EXTRACT(EPOCH FROM NOW()))
+ *         AND (expiration = 0 OR expiration > EXTRACT(EPOCH FROM NOW()))
+ *       -- Expired: expiration > 0 and expiration <= now
+ *       WHEN 'expired' THEN 
+ *         expiration > 0 
+ *         AND expiration <= EXTRACT(EPOCH FROM NOW())
+ *       -- Completed: totalSupply >= maxSupply
+ *       WHEN 'completed' THEN 
+ *         "totalSupply" IS NOT NULL 
+ *         AND "maxSupply" IS NOT NULL 
+ *         AND "totalSupply" >= "maxSupply"
+ *       ELSE true
+ *     END
+ *   )
  * ORDER BY
  *   CASE WHEN :sortBy = 'createdAt' AND :order = 'asc' THEN "createdAt" END ASC NULLS LAST,
  *   CASE WHEN :sortBy = 'createdAt' AND :order = 'desc' THEN "createdAt" END DESC NULLS LAST,
@@ -257,6 +295,10 @@ const getEventsWithFiltersIR: any = {"usedParamSet":{"organiserAddress":true,"ev
  *   CASE WHEN :sortBy = 'expiration' AND :order = 'desc' THEN expiration END DESC NULLS LAST,
  *   CASE WHEN :sortBy = 'title' AND :order = 'asc' THEN title END ASC NULLS LAST,
  *   CASE WHEN :sortBy = 'title' AND :order = 'desc' THEN title END DESC NULLS LAST,
+ *   CASE WHEN :sortBy = 'maxSupply' AND :order = 'asc' THEN "maxSupply" END ASC NULLS LAST,
+ *   CASE WHEN :sortBy = 'maxSupply' AND :order = 'desc' THEN "maxSupply" END DESC NULLS LAST,
+ *   CASE WHEN :sortBy = 'totalSupply' AND :order = 'asc' THEN "totalSupply" END ASC NULLS LAST,
+ *   CASE WHEN :sortBy = 'totalSupply' AND :order = 'desc' THEN "totalSupply" END DESC NULLS LAST,
  *   "createdAt" DESC NULLS LAST
  * ```
  */
