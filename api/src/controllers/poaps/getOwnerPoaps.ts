@@ -1,5 +1,5 @@
 import { Controller, Get, Query, Route } from "tsoa";
-import { requirePool, getAllPoaps } from "@game/db";
+import { requirePool, getPoapsByOwnerAddress } from "@game/db";
 import { IErrorResponse } from "@game/utils";
 
 @Route("owner_poaps")
@@ -12,14 +12,12 @@ export class GetOwnerPoapsController extends Controller {
     const pool = requirePool();
 
     try {
-      // Get all POAPs and filter by owner address
-      const allPoaps = await getAllPoaps.run(undefined, pool);
-      console.log("🚀 ~ GetOwnerPoapsController ~ allPoaps:", allPoaps);
-      
-      // Filter by wallet address
-      const ownerPoaps = allPoaps.filter(poap => 
-        poap.ownerAddress && poap.ownerAddress.toLowerCase() === walletAddress.toLowerCase()
+      // Query POAPs directly with WHERE clause - much more efficient
+      const ownerPoaps = await getPoapsByOwnerAddress.run(
+        { ownerAddress: walletAddress },
+        pool
       );
+      console.log("🚀 ~ GetOwnerPoapsController ~ ownerPoaps:", ownerPoaps);
       
       return { poaps: ownerPoaps };
     } catch (error: any) {
