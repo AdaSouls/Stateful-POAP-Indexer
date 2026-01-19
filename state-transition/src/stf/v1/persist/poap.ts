@@ -80,7 +80,8 @@ export function persistPoapUpdateRelation(
   tokenId: number,
   ownerAddress: WalletAddress,
 ): SQLUpdate[] {
-  // Create the POAP if it doesn't exist (ON CONFLICT will prevent duplicates)
+  // NOTE: createPoap no longer has ON CONFLICT since tokenId is not unique.
+  // Duplicate prevention should be handled at a higher level using transaction_hash.
   const poapParams: ICreatePoapParams = {
     issuerId,
     eventId,
@@ -89,7 +90,9 @@ export function persistPoapUpdateRelation(
   };
   const poapQuery: SQLUpdate = [createPoap, poapParams];
   
-  // Update the POAP's ownerAddress (this will work whether POAP exists or not)
+  // WARNING: updatePoapOwnerAddress uses tokenId which is NOT unique.
+  // This will update ALL POAPs with the given tokenId, not just one.
+  // Consider using poapUuid or transaction_hash for more precise updates.
   const updateParams: IUpdatePoapOwnerAddressParams = {
     tokenId,
     ownerAddress,
