@@ -7,7 +7,8 @@ import {
   getEventByEventId, 
   createPoap, 
   ICreatePoapParams, 
-  getPoapByTokenId 
+  createEventPoap,
+  ICreateEventPoapParams
 } from '@game/db';
 import {
   IndexingError,
@@ -18,7 +19,7 @@ import {
 } from '../utils/indexingErrors';
 
 // Contract configuration
-const POAP_CONTRACT_ADDRESS = "0xE2113297a478889eFc11e0DC643D16a0178c2963";
+const POAP_CONTRACT_ADDRESS = "0x9b394Aaaf2985415215aeC036457B1F38bDdcb2e";
 const providerRPC = {
   name: "Amoy",
   rpc: "https://rpc-amoy.polygon.technology",
@@ -110,6 +111,37 @@ const POAP_CONTRACT_ABI = [
       }
     ],
     "name": "TokenMinted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "issuerId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "eventId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TokenUpdated",
     "type": "event"
   }
 ];
@@ -519,7 +551,7 @@ export class BlockchainSyncService {
       );
       
       const affectedPoaps = await client.query(
-        'SELECT "tokenId", "eventId", "transaction_hash" FROM poaps WHERE block_number >= $1',
+        'SELECT "poapUuid", "tokenId", "eventId", "transaction_hash" FROM poaps WHERE block_number >= $1',
         [blockNumber]
       );
       
@@ -537,10 +569,25 @@ export class BlockchainSyncService {
         // Get eventId before deleting the POAP
         const eventId = poap.eventId;
         
-        await client.query(
-          'DELETE FROM poaps WHERE "tokenId" = $1 AND block_number >= $2',
-          [poap.tokenId, blockNumber]
-        );
+        // Use poapUuid or transaction_hash for deletion since tokenId is not unique
+        // Prefer transaction_hash if available, otherwise use poapUuid
+        if (poap.transaction_hash) {
+          await client.query(
+            'DELETE FROM poaps WHERE "transaction_hash" = $1',
+            [poap.transaction_hash]
+          );
+        } else if (poap.poapUuid) {
+          await client.query(
+            'DELETE FROM poaps WHERE "poapUuid" = $1',
+            [poap.poapUuid]
+          );
+        } else {
+          // Fallback: use tokenId with block_number (less precise but necessary if no unique identifier)
+          await client.query(
+            'DELETE FROM poaps WHERE "tokenId" = $1 AND block_number >= $2 AND "eventId" = $3',
+            [poap.tokenId, blockNumber, eventId]
+          );
+        }
         
         // Decrement totalSupply for the event
         try {
@@ -693,6 +740,19 @@ export class BlockchainSyncService {
 
     for (const event of tokenMintedEvents) {
       await this.processPoapEvent(event);
+    }
+
+    // Process TokenUpdated events
+    const tokenUpdatedEvents = await this.contract.queryFilter(
+      "TokenUpdated",
+      fromBlock,
+      toBlock
+    );
+
+    console.log(`📊 Found ${tokenUpdatedEvents.length} TokenUpdated events in blocks ${fromBlock}-${toBlock}`);
+
+    for (const event of tokenUpdatedEvents) {
+      await this.processTokenUpdatedEvent(event);
     }
   }
 
@@ -1002,49 +1062,121 @@ export class BlockchainSyncService {
 
       // Process in transaction
       await this.withTransaction(async (client) => {
-        // Check if POAP already exists
-        // NOTE: If POAP already exists (created via state transition), we skip totalSupply increment
-        // to avoid double-counting. totalSupply is incremented in the state transition function.
-        const existingPoap = await getPoapByTokenId.run({ tokenId: tokenIdNumber }, client);
-        if (existingPoap.length > 0) {
-          const poapRecord = existingPoap[0];
+        // Check if a POAP with the same transaction_hash already exists
+        // This prevents duplicates when both TokenMinted and TokenUpdated occur with the same transaction
+        try {
+          const existingByTxHash = await client.query(
+            `SELECT "tokenId" FROM poaps WHERE transaction_hash = $1`,
+            [event.transactionHash]
+          );
           
-          // Update blockchain metadata if missing (for off-chain created POAPs)
-          if (!poapRecord.block_number || !poapRecord.transaction_hash) {
-            try {
-              await client.query(
-                `UPDATE poaps 
-                 SET block_number = COALESCE(block_number, $1), 
-                     transaction_hash = COALESCE(transaction_hash, $2) 
-                 WHERE "tokenId" = $3 
-                   AND (block_number IS NULL OR transaction_hash IS NULL)`,
-                [event.blockNumber, event.transactionHash, tokenIdNumber]
-              );
-              
-              // Store block hash for reorg detection
-              await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);
-              
-              console.log(`✅ Updated blockchain metadata for existing POAP ${tokenIdNumber}`);
-            } catch (error) {
-              // Columns might not exist yet - ignore
-              console.warn('Could not update POAP metadata (columns may not exist):', error);
-            }
-          } else {
-            console.log(`ℹ️ POAP ${tokenIdNumber} already exists with blockchain metadata`);
+          if (existingByTxHash.rows.length > 0) {
+            console.log(`ℹ️ POAP with transaction_hash ${event.transactionHash} already exists (tokenId: ${existingByTxHash.rows[0].tokenId}). Skipping to prevent duplicate.`);
+            return;
           }
-          // Return early - don't increment totalSupply to avoid double-counting
-          return;
+        } catch (error) {
+          // Column might not exist yet - ignore (backward compatibility)
+          console.warn('Could not check transaction_hash (column may not exist):', error);
         }
 
-        // Create POAP in database
-        const poapData: ICreatePoapParams = {
-          issuerId: Number(issuerId),
-          eventId: Number(eventId),
+        // Insert POAP with transaction_hash and block_number directly (no UPDATE queries)
+        try {
+          await client.query(
+            `INSERT INTO poaps (
+              "poapUuid",
+              "issuerId",
+              "eventId",
+              "tokenId",
+              "ownerAddress",
+              block_number,
+              transaction_hash,
+              "createdAt",
+              "updatedAt"
+            )
+            VALUES (
+              DEFAULT,
+              $1,
+              $2,
+              $3,
+              lower($4),
+              $5,
+              $6,
+              DEFAULT,
+              DEFAULT
+            )
+            ON CONFLICT (transaction_hash) DO NOTHING
+            RETURNING *`,
+            [
+              Number(issuerId),
+              Number(eventId),
+              tokenIdNumber,
+              userAddress,
+              event.blockNumber,
+              event.transactionHash
+            ]
+          );
+        } catch (error: any) {
+          // If transaction_hash column doesn't exist or constraint doesn't exist, fall back to insert with transaction_hash
+          if (error.message?.includes('transaction_hash') || error.message?.includes('does not exist') || error.message?.includes('constraint')) {
+            console.warn('transaction_hash column or constraint may not exist, using insert without ON CONFLICT:', error);
+            // Try insert with transaction_hash but without ON CONFLICT
+            try {
+              await client.query(
+                `INSERT INTO poaps (
+                  "poapUuid",
+                  "issuerId",
+                  "eventId",
+                  "tokenId",
+                  "ownerAddress",
+                  block_number,
+                  transaction_hash,
+                  "createdAt",
+                  "updatedAt"
+                )
+                VALUES (
+                  DEFAULT,
+                  $1,
+                  $2,
+                  $3,
+                  lower($4),
+                  $5,
+                  $6,
+                  DEFAULT,
+                  DEFAULT
+                )
+                RETURNING *`,
+                [
+                  Number(issuerId),
+                  Number(eventId),
+                  tokenIdNumber,
+                  userAddress,
+                  event.blockNumber,
+                  event.transactionHash
+                ]
+              );
+            } catch (insertError: any) {
+              // If that also fails (e.g., column doesn't exist), use basic insert
+              console.warn('Insert with transaction_hash failed, using basic insert:', insertError);
+              const poapData: ICreatePoapParams = {
+                issuerId: Number(issuerId),
+                eventId: Number(eventId),
+                tokenId: tokenIdNumber,
+                ownerAddress: userAddress,
+              };
+              await createPoap.run(poapData, client);
+            }
+          } else {
+            throw error;
+          }
+        }
+
+        // Create eventpoaps relation
+        const eventPoapData: ICreateEventPoapParams = {
           tokenId: tokenIdNumber,
-          ownerAddress: userAddress,
+          eventId: Number(eventId),
         };
 
-        await createPoap.run(poapData, client);
+        await createEventPoap.run(eventPoapData, client);
 
         // Update event's totalSupply by incrementing it
         try {
@@ -1063,20 +1195,218 @@ export class BlockchainSyncService {
         // Store block hash for reorg detection
         await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);
 
-        // Update POAP with blockchain metadata (if columns exist)
+        console.log(`✅ Successfully synced TokenMinted POAP ${tokenIdNumber} to database with eventpoaps relation`);
+      });
+    }, context);
+  }
+
+  /**
+   * Process TokenUpdated event with full error handling and validation
+   * NOTE: TokenUpdated creates a NEW POAP entry (does not update existing)
+   * If the same transaction_hash already exists, the addition is skipped to prevent duplicates
+   */
+  private async processTokenUpdatedEvent(event: ethers.Log) {
+    const context: ProcessingContext = {
+      blockNumber: event.blockNumber,
+      txHash: event.transactionHash,
+      eventType: 'TokenUpdated'
+    };
+
+    return this.retryWithBackoff(async () => {
+      // Validate event structure
+      if (!event.topics || !event.data) {
+        throw new IndexingError(
+          'Invalid event structure',
+          IndexingErrorType.VALIDATION_ERROR,
+          context
+        );
+      }
+
+      // Decode event
+      const decoded = this.contract.interface.parseLog({
+        topics: event.topics,
+        data: event.data
+      });
+
+      if (!decoded) {
+        throw new IndexingError(
+          'Failed to decode TokenUpdated event',
+          IndexingErrorType.PARSING_ERROR,
+          context
+        );
+      }
+
+      // Validate decoded data
+      this.validatePoapData(decoded.args, { ...context, decoded: decoded.name });
+
+      const {
+        issuerId,
+        eventId,
+        tokenId,
+        userAddress,
+      } = decoded.args;
+
+      const tokenIdNumber = Number(tokenId);
+      context.tokenId = tokenIdNumber;
+      context.eventId = Number(eventId);
+
+      // Validate transaction
+      const isValid = await this.validateTransaction(event);
+      if (!isValid) {
+        throw new IndexingError(
+          'Transaction validation failed',
+          IndexingErrorType.TRANSACTION_ERROR,
+          context
+        );
+      }
+
+      // Get block hash for reorg detection
+      const block = await this.provider.getBlock(event.blockNumber);
+      if (!block) {
+        throw new IndexingError(
+          'Block not found',
+          IndexingErrorType.NETWORK_ERROR,
+          context,
+          true // Retryable
+        );
+      }
+
+      // Process in transaction
+      await this.withTransaction(async (client) => {
+        // Check if a POAP with the same transaction_hash already exists
+        // This prevents duplicates when both TokenMinted and TokenUpdated occur with the same transaction
         try {
-          await client.query(
-            `UPDATE poaps 
-             SET block_number = $1, transaction_hash = $2 
-             WHERE "tokenId" = $3`,
-            [event.blockNumber, event.transactionHash, tokenIdNumber]
+          const existingByTxHash = await client.query(
+            `SELECT "tokenId" FROM poaps WHERE transaction_hash = $1`,
+            [event.transactionHash]
           );
+          
+          if (existingByTxHash.rows.length > 0) {
+            console.log(`ℹ️ POAP with transaction_hash ${event.transactionHash} already exists (tokenId: ${existingByTxHash.rows[0].tokenId}). Skipping TokenUpdated to prevent duplicate.`);
+            return;
+          }
         } catch (error) {
-          // Columns might not exist yet - ignore
-          console.warn('Could not update POAP metadata (columns may not exist):', error);
+          // Column might not exist yet - ignore (backward compatibility)
+          console.warn('Could not check transaction_hash (column may not exist):', error);
         }
 
-        console.log(`✅ Successfully synced POAP ${tokenIdNumber} to database`);
+        // Insert POAP with transaction_hash and block_number directly (no UPDATE queries)
+        try {
+          await client.query(
+            `INSERT INTO poaps (
+              "poapUuid",
+              "issuerId",
+              "eventId",
+              "tokenId",
+              "ownerAddress",
+              block_number,
+              transaction_hash,
+              "createdAt",
+              "updatedAt"
+            )
+            VALUES (
+              DEFAULT,
+              $1,
+              $2,
+              $3,
+              lower($4),
+              $5,
+              $6,
+              DEFAULT,
+              DEFAULT
+            )
+            ON CONFLICT (transaction_hash) DO NOTHING
+            RETURNING *`,
+            [
+              Number(issuerId),
+              Number(eventId),
+              tokenIdNumber,
+              userAddress,
+              event.blockNumber,
+              event.transactionHash
+            ]
+          );
+        } catch (error: any) {
+          // If transaction_hash column doesn't exist or constraint doesn't exist, fall back to insert with transaction_hash
+          if (error.message?.includes('transaction_hash') || error.message?.includes('does not exist') || error.message?.includes('constraint')) {
+            console.warn('transaction_hash column or constraint may not exist, using insert without ON CONFLICT:', error);
+            // Try insert with transaction_hash but without ON CONFLICT
+            try {
+              await client.query(
+                `INSERT INTO poaps (
+                  "poapUuid",
+                  "issuerId",
+                  "eventId",
+                  "tokenId",
+                  "ownerAddress",
+                  block_number,
+                  transaction_hash,
+                  "createdAt",
+                  "updatedAt"
+                )
+                VALUES (
+                  DEFAULT,
+                  $1,
+                  $2,
+                  $3,
+                  lower($4),
+                  $5,
+                  $6,
+                  DEFAULT,
+                  DEFAULT
+                )
+                RETURNING *`,
+                [
+                  Number(issuerId),
+                  Number(eventId),
+                  tokenIdNumber,
+                  userAddress,
+                  event.blockNumber,
+                  event.transactionHash
+                ]
+              );
+            } catch (insertError: any) {
+              // If that also fails (e.g., column doesn't exist), use basic insert
+              console.warn('Insert with transaction_hash failed, using basic insert:', insertError);
+              const poapData: ICreatePoapParams = {
+                issuerId: Number(issuerId),
+                eventId: Number(eventId),
+                tokenId: tokenIdNumber,
+                ownerAddress: userAddress,
+              };
+              await createPoap.run(poapData, client);
+            }
+          } else {
+            throw error;
+          }
+        }
+
+        // Create eventpoaps relation
+        const eventPoapData: ICreateEventPoapParams = {
+          tokenId: tokenIdNumber,
+          eventId: Number(eventId),
+        };
+
+        await createEventPoap.run(eventPoapData, client);
+
+        // Update event's totalSupply by incrementing it
+        try {
+          await client.query(
+            `UPDATE events 
+             SET "totalSupply" = COALESCE("totalSupply", 0) + 1,
+                 "updatedAt" = now()
+             WHERE "eventId" = $1`,
+            [Number(eventId)]
+          );
+        } catch (error) {
+          // Column might not exist yet - ignore (backward compatibility)
+          console.warn('Could not update event totalSupply (column may not exist):', error);
+        }
+
+        // Store block hash for reorg detection
+        await this.storeBlockHash(event.blockNumber, block.hash ?? '', client);
+
+        console.log(`✅ Successfully synced TokenUpdated POAP ${tokenIdNumber} to database with eventpoaps relation`);
       });
     }, context);
   }
