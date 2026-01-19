@@ -226,8 +226,9 @@ export interface ICreatePoapResult {
   issuerId: number;
   ownerAddress: string;
   poapUuid: string;
+  /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
   tokenId: number;
-  /** Transaction hash of the POAP mint */
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
   transaction_hash: string | null;
   updatedAt: Date | null;
 }
@@ -238,11 +239,15 @@ export interface ICreatePoapQuery {
   result: ICreatePoapResult;
 }
 
-const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"tokenId":true,"ownerAddress":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":145,"b":154}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":159,"b":167}]},{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":172,"b":180}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":185,"b":198}]}],"statement":"INSERT INTO poaps (\n  \"poapUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"tokenId\",\n  \"ownerAddress\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :tokenId!,\n  :ownerAddress!,\n  DEFAULT,\n  DEFAULT\n)\nON CONFLICT (\"tokenId\") DO NOTHING\nRETURNING *"};
+const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"tokenId":true,"ownerAddress":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":458,"b":467}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":472,"b":480}]},{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":485,"b":493}]},{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":498,"b":511}]}],"statement":"-- NOTE: tokenId is NOT unique - multiple POAPs can have the same tokenId.\n-- For conflict detection, use transaction_hash (which is unique) instead of tokenId.\n-- This query does not include transaction_hash - use the raw SQL in blockchainSync.service.ts\n-- for inserts with transaction_hash conflict detection.\nINSERT INTO poaps (\n  \"poapUuid\",\n  \"issuerId\",\n  \"eventId\",\n  \"tokenId\",\n  \"ownerAddress\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :issuerId!,\n  :eventId!,\n  :tokenId!,\n  :ownerAddress!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
  * ```
+ * -- NOTE: tokenId is NOT unique - multiple POAPs can have the same tokenId.
+ * -- For conflict detection, use transaction_hash (which is unique) instead of tokenId.
+ * -- This query does not include transaction_hash - use the raw SQL in blockchainSync.service.ts
+ * -- for inserts with transaction_hash conflict detection.
  * INSERT INTO poaps (
  *   "poapUuid",
  *   "issuerId",
@@ -261,7 +266,6 @@ const createPoapIR: any = {"usedParamSet":{"issuerId":true,"eventId":true,"token
  *   DEFAULT,
  *   DEFAULT
  * )
- * ON CONFLICT ("tokenId") DO NOTHING
  * RETURNING *
  * ```
  */
@@ -289,11 +293,13 @@ export interface ICreateEventPoapQuery {
   result: ICreateEventPoapResult;
 }
 
-const createEventPoapIR: any = {"usedParamSet":{"tokenId":true,"eventId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":122,"b":130}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":135,"b":143}]}],"statement":"INSERT INTO eventpoaps (\n  \"relationUuid\",\n  \"tokenId\",\n  \"eventId\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :tokenId!,\n  :eventId!,\n  DEFAULT,\n  DEFAULT\n)\nON CONFLICT (\"tokenId\", \"eventId\") DO NOTHING\nRETURNING *"};
+const createEventPoapIR: any = {"usedParamSet":{"tokenId":true,"eventId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":304,"b":312}]},{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":317,"b":325}]}],"statement":"-- NOTE: There is NO unique constraint on (tokenId, eventId) since tokenId can be duplicated.\n-- Multiple eventpoaps entries can exist with the same tokenId and eventId combination.\nINSERT INTO eventpoaps (\n  \"relationUuid\",\n  \"tokenId\",\n  \"eventId\",\n  \"createdAt\",\n  \"updatedAt\"\n)\nVALUES (\n  DEFAULT,\n  :tokenId!,\n  :eventId!,\n  DEFAULT,\n  DEFAULT\n)\nRETURNING *"};
 
 /**
  * Query generated from SQL:
  * ```
+ * -- NOTE: There is NO unique constraint on (tokenId, eventId) since tokenId can be duplicated.
+ * -- Multiple eventpoaps entries can exist with the same tokenId and eventId combination.
  * INSERT INTO eventpoaps (
  *   "relationUuid",
  *   "tokenId",
@@ -308,7 +314,6 @@ const createEventPoapIR: any = {"usedParamSet":{"tokenId":true,"eventId":true},"
  *   DEFAULT,
  *   DEFAULT
  * )
- * ON CONFLICT ("tokenId", "eventId") DO NOTHING
  * RETURNING *
  * ```
  */

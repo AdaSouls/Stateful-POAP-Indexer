@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS issuers (
 -- Events table
 CREATE TABLE IF NOT EXISTS events (
   "eventUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "issuerId" SERIAL NOT NULL REFERENCES issuers ("issuerId") ON DELETE CASCADE ON UPDATE CASCADE,
+  "issuerId" INTEGER NOT NULL REFERENCES issuers ("issuerId") ON DELETE CASCADE ON UPDATE CASCADE,
   "eventId" INTEGER UNIQUE NOT NULL,
   "maxSupply" INTEGER NOT NULL,
   expiration INTEGER NOT NULL,
@@ -37,24 +37,28 @@ CREATE TABLE IF NOT EXISTS owners (
 );
 
 -- Poaps table
+-- Note: tokenId is INTEGER (from blockchain event) but NOT UNIQUE to allow duplicate tokenIds
+-- transaction_hash will have a UNIQUE constraint added after the column is created
 CREATE TABLE IF NOT EXISTS poaps (
   "poapUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
   "issuerId" INTEGER NOT NULL,
   "eventId" INTEGER NOT NULL,
-  "tokenId" SERIAL UNIQUE NOT NULL,
+  "tokenId" INTEGER NOT NULL,
   "ownerAddress" VARCHAR(255) NOT NULL,
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
   "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- EventPoaps join table
+-- Note: tokenId and eventId are INTEGER (from blockchain events), not SERIAL
+-- No UNIQUE constraint on (tokenId, eventId) since tokenId is not unique
+-- Note: tokenId cannot have a foreign key to poaps.tokenId because tokenId is not unique in poaps
 CREATE TABLE IF NOT EXISTS eventpoaps (
   "relationUuid" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "tokenId" SERIAL NOT NULL REFERENCES poaps ("tokenId") ON DELETE CASCADE ON UPDATE CASCADE,
-  "eventId" SERIAL NOT NULL REFERENCES events ("eventId") ON DELETE CASCADE ON UPDATE CASCADE,
+  "tokenId" INTEGER NOT NULL,
+  "eventId" INTEGER NOT NULL REFERENCES events ("eventId") ON DELETE CASCADE ON UPDATE CASCADE,
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  CONSTRAINT "unique_event_poap" UNIQUE ("tokenId", "eventId")
+  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 -- ============================================
@@ -130,6 +134,95 @@ ALTER TABLE poaps
 ADD COLUMN IF NOT EXISTS block_number INTEGER,
 ADD COLUMN IF NOT EXISTS transaction_hash VARCHAR(66);
 
+-- 3a. Convert tokenId from SERIAL to INTEGER if needed (for existing databases)
+-- This ensures tokenId uses the value from blockchain events, not auto-increment
+DO $$
+DECLARE
+    constraint_name TEXT;
+BEGIN
+    -- Convert poaps.tokenId from SERIAL to INTEGER if it's using a sequence
+    IF EXISTS (
+        SELECT 1 FROM pg_sequences 
+        WHERE schemaname = 'public' 
+        AND sequencename = 'poaps_tokenId_seq'
+    ) THEN
+        -- Drop the default and sequence
+        ALTER TABLE poaps ALTER COLUMN "tokenId" DROP DEFAULT;
+        DROP SEQUENCE IF EXISTS poaps_tokenId_seq CASCADE;
+        RAISE NOTICE 'Converted poaps.tokenId from SERIAL to INTEGER';
+    END IF;
+    
+    -- Convert eventpoaps.tokenId from SERIAL to INTEGER if it's using a sequence
+    IF EXISTS (
+        SELECT 1 FROM pg_sequences 
+        WHERE schemaname = 'public' 
+        AND sequencename = 'eventpoaps_tokenId_seq'
+    ) THEN
+        ALTER TABLE eventpoaps ALTER COLUMN "tokenId" DROP DEFAULT;
+        DROP SEQUENCE IF EXISTS eventpoaps_tokenId_seq CASCADE;
+        RAISE NOTICE 'Converted eventpoaps.tokenId from SERIAL to INTEGER';
+    END IF;
+    
+    -- Convert eventpoaps.eventId from SERIAL to INTEGER if it's using a sequence
+    IF EXISTS (
+        SELECT 1 FROM pg_sequences 
+        WHERE schemaname = 'public' 
+        AND sequencename = 'eventpoaps_eventId_seq'
+    ) THEN
+        ALTER TABLE eventpoaps ALTER COLUMN "eventId" DROP DEFAULT;
+        DROP SEQUENCE IF EXISTS eventpoaps_eventId_seq CASCADE;
+        RAISE NOTICE 'Converted eventpoaps.eventId from SERIAL to INTEGER';
+    END IF;
+    
+    -- Drop any existing unique constraint on tokenId in poaps if it exists
+    SELECT conname INTO constraint_name
+    FROM pg_constraint 
+    WHERE conrelid = 'poaps'::regclass
+    AND contype = 'u'
+    AND (
+        conname = 'poaps_tokenId_key' 
+        OR conname LIKE '%tokenId%'
+    )
+    LIMIT 1;
+    
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE poaps DROP CONSTRAINT %I', constraint_name);
+        RAISE NOTICE 'Dropped unique constraint % on poaps.tokenId', constraint_name;
+    END IF;
+    
+    -- Remove unique constraint on (tokenId, eventId) from eventpoaps if it exists
+    IF EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'unique_event_poap' 
+        AND conrelid = 'eventpoaps'::regclass
+    ) THEN
+        ALTER TABLE eventpoaps DROP CONSTRAINT unique_event_poap;
+        RAISE NOTICE 'Removed unique constraint on eventpoaps (tokenId, eventId)';
+    END IF;
+END $$;
+
+-- 3b. Add UNIQUE constraint on transaction_hash (ensures transaction_hash uniqueness)
+-- This allows duplicate tokenIds but ensures each transaction_hash is unique
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'poaps' 
+        AND column_name = 'transaction_hash'
+    ) THEN
+        -- Add unique constraint on transaction_hash if it doesn't exist
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint 
+            WHERE conname = 'poaps_transaction_hash_key' 
+            AND conrelid = 'poaps'::regclass
+        ) THEN
+            ALTER TABLE poaps 
+            ADD CONSTRAINT poaps_transaction_hash_key UNIQUE (transaction_hash);
+            RAISE NOTICE 'Added unique constraint on poaps.transaction_hash';
+        END IF;
+    END IF;
+END $$;
+
 -- 4. Create indexes for performance optimization
 
 -- Indexes for events table
@@ -191,4 +284,5 @@ COMMENT ON TABLE block_tracking IS 'Tracks processed blocks and their hashes for
 COMMENT ON COLUMN events.block_number IS 'Block number where the event was created';
 COMMENT ON COLUMN events.transaction_hash IS 'Transaction hash of the event creation';
 COMMENT ON COLUMN poaps.block_number IS 'Block number where the POAP was minted';
-COMMENT ON COLUMN poaps.transaction_hash IS 'Transaction hash of the POAP mint';
+COMMENT ON COLUMN poaps.transaction_hash IS 'Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions)';
+COMMENT ON COLUMN poaps."tokenId" IS 'Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions)';

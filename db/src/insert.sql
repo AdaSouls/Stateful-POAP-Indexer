@@ -90,6 +90,10 @@ RETURNING *;
 /* 
  @name createPoap
  */
+-- NOTE: tokenId is NOT unique - multiple POAPs can have the same tokenId.
+-- For conflict detection, use transaction_hash (which is unique) instead of tokenId.
+-- This query does not include transaction_hash - use the raw SQL in blockchainSync.service.ts
+-- for inserts with transaction_hash conflict detection.
 INSERT INTO poaps (
   "poapUuid",
   "issuerId",
@@ -108,12 +112,13 @@ VALUES (
   DEFAULT,
   DEFAULT
 )
-ON CONFLICT ("tokenId") DO NOTHING
 RETURNING *;
 
 /* 
  @name createEventPoap
  */
+-- NOTE: There is NO unique constraint on (tokenId, eventId) since tokenId can be duplicated.
+-- Multiple eventpoaps entries can exist with the same tokenId and eventId combination.
 INSERT INTO eventpoaps (
   "relationUuid",
   "tokenId",
@@ -128,5 +133,4 @@ VALUES (
   DEFAULT,
   DEFAULT
 )
-ON CONFLICT ("tokenId", "eventId") DO NOTHING
 RETURNING *;
