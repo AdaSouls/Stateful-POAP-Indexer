@@ -35,6 +35,8 @@ import { AllPoapsController } from './../controllers/poaps/getAllPoaps';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { GetOwnerPoapsController } from './../controllers/poaps/getOwnerPoaps';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { GetPoapByTokenIdController } from './../controllers/poaps/getPoapByTokenId';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { BlockchainSyncController } from './../controllers/blockchain/syncController';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
@@ -825,6 +827,36 @@ export function RegisterRoutes(app: Router) {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
 
                 const controller = new GetOwnerPoapsController();
+
+              await templateService.apiHandler({
+                methodName: 'get',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/get_poap/:tokenId',
+            ...(fetchMiddlewares<RequestHandler>(GetPoapByTokenIdController)),
+            ...(fetchMiddlewares<RequestHandler>(GetPoapByTokenIdController.prototype.get)),
+
+            async function GetPoapByTokenIdController_get(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    tokenId: {"in":"path","name":"tokenId","required":true,"dataType":"double"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new GetPoapByTokenIdController();
 
               await templateService.apiHandler({
                 methodName: 'get',
