@@ -58,16 +58,56 @@ export interface IGetIssuerByWalletAddressQuery {
   result: IGetIssuerByWalletAddressResult;
 }
 
-const getIssuerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":52,"b":66}]}],"statement":"SELECT * FROM issuers\nWHERE \"issuerAddress\" = lower(:walletAddress!)"};
+const getIssuerByWalletAddressIR: any = {"usedParamSet":{"walletAddress":true},"params":[{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":259,"b":273}]}],"statement":"-- IMPORTANT: This uses issuerAddress which should be the eventOrganizer address from EventCreated events.\n-- DO NOT use ownerAddress from poaps table - that is the address of token recipients, not issuers.\nSELECT * FROM issuers\nWHERE \"issuerAddress\" = lower(:walletAddress!)"};
 
 /**
  * Query generated from SQL:
  * ```
+ * -- IMPORTANT: This uses issuerAddress which should be the eventOrganizer address from EventCreated events.
+ * -- DO NOT use ownerAddress from poaps table - that is the address of token recipients, not issuers.
  * SELECT * FROM issuers
  * WHERE "issuerAddress" = lower(:walletAddress!)
  * ```
  */
 export const getIssuerByWalletAddress = new PreparedQuery<IGetIssuerByWalletAddressParams,IGetIssuerByWalletAddressResult>(getIssuerByWalletAddressIR);
+
+
+/** 'GetIssuerByIssuerId' parameters type */
+export interface IGetIssuerByIssuerIdParams {
+  issuerId: number;
+}
+
+/** 'GetIssuerByIssuerId' return type */
+export interface IGetIssuerByIssuerIdResult {
+  createdAt: Date | null;
+  email: string | null;
+  issuerAddress: string;
+  issuerId: number;
+  issuerUuid: string;
+  organization: string | null;
+  updatedAt: Date | null;
+  username: string | null;
+}
+
+/** 'GetIssuerByIssuerId' query type */
+export interface IGetIssuerByIssuerIdQuery {
+  params: IGetIssuerByIssuerIdParams;
+  result: IGetIssuerByIssuerIdResult;
+}
+
+const getIssuerByIssuerIdIR: any = {"usedParamSet":{"issuerId":true},"params":[{"name":"issuerId","required":true,"transform":{"type":"scalar"},"locs":[{"a":257,"b":266}]}],"statement":"-- Get issuer by issuerId. This is the correct way to get issuers from poaps table.\n-- IMPORTANT: poaps.ownerAddress does NOT correspond to issuers.issuerAddress.\n-- Use poaps.issuerId to join with issuers.issuerId.\nSELECT * FROM issuers\nWHERE \"issuerId\" = :issuerId!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * -- Get issuer by issuerId. This is the correct way to get issuers from poaps table.
+ * -- IMPORTANT: poaps.ownerAddress does NOT correspond to issuers.issuerAddress.
+ * -- Use poaps.issuerId to join with issuers.issuerId.
+ * SELECT * FROM issuers
+ * WHERE "issuerId" = :issuerId!
+ * ```
+ */
+export const getIssuerByIssuerId = new PreparedQuery<IGetIssuerByIssuerIdParams,IGetIssuerByIssuerIdResult>(getIssuerByIssuerIdIR);
 
 
 /** 'GetIssuerByUuid' parameters type */
@@ -400,8 +440,9 @@ export interface IGetAllPoapsResult {
   issuerId: number;
   ownerAddress: string;
   poapUuid: string;
+  /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
   tokenId: number;
-  /** Transaction hash of the POAP mint */
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
   transaction_hash: string | null;
   updatedAt: Date | null;
 }
@@ -502,8 +543,9 @@ export interface IGetPoapsByOwnerAddressResult {
   ownerAddress: string;
   poapUuid: string;
   status: string;
+  /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
   tokenId: number;
-  /** Transaction hash of the POAP mint */
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
   transaction_hash: string | null;
   updatedAt: Date | null;
 }
@@ -593,8 +635,9 @@ export interface IGetPoapByTokenIdResult {
   issuerId: number;
   ownerAddress: string;
   poapUuid: string;
+  /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
   tokenId: number;
-  /** Transaction hash of the POAP mint */
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
   transaction_hash: string | null;
   updatedAt: Date | null;
 }
@@ -605,14 +648,350 @@ export interface IGetPoapByTokenIdQuery {
   result: IGetPoapByTokenIdResult;
 }
 
-const getPoapByTokenIdIR: any = {"usedParamSet":{"tokenId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":38,"b":46}]}],"statement":"SELECT * FROM poaps WHERE \"tokenId\" = :tokenId!"};
+const getPoapByTokenIdIR: any = {"usedParamSet":{"tokenId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":171,"b":179}]}],"statement":"-- NOTE: tokenId is NOT unique, so this query may return multiple POAPs.\n-- Use transaction_hash or poapUuid to get a specific POAP.\nSELECT * FROM poaps WHERE \"tokenId\" = :tokenId!"};
 
 /**
  * Query generated from SQL:
  * ```
+ * -- NOTE: tokenId is NOT unique, so this query may return multiple POAPs.
+ * -- Use transaction_hash or poapUuid to get a specific POAP.
  * SELECT * FROM poaps WHERE "tokenId" = :tokenId!
  * ```
  */
 export const getPoapByTokenId = new PreparedQuery<IGetPoapByTokenIdParams,IGetPoapByTokenIdResult>(getPoapByTokenIdIR);
+
+
+/** 'GetOwnersByEventId' parameters type */
+export interface IGetOwnersByEventIdParams {
+  eventId: number;
+}
+
+/** 'GetOwnersByEventId' return type */
+export interface IGetOwnersByEventIdResult {
+  mint_count: string | null;
+  ownerAddress: string;
+}
+
+/** 'GetOwnersByEventId' query type */
+export interface IGetOwnersByEventIdQuery {
+  params: IGetOwnersByEventIdParams;
+  result: IGetOwnersByEventIdResult;
+}
+
+const getOwnersByEventIdIR: any = {"usedParamSet":{"eventId":true},"params":[{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":243,"b":251}]}],"statement":"-- Get all distinct owners (people) who minted tokens for a specific event\n-- NOTE: owners table is not populated, so only ownerAddress is returned\nSELECT DISTINCT \n  p.\"ownerAddress\",\n  COUNT(*) as mint_count\nFROM poaps p\nWHERE p.\"eventId\" = :eventId!\nGROUP BY p.\"ownerAddress\"\nORDER BY mint_count DESC, p.\"ownerAddress\""};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * -- Get all distinct owners (people) who minted tokens for a specific event
+ * -- NOTE: owners table is not populated, so only ownerAddress is returned
+ * SELECT DISTINCT 
+ *   p."ownerAddress",
+ *   COUNT(*) as mint_count
+ * FROM poaps p
+ * WHERE p."eventId" = :eventId!
+ * GROUP BY p."ownerAddress"
+ * ORDER BY mint_count DESC, p."ownerAddress"
+ * ```
+ */
+export const getOwnersByEventId = new PreparedQuery<IGetOwnersByEventIdParams,IGetOwnersByEventIdResult>(getOwnersByEventIdIR);
+
+
+/** 'GetPoapsByEventId' parameters type */
+export interface IGetPoapsByEventIdParams {
+  eventId: number;
+}
+
+/** 'GetPoapsByEventId' return type */
+export interface IGetPoapsByEventIdResult {
+  /** Block number where the POAP was minted */
+  block_number: number | null;
+  createdAt: Date | null;
+  /** Detailed description of the event */
+  description: string | null;
+  eventId: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
+  issuerId: number;
+  maxSupply: number;
+  organiserAddress: string;
+  ownerAddress: string;
+  poapUuid: string;
+  status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
+  /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
+  tokenId: number;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
+  transaction_hash: string | null;
+  updatedAt: Date | null;
+}
+
+/** 'GetPoapsByEventId' query type */
+export interface IGetPoapsByEventIdQuery {
+  params: IGetPoapsByEventIdParams;
+  result: IGetPoapsByEventIdResult;
+}
+
+const getPoapsByEventIdIR: any = {"usedParamSet":{"eventId":true},"params":[{"name":"eventId","required":true,"transform":{"type":"scalar"},"locs":[{"a":467,"b":475}]}],"statement":"-- Get all POAPs for a specific event with event details\n-- IMPORTANT: To join with issuers, use p.\"issuerId\" = issuers.\"issuerId\", NOT p.\"ownerAddress\" = issuers.\"issuerAddress\"\n-- NOTE: owners table is not populated, so owner information is not included\nSELECT \n  p.*,\n  e.title,\n  e.description,\n  e.\"imageUrl\",\n  e.\"maxSupply\",\n  e.\"organiserAddress\",\n  e.status,\n  e.\"totalSupply\"\nFROM poaps p\nLEFT JOIN events e ON p.\"eventId\" = e.\"eventId\"\nWHERE p.\"eventId\" = :eventId!\nORDER BY p.\"createdAt\" DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * -- Get all POAPs for a specific event with event details
+ * -- IMPORTANT: To join with issuers, use p."issuerId" = issuers."issuerId", NOT p."ownerAddress" = issuers."issuerAddress"
+ * -- NOTE: owners table is not populated, so owner information is not included
+ * SELECT 
+ *   p.*,
+ *   e.title,
+ *   e.description,
+ *   e."imageUrl",
+ *   e."maxSupply",
+ *   e."organiserAddress",
+ *   e.status,
+ *   e."totalSupply"
+ * FROM poaps p
+ * LEFT JOIN events e ON p."eventId" = e."eventId"
+ * WHERE p."eventId" = :eventId!
+ * ORDER BY p."createdAt" DESC
+ * ```
+ */
+export const getPoapsByEventId = new PreparedQuery<IGetPoapsByEventIdParams,IGetPoapsByEventIdResult>(getPoapsByEventIdIR);
+
+
+/** 'GetEventsByTokenId' parameters type */
+export interface IGetEventsByTokenIdParams {
+  tokenId: number;
+}
+
+/** 'GetEventsByTokenId' return type */
+export interface IGetEventsByTokenIdResult {
+  /** Detailed description of the event */
+  description: string | null;
+  /** Block number where the event was created */
+  event_block_number: number | null;
+  event_createdat: Date | null;
+  event_issuerid: number;
+  /** Transaction hash of the event creation */
+  event_transaction_hash: string | null;
+  event_updatedat: Date | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
+  eventId: number;
+  /** When the actual event starts (Unix timestamp in seconds, same type as expiration) */
+  eventStartDate: number | null;
+  eventUuid: string;
+  expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
+  maxSupply: number;
+  minted_at: Date | null;
+  organiserAddress: string;
+  ownerAddress: string;
+  /** Block number where the POAP was minted */
+  poap_block_number: number | null;
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
+  poap_transaction_hash: string | null;
+  status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
+}
+
+/** 'GetEventsByTokenId' query type */
+export interface IGetEventsByTokenIdQuery {
+  params: IGetEventsByTokenIdParams;
+  result: IGetEventsByTokenIdResult;
+}
+
+const getEventsByTokenIdIR: any = {"usedParamSet":{"tokenId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":726,"b":734}]}],"statement":"-- Get all events (with full event information) that were minted with a specific tokenId\nSELECT DISTINCT\n  e.\"eventUuid\",\n  e.\"issuerId\" as event_issuerId,\n  e.\"eventId\",\n  e.\"maxSupply\",\n  e.expiration,\n  e.\"organiserAddress\",\n  e.status,\n  e.title,\n  e.description,\n  e.\"imageUrl\",\n  e.\"eventStartDate\",\n  e.\"eventEndDate\",\n  e.\"totalSupply\",\n  e.\"createdAt\" as event_createdAt,\n  e.\"updatedAt\" as event_updatedAt,\n  e.block_number as event_block_number,\n  e.transaction_hash as event_transaction_hash,\n  p.\"ownerAddress\",\n  p.\"createdAt\" as minted_at,\n  p.\"transaction_hash\" as poap_transaction_hash,\n  p.\"block_number\" as poap_block_number\nFROM poaps p\nINNER JOIN events e ON p.\"eventId\" = e.\"eventId\"\nWHERE p.\"tokenId\" = :tokenId!\nORDER BY p.\"createdAt\" DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * -- Get all events (with full event information) that were minted with a specific tokenId
+ * SELECT DISTINCT
+ *   e."eventUuid",
+ *   e."issuerId" as event_issuerId,
+ *   e."eventId",
+ *   e."maxSupply",
+ *   e.expiration,
+ *   e."organiserAddress",
+ *   e.status,
+ *   e.title,
+ *   e.description,
+ *   e."imageUrl",
+ *   e."eventStartDate",
+ *   e."eventEndDate",
+ *   e."totalSupply",
+ *   e."createdAt" as event_createdAt,
+ *   e."updatedAt" as event_updatedAt,
+ *   e.block_number as event_block_number,
+ *   e.transaction_hash as event_transaction_hash,
+ *   p."ownerAddress",
+ *   p."createdAt" as minted_at,
+ *   p."transaction_hash" as poap_transaction_hash,
+ *   p."block_number" as poap_block_number
+ * FROM poaps p
+ * INNER JOIN events e ON p."eventId" = e."eventId"
+ * WHERE p."tokenId" = :tokenId!
+ * ORDER BY p."createdAt" DESC
+ * ```
+ */
+export const getEventsByTokenId = new PreparedQuery<IGetEventsByTokenIdParams,IGetEventsByTokenIdResult>(getEventsByTokenIdIR);
+
+
+/** 'GetPoapsByTokenIdWithEvents' parameters type */
+export interface IGetPoapsByTokenIdWithEventsParams {
+  tokenId: number;
+}
+
+/** 'GetPoapsByTokenIdWithEvents' return type */
+export interface IGetPoapsByTokenIdWithEventsResult {
+  /** Detailed description of the event */
+  description: string | null;
+  /** Block number where the event was created */
+  event_block_number: number | null;
+  event_createdat: Date | null;
+  event_issuerid: number;
+  /** Transaction hash of the event creation */
+  event_transaction_hash: string | null;
+  event_updatedat: Date | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
+  eventId: number;
+  /** When the actual event starts (Unix timestamp in seconds, same type as expiration) */
+  eventStartDate: number | null;
+  eventUuid: string;
+  expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
+  maxSupply: number;
+  organiserAddress: string;
+  ownerAddress: string;
+  /** Block number where the POAP was minted */
+  poap_block_number: number | null;
+  poap_createdat: Date | null;
+  poap_eventid: number;
+  poap_issuerid: number;
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
+  poap_transaction_hash: string | null;
+  poap_updatedat: Date | null;
+  poapUuid: string;
+  status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
+  /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
+  tokenId: number;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
+}
+
+/** 'GetPoapsByTokenIdWithEvents' query type */
+export interface IGetPoapsByTokenIdWithEventsQuery {
+  params: IGetPoapsByTokenIdWithEventsParams;
+  result: IGetPoapsByTokenIdWithEventsResult;
+}
+
+const getPoapsByTokenIdWithEventsIR: any = {"usedParamSet":{"tokenId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":893,"b":901}]}],"statement":"-- Get all POAPs for a token with full event information\n-- NOTE: owners table is not populated, so owner information is not included\nSELECT \n  p.\"poapUuid\",\n  p.\"issuerId\" as poap_issuerId,\n  p.\"eventId\" as poap_eventId,\n  p.\"tokenId\",\n  p.\"ownerAddress\",\n  p.\"createdAt\" as poap_createdAt,\n  p.\"updatedAt\" as poap_updatedAt,\n  p.block_number as poap_block_number,\n  p.transaction_hash as poap_transaction_hash,\n  e.\"eventUuid\",\n  e.\"issuerId\" as event_issuerId,\n  e.\"eventId\",\n  e.\"maxSupply\",\n  e.expiration,\n  e.\"organiserAddress\",\n  e.status,\n  e.title,\n  e.description,\n  e.\"imageUrl\",\n  e.\"eventStartDate\",\n  e.\"eventEndDate\",\n  e.\"totalSupply\",\n  e.\"createdAt\" as event_createdAt,\n  e.\"updatedAt\" as event_updatedAt,\n  e.block_number as event_block_number,\n  e.transaction_hash as event_transaction_hash\nFROM poaps p\nLEFT JOIN events e ON p.\"eventId\" = e.\"eventId\"\nWHERE p.\"tokenId\" = :tokenId!\nORDER BY p.\"createdAt\" DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * -- Get all POAPs for a token with full event information
+ * -- NOTE: owners table is not populated, so owner information is not included
+ * SELECT 
+ *   p."poapUuid",
+ *   p."issuerId" as poap_issuerId,
+ *   p."eventId" as poap_eventId,
+ *   p."tokenId",
+ *   p."ownerAddress",
+ *   p."createdAt" as poap_createdAt,
+ *   p."updatedAt" as poap_updatedAt,
+ *   p.block_number as poap_block_number,
+ *   p.transaction_hash as poap_transaction_hash,
+ *   e."eventUuid",
+ *   e."issuerId" as event_issuerId,
+ *   e."eventId",
+ *   e."maxSupply",
+ *   e.expiration,
+ *   e."organiserAddress",
+ *   e.status,
+ *   e.title,
+ *   e.description,
+ *   e."imageUrl",
+ *   e."eventStartDate",
+ *   e."eventEndDate",
+ *   e."totalSupply",
+ *   e."createdAt" as event_createdAt,
+ *   e."updatedAt" as event_updatedAt,
+ *   e.block_number as event_block_number,
+ *   e.transaction_hash as event_transaction_hash
+ * FROM poaps p
+ * LEFT JOIN events e ON p."eventId" = e."eventId"
+ * WHERE p."tokenId" = :tokenId!
+ * ORDER BY p."createdAt" DESC
+ * ```
+ */
+export const getPoapsByTokenIdWithEvents = new PreparedQuery<IGetPoapsByTokenIdWithEventsParams,IGetPoapsByTokenIdWithEventsResult>(getPoapsByTokenIdWithEventsIR);
+
+
+/** 'GetPoapsByTokenIdWithIssuer' parameters type */
+export interface IGetPoapsByTokenIdWithIssuerParams {
+  tokenId: number;
+}
+
+/** 'GetPoapsByTokenIdWithIssuer' return type */
+export interface IGetPoapsByTokenIdWithIssuerResult {
+  /** Block number where the POAP was minted */
+  block_number: number | null;
+  createdAt: Date | null;
+  eventId: number;
+  issuer_email: string | null;
+  issuer_organization: string | null;
+  issuer_username: string | null;
+  issuerAddress: string;
+  issuerId: number;
+  issuerUuid: string;
+  ownerAddress: string;
+  poapUuid: string;
+  /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
+  tokenId: number;
+  /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
+  transaction_hash: string | null;
+  updatedAt: Date | null;
+}
+
+/** 'GetPoapsByTokenIdWithIssuer' query type */
+export interface IGetPoapsByTokenIdWithIssuerQuery {
+  params: IGetPoapsByTokenIdWithIssuerParams;
+  result: IGetPoapsByTokenIdWithIssuerResult;
+}
+
+const getPoapsByTokenIdWithIssuerIR: any = {"usedParamSet":{"tokenId":true},"params":[{"name":"tokenId","required":true,"transform":{"type":"scalar"},"locs":[{"a":451,"b":459}]}],"statement":"-- Get all POAPs for a token with issuer information\n-- IMPORTANT: This correctly joins poaps with issuers using issuerId.\n-- DO NOT join using p.\"ownerAddress\" = issuers.\"issuerAddress\" - they do not correspond.\nSELECT \n  p.*,\n  i.\"issuerUuid\",\n  i.\"issuerAddress\",\n  i.username as issuer_username,\n  i.email as issuer_email,\n  i.organization as issuer_organization\nFROM poaps p\nLEFT JOIN issuers i ON p.\"issuerId\" = i.\"issuerId\"\nWHERE p.\"tokenId\" = :tokenId!\nORDER BY p.\"createdAt\" DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * -- Get all POAPs for a token with issuer information
+ * -- IMPORTANT: This correctly joins poaps with issuers using issuerId.
+ * -- DO NOT join using p."ownerAddress" = issuers."issuerAddress" - they do not correspond.
+ * SELECT 
+ *   p.*,
+ *   i."issuerUuid",
+ *   i."issuerAddress",
+ *   i.username as issuer_username,
+ *   i.email as issuer_email,
+ *   i.organization as issuer_organization
+ * FROM poaps p
+ * LEFT JOIN issuers i ON p."issuerId" = i."issuerId"
+ * WHERE p."tokenId" = :tokenId!
+ * ORDER BY p."createdAt" DESC
+ * ```
+ */
+export const getPoapsByTokenIdWithIssuer = new PreparedQuery<IGetPoapsByTokenIdWithIssuerParams,IGetPoapsByTokenIdWithIssuerResult>(getPoapsByTokenIdWithIssuerIR);
 
 
