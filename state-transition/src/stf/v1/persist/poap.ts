@@ -55,23 +55,18 @@ export function persistPoapCreate(
   tokenId: number,
   ownerAddress: WalletAddress,
 ): SQLUpdate[] {
-  // Create the POAP
-  const poapParams: ICreatePoapParams = {
-    issuerId,
-    eventId,
-    tokenId,
-    ownerAddress,
-  };
-  const poapQuery: SQLUpdate = [createPoap, poapParams];
+  // NOTE: POAP creation is handled by the blockchain sync service (BlockchainSyncService).
+  // The blockchain sync service processes TokenMinted events and creates POAPs with
+  // transaction_hash and block_number. Creating POAPs here would cause duplicates.
+  // The state-transition should not create POAPs - only the blockchain sync service does.
   
-  // Increment the event's totalSupply
-  const totalSupplyParams: IIncrementEventTotalSupplyParams = {
-    eventId,
-  };
-  const totalSupplyQuery: SQLUpdate = [incrementEventTotalSupply, totalSupplyParams];
+  // The blockchain sync service also handles:
+  // - POAP creation with transaction_hash
+  // - eventpoaps relation creation
+  // - totalSupply increment
   
-  // Return both queries
-  return [poapQuery, totalSupplyQuery];
+  // Return empty array - no operations needed here
+  return [];
 }
 
 export function persistPoapUpdateRelation(
@@ -80,43 +75,18 @@ export function persistPoapUpdateRelation(
   tokenId: number,
   ownerAddress: WalletAddress,
 ): SQLUpdate[] {
-  // NOTE: createPoap no longer has ON CONFLICT since tokenId is not unique.
-  // Duplicate prevention should be handled at a higher level using transaction_hash.
-  const poapParams: ICreatePoapParams = {
-    issuerId,
-    eventId,
-    tokenId,
-    ownerAddress,
-  };
-  const poapQuery: SQLUpdate = [createPoap, poapParams];
+  // NOTE: POAP creation is handled by the blockchain sync service (BlockchainSyncService).
+  // The blockchain sync service processes TokenUpdated events and creates POAPs with
+  // transaction_hash and block_number. Creating POAPs here would cause duplicates.
+  // The state-transition should not create POAPs - only the blockchain sync service does.
   
-  // WARNING: updatePoapOwnerAddress uses tokenId which is NOT unique.
-  // This will update ALL POAPs with the given tokenId, not just one.
-  // Consider using poapUuid or transaction_hash for more precise updates.
-  const updateParams: IUpdatePoapOwnerAddressParams = {
-    tokenId,
-    ownerAddress,
-  };
-  const updateQuery: SQLUpdate = [updatePoapOwnerAddress, updateParams];
+  // The blockchain sync service handles everything:
+  // - POAP creation with transaction_hash (via processTokenUpdatedEvent)
+  // - ownerAddress is set correctly when creating the POAP
+  // - eventpoaps relation creation (via createEventPoap)
+  // - totalSupply increment
   
-  // Create/update the event relation
-  const relationParams: ICreatePoapParams = {
-    issuerId,
-    eventId,
-    tokenId,
-    ownerAddress,
-  };
-  const relationQuery: SQLUpdate = [createEventPoap, relationParams];
-  
-  // Increment the event's totalSupply
-  // Note: This will increment even if POAP already existed, but that's acceptable
-  // as it ensures totalSupply stays in sync. The alternative would require
-  // checking if POAP exists first, which is more complex.
-  const totalSupplyParams: IIncrementEventTotalSupplyParams = {
-    eventId,
-  };
-  const totalSupplyQuery: SQLUpdate = [incrementEventTotalSupply, totalSupplyParams];
-  
-  // Return all queries: create POAP, update owner, create relation, increment supply
-  return [poapQuery, updateQuery, relationQuery, totalSupplyQuery];
+  // Return empty array - no operations needed here
+  // All POAP-related operations are handled by the blockchain sync service
+  return [];
 }
