@@ -536,15 +536,36 @@ export interface IGetPoapsByOwnerAddressResult {
   /** Block number where the POAP was minted */
   block_number: number | null;
   createdAt: Date | null;
+  /** Detailed description of the event */
+  description: string | null;
+  /** Block number where the event was created */
+  event_block_number: number | null;
+  event_createdat: Date | null;
+  event_issuerid: number;
+  /** Transaction hash of the event creation */
+  event_transaction_hash: string | null;
+  event_updatedat: Date | null;
+  /** When the actual event ends (different from mint expiration) */
+  eventEndDate: Date | null;
   eventId: number;
+  /** When the actual event starts (Unix timestamp in seconds, same type as expiration) */
+  eventStartDate: number | null;
+  eventUuid: string;
+  expiration: number;
+  /** URL to the event image/banner */
+  imageUrl: string | null;
   issuerId: number;
   maxSupply: number;
   organiserAddress: string;
   ownerAddress: string;
   poapUuid: string;
   status: string;
+  /** Event title/name for display purposes */
+  title: string | null;
   /** Token ID from blockchain event (INTEGER, NOT UNIQUE - allows duplicate tokenIds from different transactions) */
   tokenId: number;
+  /** Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback) */
+  totalSupply: number | null;
   /** Transaction hash of the POAP mint (UNIQUE constraint ensures no duplicate transactions) */
   transaction_hash: string | null;
   updatedAt: Date | null;
@@ -556,15 +577,34 @@ export interface IGetPoapsByOwnerAddressQuery {
   result: IGetPoapsByOwnerAddressResult;
 }
 
-const getPoapsByOwnerAddressIR: any = {"usedParamSet":{"ownerAddress":true},"params":[{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":154,"b":167}]}],"statement":"SELECT p.*, e.\"maxSupply\", e.\"organiserAddress\", e.status\nFROM poaps p\n  LEFT JOIN events e ON p.\"eventId\" = e.\"eventId\"\n  WHERE p.\"ownerAddress\" = lower(:ownerAddress!)"};
+const getPoapsByOwnerAddressIR: any = {"usedParamSet":{"ownerAddress":true},"params":[{"name":"ownerAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":545,"b":558}]}],"statement":"-- Get all POAPs for an owner with full event details\nSELECT \n  p.*,\n  e.\"eventUuid\",\n  e.\"issuerId\" as event_issuerId,\n  e.title,\n  e.description,\n  e.\"imageUrl\",\n  e.\"maxSupply\",\n  e.\"organiserAddress\",\n  e.status,\n  e.\"totalSupply\",\n  e.\"eventStartDate\",\n  e.\"eventEndDate\",\n  e.expiration,\n  e.\"createdAt\" as event_createdAt,\n  e.\"updatedAt\" as event_updatedAt,\n  e.block_number as event_block_number,\n  e.transaction_hash as event_transaction_hash\nFROM poaps p\nLEFT JOIN events e ON p.\"eventId\" = e.\"eventId\"\nWHERE p.\"ownerAddress\" = lower(:ownerAddress!)\nORDER BY p.\"createdAt\" DESC"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT p.*, e."maxSupply", e."organiserAddress", e.status
+ * -- Get all POAPs for an owner with full event details
+ * SELECT 
+ *   p.*,
+ *   e."eventUuid",
+ *   e."issuerId" as event_issuerId,
+ *   e.title,
+ *   e.description,
+ *   e."imageUrl",
+ *   e."maxSupply",
+ *   e."organiserAddress",
+ *   e.status,
+ *   e."totalSupply",
+ *   e."eventStartDate",
+ *   e."eventEndDate",
+ *   e.expiration,
+ *   e."createdAt" as event_createdAt,
+ *   e."updatedAt" as event_updatedAt,
+ *   e.block_number as event_block_number,
+ *   e.transaction_hash as event_transaction_hash
  * FROM poaps p
- *   LEFT JOIN events e ON p."eventId" = e."eventId"
- *   WHERE p."ownerAddress" = lower(:ownerAddress!)
+ * LEFT JOIN events e ON p."eventId" = e."eventId"
+ * WHERE p."ownerAddress" = lower(:ownerAddress!)
+ * ORDER BY p."createdAt" DESC
  * ```
  */
 export const getPoapsByOwnerAddress = new PreparedQuery<IGetPoapsByOwnerAddressParams,IGetPoapsByOwnerAddressResult>(getPoapsByOwnerAddressIR);

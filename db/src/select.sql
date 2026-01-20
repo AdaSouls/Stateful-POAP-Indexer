@@ -128,10 +128,29 @@ WHERE "tokenId" = :tokenId;
 /*
   @name getPoapsByOwnerAddress
 */
-SELECT p.*, e."maxSupply", e."organiserAddress", e.status
+-- Get all POAPs for an owner with full event details
+SELECT 
+  p.*,
+  e."eventUuid",
+  e."issuerId" as event_issuerId,
+  e.title,
+  e.description,
+  e."imageUrl",
+  e."maxSupply",
+  e."organiserAddress",
+  e.status,
+  e."totalSupply",
+  e."eventStartDate",
+  e."eventEndDate",
+  e.expiration,
+  e."createdAt" as event_createdAt,
+  e."updatedAt" as event_updatedAt,
+  e.block_number as event_block_number,
+  e.transaction_hash as event_transaction_hash
 FROM poaps p
-  LEFT JOIN events e ON p."eventId" = e."eventId"
-  WHERE p."ownerAddress" = lower(:ownerAddress!);
+LEFT JOIN events e ON p."eventId" = e."eventId"
+WHERE p."ownerAddress" = lower(:ownerAddress!)
+ORDER BY p."createdAt" DESC;
 
 /*
   @name getEventByEventId
