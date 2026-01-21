@@ -1,4 +1,4 @@
-import parse, { isInvalid } from "./parser.js";
+import parse, { isInvalid } from "./parser";
 import type Prando from "@paima/sdk/prando";
 import type { SubmittedChainData } from "@paima/sdk/utils";
 import type { SQLUpdate } from "@paima/node-sdk/db";
@@ -9,13 +9,13 @@ import {
   poapMint,
   poapUpdate,
   //eventUpdate,
-} from "./transition.js";
+} from "./transition";
 import {
   IssuerCreateInput,
   EventCreateInput,
   PoapMintInput,
   PoapUpdateInput,
-} from "./types.js";
+} from "./types";
 
 // entrypoint for your state machine
 export default async function (

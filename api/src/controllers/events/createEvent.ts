@@ -61,7 +61,7 @@ export class CreateEventController extends Controller {
         eventId: finalEventId,
         eventMaxSupply: eventInfo.eventMaxSupply,
         eventMintExpiration: eventInfo.eventMintExpiration,
-        eventOrganizer: eventInfo.eventOrganizer,
+        eventOrganizer: eventInfo.eventOrganizer.toLowerCase(),
         title: eventInfo.title || null,
         description: eventInfo.description || null,
         imageUrl: eventInfo.imageUrl || null,

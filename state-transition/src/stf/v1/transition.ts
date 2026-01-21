@@ -33,7 +33,7 @@ export const eventCreate = async (
     input.payload.eventId,
     input.payload.eventMaxSupply,
     input.payload.eventMintExpiration,
-    input.payload.eventOrganizer
+    input.payload.eventOrganizer.toLowerCase()
   );
   return [eventCreateQuery];
 };

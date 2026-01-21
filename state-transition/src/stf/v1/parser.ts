@@ -132,9 +132,77 @@ export function isInvalid(input: ParsedSubmittedInput): input is InvalidInput {
 function parse(s: string): ParsedSubmittedInput {
   console.log("🚀 ~ parse ~ s:", s);
   try {
-    const parsed = myParser.start(s);
+    const parsed: any = myParser.start(s);
     console.log("🚀 ~ parse ~ parsed:", parsed);
-    return { input: parsed.command, ...parsed.args } as any;
+
+    const command = parsed.command;
+    const args = parsed.args ?? {};
+    const payload = args.payload ?? {};
+
+    // Normalize payload to match our domain types even when PaimaParser is mocked
+    switch (command) {
+      case "issuerCreate":
+        return {
+          input: "issuerCreate",
+          payload: {
+            issuerId: parseInt(String(payload.issuerId), 10),
+            issuerAddress: String(
+              payload.issuerAddress
+            ).toLowerCase(),
+          },
+        } as any;
+      case "eventCreate":
+        return {
+          input: "eventCreate",
+          payload: {
+            issuerId: parseInt(String(payload.issuerId), 10),
+            eventId: parseInt(String(payload.eventId), 10),
+            eventMaxSupply: parseInt(
+              String(payload.eventMaxSupply),
+              10
+            ),
+            eventMintExpiration: parseInt(
+              String(payload.eventMintExpiration),
+              10
+            ),
+            eventOrganizer: String(
+              payload.eventOrganizer
+            ).toLowerCase(),
+          },
+        } as any;
+      case "poapMint":
+        return {
+          input: "poapMint",
+          payload: {
+            issuerId: parseInt(String(payload.issuerId), 10),
+            eventId: parseInt(String(payload.eventId), 10),
+            tokenId: parseInt(String(payload.tokenId), 10),
+            ownerAddress: String(
+              payload.ownerAddress ??
+                payload.userAddress ??
+                payload.to ??
+                ""
+            ).toLowerCase(),
+          },
+        } as any;
+      case "poapUpdate":
+        return {
+          input: "poapUpdate",
+          payload: {
+            issuerId: parseInt(String(payload.issuerId), 10),
+            eventId: parseInt(String(payload.eventId), 10),
+            tokenId: parseInt(String(payload.tokenId), 10),
+            ownerAddress: String(
+              payload.ownerAddress ??
+                payload.userAddress ??
+                payload.to ??
+                ""
+            ).toLowerCase(),
+          },
+        } as any;
+      default:
+        return { input: command, ...args } as any;
+    }
   } catch (e) {
     console.log(e, "Parsing error");
     return { input: "invalidString" };
