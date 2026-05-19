@@ -19,11 +19,12 @@ import {
 } from '../utils/indexingErrors';
 
 // Contract configuration
-const POAP_CONTRACT_ADDRESS = "0x9b394Aaaf2985415215aeC036457B1F38bDdcb2e";
+const POAP_CONTRACT_ADDRESS =
+  process.env.CONTRACT_ADDRESS ?? "0x9b394Aaaf2985415215aeC036457B1F38bDdcb2e";
 const providerRPC = {
-  name: "Amoy",
-  rpc: "https://rpc-amoy.polygon.technology",
-  chainId: 80002,
+  name: process.env.CHAIN_NAME ?? "Amoy",
+  rpc: process.env.CHAIN_URI ?? "https://rpc-amoy.polygon.technology",
+  chainId: Number(process.env.CHAIN_ID ?? 80002),
 };
 
 // Retry configuration

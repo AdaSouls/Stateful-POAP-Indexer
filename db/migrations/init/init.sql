@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS events (
   "issuerId" INTEGER NOT NULL REFERENCES issuers ("issuerId") ON DELETE CASCADE ON UPDATE CASCADE,
   "eventId" INTEGER UNIQUE NOT NULL,
   "maxSupply" INTEGER NOT NULL,
-  expiration INTEGER NOT NULL,
+  expiration BIGINT NOT NULL,
   "organiserAddress" VARCHAR(255) NOT NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'Pending',
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT now(),
@@ -70,7 +70,7 @@ ALTER TABLE events
 ADD COLUMN IF NOT EXISTS title VARCHAR(255),
 ADD COLUMN IF NOT EXISTS description TEXT,
 ADD COLUMN IF NOT EXISTS "imageUrl" VARCHAR(500),
-ADD COLUMN IF NOT EXISTS "eventStartDate" INTEGER,
+ADD COLUMN IF NOT EXISTS "eventStartDate" BIGINT,
 ADD COLUMN IF NOT EXISTS "eventEndDate" TIMESTAMP WITH TIME ZONE;
 
 -- Add comments for documentation
@@ -257,6 +257,33 @@ ADD COLUMN IF NOT EXISTS "totalSupply" INTEGER DEFAULT 0;
 
 -- Add comment for documentation
 COMMENT ON COLUMN events."totalSupply" IS 'Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback)';
+
+-- ============================================
+-- Migration: Widen Unix-timestamp columns from INTEGER to BIGINT
+-- ============================================
+-- INTEGER (signed 32-bit) maxes out at 2,147,483,647 which is Unix timestamp
+-- 2038-01-19. eventMintExpiration / eventStartDate are Unix timestamps and can
+-- legitimately be much larger (e.g. far-future expirations), which causes
+-- "value out of range for type integer" and aborts the SM transaction,
+-- making the funnel loop forever on the same block range.
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'events' AND column_name = 'expiration' AND data_type = 'integer'
+    ) THEN
+        ALTER TABLE events ALTER COLUMN expiration TYPE BIGINT;
+        RAISE NOTICE 'Promoted events.expiration to BIGINT';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'events' AND column_name = 'eventStartDate' AND data_type = 'integer'
+    ) THEN
+        ALTER TABLE events ALTER COLUMN "eventStartDate" TYPE BIGINT;
+        RAISE NOTICE 'Promoted events."eventStartDate" to BIGINT';
+    END IF;
+END $$;
 
 -- ============================================
 -- Optional Initialization: Initialize totalSupply for existing events
