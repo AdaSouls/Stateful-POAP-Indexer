@@ -48,7 +48,6 @@ export const eventCreate = async (
 }; */
 
 export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
-  console.log("🚀 ~ poapMint ~ input:", input)
   const poapCreateQueries = await persistPoapCreate(
     input.payload.issuerId,
     input.payload.eventId,
@@ -61,7 +60,6 @@ export const poapMint = async (input: PoapMintInput): Promise<SQLUpdate[]> => {
 export const poapUpdate = async (
   input: PoapUpdateInput
 ): Promise<SQLUpdate[]> => {
-  console.log("🚀 ~ input:", input)
   const poapUpdateQueries = await persistPoapUpdateRelation(
     input.payload.issuerId,
     input.payload.eventId,

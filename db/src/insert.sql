@@ -1,4 +1,4 @@
-/* 
+/*
  @name createIssuer
  */
 INSERT INTO issuers (
@@ -11,20 +11,17 @@ INSERT INTO issuers (
   "createdAt",
   "updatedAt"
 )
-SELECT
-  uuid_generate_v4(),
+VALUES (
+  DEFAULT,
   :issuerId!,
   lower(:issuerAddress!),
   :username,
   :email,
   :organization,
-  now(),
-  now()
-WHERE NOT EXISTS (
-  SELECT 1 FROM issuers 
-  WHERE "issuerId" = :issuerId! 
-     OR lower("issuerAddress") = lower(:issuerAddress!)
+  DEFAULT,
+  DEFAULT
 )
+ON CONFLICT ("issuerId") DO NOTHING
 RETURNING *;
 
 /* 

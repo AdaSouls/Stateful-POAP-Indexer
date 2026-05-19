@@ -25,8 +25,6 @@ const issuerCreate = {
     issuerId: number;
     issuerAddress: string;
   } => {
-    console.log("🚀 ~ _:", _);
-    console.log("🚀 ~ input:", input);
     if (!input) throw new Error("Input expected for swap_commands");
     const data: Record<string, string> = JSON.parse(input);
     const issuerId = parseInt(data.issuerId, 10);
@@ -50,8 +48,6 @@ const eventCreate = {
     eventMintExpiration: number;
     eventOrganizer: string;
   } => {
-    console.log("🚀 ~ _:", _);
-    console.log("🚀 ~ input:", input);
     if (!input) throw new Error("Input expected for swap_commands");
     const data: Record<string, string> = JSON.parse(input);
     const issuerId = parseInt(data.issuerId, 10);
@@ -121,20 +117,12 @@ const parserCommands: Record<string, ParserRecord<ParsedSubmittedInput>> = {
 
 const myParser = new PaimaParser(myGrammar, parserCommands);
 export function isInvalid(input: ParsedSubmittedInput): input is InvalidInput {
-  // console.log("IsInvalid received: ", input);
-  console.log(
-    `🚀 ~ isInvalid ~ (input as InvalidInput).input == "invalidString":`,
-    (input as InvalidInput).input == "invalidString"
-  );
   return (input as InvalidInput).input == "invalidString";
 }
 
 function parse(s: string): ParsedSubmittedInput {
-  console.log("🚀 ~ parse ~ s:", s);
   try {
     const parsed: any = myParser.start(s);
-    console.log("🚀 ~ parse ~ parsed:", parsed);
-
     const command = parsed.command;
     const args = parsed.args ?? {};
     const payload = args.payload ?? {};
@@ -204,7 +192,7 @@ function parse(s: string): ParsedSubmittedInput {
         return { input: command, ...args } as any;
     }
   } catch (e) {
-    console.log(e, "Parsing error");
+    console.warn(`[sm] parse error: ${(e as Error).message ?? e}`);
     return { input: "invalidString" };
   }
 }

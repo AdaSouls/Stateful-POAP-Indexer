@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS issuers (
   "issuerUuid" UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
   "issuerId" INTEGER UNIQUE NOT NULL,
-  "issuerAddress" VARCHAR(255) UNIQUE NOT NULL,
+  "issuerAddress" VARCHAR(255) NOT NULL,
   username VARCHAR(255) UNIQUE,
   email VARCHAR(255) UNIQUE,
   organization VARCHAR(255),
@@ -257,6 +257,29 @@ ADD COLUMN IF NOT EXISTS "totalSupply" INTEGER DEFAULT 0;
 
 -- Add comment for documentation
 COMMENT ON COLUMN events."totalSupply" IS 'Current number of POAPs minted for this event (incremented on mint, decremented on reorg rollback)';
+
+-- ============================================
+-- Migration: Drop UNIQUE constraint on issuers.issuerAddress
+-- ============================================
+-- The on-chain issuerId is authoritative. Two issuers can legitimately share
+-- the same address (or an off-chain row can collide with an on-chain row),
+-- which previously caused createIssuer to silently skip and break the FK chain
+-- when the SM then tried to insert an event referencing the new issuerId.
+DO $$
+DECLARE
+    constraint_name TEXT;
+BEGIN
+    SELECT conname INTO constraint_name
+    FROM pg_constraint
+    WHERE conrelid = 'issuers'::regclass
+      AND contype = 'u'
+      AND pg_get_constraintdef(oid) ILIKE '%(issuerAddress)%';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE issuers DROP CONSTRAINT %I', constraint_name);
+        RAISE NOTICE 'Dropped unique constraint % on issuers.issuerAddress', constraint_name;
+    END IF;
+END $$;
 
 -- ============================================
 -- Migration: Widen Unix-timestamp columns from INTEGER to BIGINT

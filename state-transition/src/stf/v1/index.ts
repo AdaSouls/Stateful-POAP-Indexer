@@ -24,26 +24,29 @@ export default async function (
   _randomnessGenerator: Prando,
   dbConn: Pool
 ): Promise<SQLUpdate[]> {
-  console.log("🚀 ~ index.ts inputData:", inputData);
-  console.log(`Processing input string: ${inputData.inputData}`);
   const parsed = parse(inputData.inputData);
-  console.log("This is parsed: ", parsed);
 
   if (isInvalid(parsed)) {
-    console.log(`Invalid input string`);
+    console.warn(`[sm] invalid input @block ${_blockHeight}: ${inputData.inputData}`);
     return [];
   }
 
+  const p: any = (parsed as any).payload ?? {};
   switch (parsed.input) {
     case 'issuerCreate':
+      console.log(`[sm] issuerCreate id=${p.issuerId} addr=${p.issuerAddress}`);
       return issuerCreate(parsed as IssuerCreateInput);
     case "eventCreate":
+      console.log(`[sm] eventCreate eventId=${p.eventId} issuerId=${p.issuerId} maxSupply=${p.eventMaxSupply}`);
       return eventCreate(parsed as EventCreateInput);
     case "poapMint":
+      console.log(`[sm] poapMint tokenId=${p.tokenId} eventId=${p.eventId} owner=${p.ownerAddress}`);
       return poapMint(parsed as PoapMintInput);
     case "poapUpdate":
+      console.log(`[sm] poapUpdate tokenId=${p.tokenId} eventId=${p.eventId} owner=${p.ownerAddress}`);
       return poapUpdate(parsed as PoapUpdateInput);
     default:
+      console.warn(`[sm] unknown input @block ${_blockHeight}: ${(parsed as any).input}`);
       return [];
   }
 }
