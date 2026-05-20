@@ -148,7 +148,7 @@ export function backendQueryGetOwnerByUuid(ownerUuid: string): string {
 
 export function backendQueryOwnedPoaps(wallet: string): string {
   const endpoint = "owner_poaps";
-  const options = { wallet };
+  const options = { ownerAddress: wallet };
   const response = buildBackendQuery(endpoint, options);
   console.log("🚀 ~ backendQueryOwnedPoaps ~ response:", response);
   return response;

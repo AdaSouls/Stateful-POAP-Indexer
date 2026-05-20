@@ -6,15 +6,15 @@ import { IErrorResponse } from "@game/utils";
 export class GetOwnerPoapsController extends Controller {
   @Get()
   public async get(
-    @Query() walletAddress: string
+    @Query() ownerAddress: string
   ): Promise<{ poaps: any[] } | IErrorResponse> {
-    console.log("🚀 ~ GetOwnerPoapsController ~ walletAddress:", walletAddress);
+    console.log("🚀 ~ GetOwnerPoapsController ~ ownerAddress:", ownerAddress);
     const pool = requirePool();
 
     try {
       // Query POAPs with event details
       const ownerPoaps = await getPoapsByOwnerAddress.run(
-        { ownerAddress: walletAddress },
+        { ownerAddress: ownerAddress },
         pool
       );
       console.log("🚀 ~ GetOwnerPoapsController ~ ownerPoaps:", ownerPoaps);

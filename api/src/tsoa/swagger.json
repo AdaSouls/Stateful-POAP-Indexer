@@ -1703,7 +1703,7 @@
 				"parameters": [
 					{
 						"in": "query",
-						"name": "walletAddress",
+						"name": "ownerAddress",
 						"required": true,
 						"schema": {
 							"type": "string"
