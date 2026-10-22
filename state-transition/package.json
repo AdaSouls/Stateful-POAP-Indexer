@@ -10,7 +10,7 @@
     "dev": "DOTENV_CONFIG_PATH=../.env.localhost node --require dotenv/config --experimental-specifier-resolution=node build/index.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@game/db": "1.0.0",
     "@game/game-logic": "1.0.0",
