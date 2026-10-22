@@ -10,7 +10,7 @@
     "compile": "npx tsoa spec-and-routes"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@game/db": "1.0.0",
     "@game/utils": "1.0.0",
