@@ -11,7 +11,7 @@
     "compile": "npx pgtyped -w -c pgtypedconfig.json"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@pgtyped/query": "2.3.0",
     "pg": "^8.10.0"
